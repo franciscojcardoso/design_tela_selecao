@@ -122,7 +122,7 @@ function DashboardScreen({ onNavigate }) {
           <div className="dashboard-hero">
             <div>
               <h1>Inscricao para pessoa juridica</h1>
-              <p>O edital anexado pede dados de empresa, representante legal, certidoes, anexos institucionais e informacoes do projeto. As etapas abaixo foram reorganizadas para refletir esse processo.</p>
+              <p>Preencha as informações dos cards.</p>
             </div>
           </div>
           <div className="row g-3 mt-2 justify-content-center">
@@ -237,9 +237,9 @@ function CompanyRegistrationForm({ applicationData, updateField }) {
     <FormSection title="Identificacao da empresa" subtitle="Campos basicos pedidos no edital para cadastro da pessoa juridica.">
       <div className="section-block-title">Dados cadastrais</div>
       <Row className="g-3">
-        <Col lg={3} md={6}><Form.Group><Form.Label>Tipo de empresa *</Form.Label><Form.Select value={applicationData.companyType} onChange={updateField('companyType')}><option value="" disabled>Selecione...</option><option>LTDA</option><option>SLU</option><option>S/A</option><option>EIRELI</option><option>OSCIP</option><option>Outro</option></Form.Select></Form.Group></Col>
-        <Col lg={3} md={6}><Form.Group><Form.Label>CNPJ *</Form.Label><Form.Control placeholder="00.000.000/0000-00" value={applicationData.cnpj} onChange={updateField('cnpj')} /></Form.Group></Col>
-        <Col lg={6} md={12}><Form.Group><Form.Label>Razao social *</Form.Label><Form.Control placeholder="Nome juridico da empresa" value={applicationData.companyName} onChange={updateField('companyName')} /></Form.Group></Col>
+        <Col lg={2} md={6}><Form.Group><Form.Label>Tipo de empresa *</Form.Label><Form.Select value={applicationData.companyType} onChange={updateField('companyType')}><option value="" disabled>Selecione...</option><option>LTDA</option><option>SLU</option><option>S/A</option><option>EIRELI</option><option>OSCIP</option><option>Outro</option></Form.Select></Form.Group></Col>
+        <Col lg={2} md={6}><Form.Group><Form.Label>CNPJ *</Form.Label><Form.Control placeholder="00.000.000/0000-00" value={applicationData.cnpj} onChange={updateField('cnpj')} /></Form.Group></Col>
+        <Col lg={8} md={12}><Form.Group><Form.Label>Razao social *</Form.Label><Form.Control placeholder="Nome juridico da empresa" value={applicationData.companyName} onChange={updateField('companyName')} /></Form.Group></Col>
         <Col lg={4} md={6}><Form.Group><Form.Label>Nome fantasia</Form.Label><Form.Control placeholder="Opcional" value={applicationData.tradeName} onChange={updateField('tradeName')} /></Form.Group></Col>
         <Col lg={4} md={6}><Form.Group><Form.Label>Email institucional *</Form.Label><Form.Control type="email" placeholder="contato@empresa.com.br" value={applicationData.email} onChange={updateField('email')} /></Form.Group></Col>
         <Col lg={4} md={6}><Form.Group><Form.Label>Telefone *</Form.Label><Form.Control placeholder="(85) 99999-9999" value={applicationData.phone} onChange={updateField('phone')} /></Form.Group></Col>
@@ -480,7 +480,6 @@ function ProjectForm({ applicationData, updateField }) {
         <Col lg={4}><Form.Group><Form.Label>PDF do projeto *</Form.Label><Form.Control type="file" /></Form.Group></Col>
         <Col lg={4} md={6}><Form.Group><Form.Label>Valor solicitado *</Form.Label><Form.Control placeholder="R$ 0,00" value={applicationData.projectAmount} onChange={updateField('projectAmount')} /></Form.Group></Col>
         <Col lg={4} md={6}><Form.Group><Form.Label>Contrapartida proposta *</Form.Label><Form.Control placeholder="R$ 0,00" value={applicationData.projectCounterpart} onChange={updateField('projectCounterpart')} /></Form.Group></Col>
-        <Col lg={4} md={6}><Form.Group><Form.Label>Alinhamento com politicas da ESP/CE *</Form.Label><Form.Select value={applicationData.alignmentLevel} onChange={updateField('alignmentLevel')}><option value="" disabled>Selecione...</option><option>Alto</option><option>Medio</option><option>Baixo</option></Form.Select></Form.Group></Col>
         <Col lg={12}>
           <MarkdownField
             label="Plano de trabalho *"
