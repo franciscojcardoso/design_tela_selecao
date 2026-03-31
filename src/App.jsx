@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Badge, Button, Card, Col, Container, Form, ProgressBar, Row } from 'react-bootstrap'
+import logoJangada from './assets/logo-jangada.svg'
+import logoEstadoCeara from './assets/logo-estado-ceara.svg'
 import './App.css'
 
 const selection = {
@@ -7,16 +9,23 @@ const selection = {
   candidateName: 'Nome Sobrenome',
 }
 
+const institutionInfo = {
+  fullName: 'Escola de Saude Publica do Ceara Paulo Marcelo Martins Rodrigues - ESP/CE',
+  address: 'Antonio Justa, 3161, Meireles, Fortaleza - CE, CEP 60165-090',
+  email: 'chamamentopublico@esp.ce.gov.br',
+  government: 'Governo do Estado do Ceara',
+}
+
 const dashboardStages = [
-  { id: 'company-registration', title: 'Cadastro da Empresa', icon: 'bi-buildings', description: 'Dados cadastrais, endereco e conta bancaria da pessoa juridica.', progress: 40, statusColor: '#ffc107', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'company-registration' },
-  { id: 'legal-contact', title: 'Representante Legal', icon: 'bi-person-vcard', description: 'Informacoes do representante legal e do contato comercial.', progress: 15, statusColor: '#ffc107', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'legal-contact' },
-  { id: 'fiscal', title: 'Regularidade Fiscal', icon: 'bi-shield-check', description: 'Certidoes e comprovacoes fiscais exigidas no edital.', progress: 0, statusColor: '#adb5bd', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'fiscal' },
-  { id: 'attachments', title: 'Documentos Obrigatorios', icon: 'bi-folder2-open', description: 'Anexos institucionais, comprovantes e modelos assinados.', progress: 0, statusColor: '#adb5bd', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'attachments' },
-  { id: 'declarations', title: 'Declaracoes', icon: 'bi-file-earmark-check', description: 'Termos obrigatorios e confirmacoes de ciencia do edital.', progress: 0, statusColor: '#adb5bd', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'declarations' },
-  { id: 'settings', title: 'Configuracoes', icon: 'bi-sliders', description: 'Tema visual, modo claro ou escuro e paletas acessiveis.', progress: 100, statusColor: '#0f7a8c', startDate: 'Disponivel', endDate: 'Sempre', navigateTo: 'settings' },
-  { id: 'project', title: 'Plano de Trabalho', icon: 'bi-kanban', description: 'Projeto, plano de trabalho, plano de midia e valores.', progress: 0, statusColor: '#adb5bd', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'project' },
-  { id: 'appeal', title: 'Recurso do Resultado', icon: 'bi-chat-left-text', description: 'Etapa futura: exibida somente se o edital abrir recurso.', progress: 0, statusColor: '#adb5bd', startDate: '--', endDate: '--', navigateTo: 'appeal' },
-  { id: 'evaluation', title: 'Avaliacao Final', icon: 'bi-clipboard-data', description: 'Acompanhamento da analise da comissao avaliadora.', progress: 0, statusColor: '#0d6efd', startDate: '16/04/2026', endDate: '30/04/2026', navigateTo: 'evaluation' },
+  { id: 'company-registration', title: 'Cadastro da Empresa', icon: 'bi-buildings', description: 'Dados cadastrais, endereco e conta bancaria da pessoa juridica.', progress: 40, statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'company-registration' },
+  { id: 'legal-contact', title: 'Representante Legal', icon: 'bi-person-vcard', description: 'Informacoes do representante legal e do contato comercial.', progress: 15, statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'legal-contact' },
+  { id: 'fiscal', title: 'Regularidade Fiscal', icon: 'bi-shield-check', description: 'Certidoes e comprovantes de regularidade fiscal da empresa.', progress: 0, statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'fiscal' },
+  { id: 'attachments', title: 'Documentos obrigatorios', icon: 'bi-folder2-open', description: 'Anexos institucionais, comprovantes e modelos assinados.', progress: 0, statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'attachments' },
+  { id: 'declarations', title: 'Declaracoes', icon: 'bi-file-earmark-check', description: 'Termos obrigatorios e confirmacoes de ciencia do edital.', progress: 0, statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'declarations' },
+  { id: 'settings', title: 'Configuracoes', icon: 'bi-sliders', description: 'Tema visual, modo claro ou escuro e paletas acessiveis.', progress: 100, statusColor: '#282828', startDate: 'Disponivel', endDate: 'Sempre', navigateTo: 'settings' },
+  { id: 'project', title: 'Plano de trabalho', icon: 'bi-kanban', description: 'Projeto, plano de trabalho, plano de midia e valores.', progress: 0, statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'project' },
+  { id: 'appeal', title: 'Recurso do Resultado', icon: 'bi-chat-left-text', description: 'Etapa futura: exibida somente se o edital abrir recurso.', progress: 0, statusColor: '#5C646B', startDate: '--', endDate: '--', navigateTo: 'appeal' },
+  { id: 'evaluation', title: 'Avaliacao final', icon: 'bi-clipboard-data', description: 'Acompanhamento da analise da comissao avaliadora', progress: 0, statusColor: '#5C646B', startDate: '16/04/2026', endDate: '30/04/2026', navigateTo: 'evaluation' },
 ]
 
 const documentosDisponiveis = ['Edital completo', 'Anexo III', 'Anexo IV', 'Anexo V', 'Anexo VI', 'Anexo VII', 'Modelo de declaracao trabalhista e social']
@@ -64,18 +73,10 @@ function PainelNavbar({ onExit }) {
     <nav className="navbar navbar-expand-lg navbar-painel">
       <div className="container-fluid px-4">
         <div className="d-flex align-items-center gap-3 navbar-branding">
-          <div className="brand-square">
-            <i className="bi bi-clipboard-check" />
-          </div>
-          <div>
-            <div className="fw-bold mb-0 navbar-titulo">{selection.title}</div>
-          </div>
+          <AppBrand />
+          <div className="fw-bold mb-0 navbar-titulo">{selection.title}</div>
         </div>
         <div className="d-flex align-items-center gap-3 ms-auto navbar-actions">
-          <button type="button" className="navbar-icon-button" aria-label="Notificacoes">
-            <i className="bi bi-bell" />
-            <span className="navbar-icon-badge">9+</span>
-          </button>
           <div className="navbar-user">
             <div className="navbar-avatar">
               <i className="bi bi-people" />
@@ -92,31 +93,70 @@ function PainelNavbar({ onExit }) {
   )
 }
 
-function DashboardCard({ title, icon, description, progress, statusColor, startDate, endDate, onCardClick }) {
+function AppBrand({ footer = false }) {
+  return (
+    <div className={`app-brand${footer ? ' app-brand--footer' : ''}`}>
+      <img src={logoJangada} alt="Logo Jangada" className="app-brand__image" />
+    </div>
+  )
+}
+
+function AppFooter() {
+  return (
+    <footer className="footer-painel">
+      <div className="footer-painel__stripe" aria-hidden="true">
+        <span className="footer-painel__stripe-part footer-painel__stripe-part--green" />
+        <span className="footer-painel__stripe-part footer-painel__stripe-part--blue" />
+        <span className="footer-painel__stripe-part footer-painel__stripe-part--red" />
+      </div>
+      <div className="footer-painel__content">
+        <div className="container-fluid px-4">
+          <div className="footer-painel__inner">
+            <div className="footer-painel__identity">
+              <AppBrand footer />
+              <div className="footer-info">
+                <strong>{institutionInfo.fullName}</strong>
+                <div><i className="bi bi-geo-alt-fill me-2" />{institutionInfo.address}</div>
+                <div><i className="bi bi-envelope-fill me-2" />{institutionInfo.email}</div>
+              </div>
+            </div>
+            <div className="footer-rights">
+              <img src={logoEstadoCeara} alt={institutionInfo.government} className="footer-rights__logo" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  )
+}
+
+function DashboardCard({ title, icon, description, startDate, endDate, onCardClick }) {
   return (
     <div className={`card-hover${onCardClick ? ' card-hover--clickable' : ''}`} onClick={onCardClick}>
       <div className="card-mini">
         <a href="#" className="card-link" onClick={(event) => event.preventDefault()}>
-          <i className={`bi ${icon}`} style={{ color: '#0d6efd' }} />
-          <p className="card-text mb-0">{title}<br /><br /><small style={{ color: '#282828' }}>{description}</small></p>
+          <span className="card-icon-wrap">
+            <i className={`bi ${icon}`} style={{ color: '#005FC9' }} />
+          </span>
+          <p className="card-text mb-0">{title}</p>
+          <small className="card-description">{description}</small>
         </a>
       </div>
       <div className="card-expanded">
-        <a href="#" className="card-link-expanded" onClick={(event) => event.preventDefault()}>
-          <i className={`bi ${icon}`} style={{ color: '#0d6efd' }} />
-          <p className="card-title-expanded mb-0">{title}<br /><br /><small style={{ color: '#282828' }}>{description}</small></p>
+        <a href="#" className="card-link card-link--expanded" onClick={(event) => event.preventDefault()}>
+          <span className="card-icon-wrap">
+            <i className={`bi ${icon}`} style={{ color: '#005FC9' }} />
+          </span>
+          <p className="card-text mb-0">{title}</p>
+          <small className="card-description">{description}</small>
         </a>
-        <div className="progress-wrap d-flex align-items-center gap-2">
-          <div className="progress flex-grow-1"><div className="progress-bar bg-primary" role="progressbar" style={{ width: `${progress}%` }} aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} /></div>
-          <span className="card-status-inline">{progress}%</span>
+        <div className="card-meta">
+          <div className="card-periodo periodo-linha">
+            <div><strong>Inicio:</strong><br />{startDate}</div>
+            <div><strong>Fim:</strong><br />{endDate}</div>
+          </div>
         </div>
-        <div className="card-periodo periodo-linha">
-          <div><strong>Inicio:</strong><br />{startDate}</div>
-          <div><strong>Fim:</strong><br />{endDate}</div>
-        </div>
-        <div className="status-line-expanded" style={{ backgroundColor: statusColor }} />
       </div>
-      <div className="card-status-bar" style={{ backgroundColor: statusColor }} />
     </div>
   )
 }
@@ -126,37 +166,30 @@ function DashboardScreen({ onNavigate, onExit }) {
     <div className="painel-page">
       <PainelNavbar onExit={onExit} />
       <main className="main-wrapper">
-        <div className="container-xl">
+        <div className="dashboard-shell">
           <div className="dashboard-hero">
             <div>
               <h1>Inscricao para pessoa juridica</h1>
               <p>Preencha as informações dos cards.</p>
             </div>
           </div>
-          <div className="row g-3 mt-2 justify-content-center">
-            {dashboardStages.map((stage) => (
-              <div key={stage.id} className="col-6 col-sm-4 col-md-3 col-lg-2 mb-3 card-col">
+          <div className="dashboard-cards-grid dashboard-cards-grid--six">
+            {dashboardStages.slice(0, 6).map((stage) => (
+              <div key={stage.id} className="card-col">
+                <DashboardCard {...stage} onCardClick={() => onNavigate(stage.navigateTo)} />
+              </div>
+            ))}
+          </div>
+          <div className="dashboard-cards-grid">
+            {dashboardStages.slice(6).map((stage) => (
+              <div key={stage.id} className="card-col">
                 <DashboardCard {...stage} onCardClick={() => onNavigate(stage.navigateTo)} />
               </div>
             ))}
           </div>
         </div>
       </main>
-      <footer className="footer-painel">
-        <div className="container-fluid px-4">
-          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div className="d-flex align-items-center gap-3">
-              <div className="brand-square brand-square--sm"><span>ESP</span><span>CE</span></div>
-              <div className="footer-info">
-                <strong>Escola de Saude Publica do Ceara Paulo Marcelo Martins Rodrigues - ESP/CE</strong>
-                <div><i className="bi bi-geo-alt-fill me-1" />Antonio Justa, 3161, Meireles, Fortaleza - CE, CEP 60165-090</div>
-                <div><i className="bi bi-envelope me-1" />chamamentopublico@esp.ce.gov.br</div>
-              </div>
-            </div>
-            <div className="text-end footer-rights"><strong>Governo do Estado do Ceara</strong><div>Todos os direitos reservados</div></div>
-          </div>
-        </div>
-      </footer>
+      <AppFooter />
     </div>
   )
 }
@@ -708,6 +741,7 @@ function PlaceholderStage({ title, body, onBack }) {
 function LoggedOutScreen() {
   return (
     <div className="candidate-dashboard logout-screen">
+      <PainelNavbar onExit={() => {}} />
       <main className="candidate-content">
         <Container className="logout-screen__container">
           <Card className="form-section-card logout-card">
@@ -719,6 +753,7 @@ function LoggedOutScreen() {
           </Card>
         </Container>
       </main>
+      <AppFooter />
     </div>
   )
 }
@@ -786,6 +821,7 @@ function StageFormScreen({ currentStage, applicationData, setApplicationData, pr
           </Row>
         </Container>
       </main>
+      <AppFooter />
     </div>
   )
 }
