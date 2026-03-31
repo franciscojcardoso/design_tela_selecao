@@ -3,9 +3,8 @@ import { Badge, Button, Card, Col, Container, Form, ProgressBar, Row } from 'rea
 import './App.css'
 
 const selection = {
-  title: 'Painel do Proponente',
-  notice: 'EDITAL 03/2026 - CHAMAMENTO PARA EVENTOS E PROJETOS EM SAUDE PUBLICA',
-  candidateName: 'INSTITUTO SAUDE E CIDADANIA LTDA',
+  title: 'EDITAL PJ',
+  candidateName: 'Nome Sobrenome',
 }
 
 const dashboardStages = [
@@ -13,11 +12,11 @@ const dashboardStages = [
   { id: 'legal-contact', title: 'Representante Legal', icon: 'bi-person-vcard', description: 'Informacoes do representante legal e do contato comercial.', progress: 15, statusColor: '#ffc107', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'legal-contact' },
   { id: 'fiscal', title: 'Regularidade Fiscal', icon: 'bi-shield-check', description: 'Certidoes e comprovacoes fiscais exigidas no edital.', progress: 0, statusColor: '#adb5bd', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'fiscal' },
   { id: 'attachments', title: 'Documentos Obrigatorios', icon: 'bi-folder2-open', description: 'Anexos institucionais, comprovantes e modelos assinados.', progress: 0, statusColor: '#adb5bd', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'attachments' },
-  { id: 'project', title: 'Plano de Trabalho', icon: 'bi-kanban', description: 'Projeto, plano de trabalho, plano de midia e valores.', progress: 0, statusColor: '#adb5bd', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'project' },
   { id: 'declarations', title: 'Declaracoes', icon: 'bi-file-earmark-check', description: 'Termos obrigatorios e confirmacoes de ciencia do edital.', progress: 0, statusColor: '#adb5bd', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'declarations' },
+  { id: 'settings', title: 'Configuracoes', icon: 'bi-sliders', description: 'Tema visual, modo claro ou escuro e paletas acessiveis.', progress: 100, statusColor: '#0f7a8c', startDate: 'Disponivel', endDate: 'Sempre', navigateTo: 'settings' },
+  { id: 'project', title: 'Plano de Trabalho', icon: 'bi-kanban', description: 'Projeto, plano de trabalho, plano de midia e valores.', progress: 0, statusColor: '#adb5bd', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'project' },
   { id: 'appeal', title: 'Recurso do Resultado', icon: 'bi-chat-left-text', description: 'Etapa futura: exibida somente se o edital abrir recurso.', progress: 0, statusColor: '#adb5bd', startDate: '--', endDate: '--', navigateTo: 'appeal' },
   { id: 'evaluation', title: 'Avaliacao Final', icon: 'bi-clipboard-data', description: 'Acompanhamento da analise da comissao avaliadora.', progress: 0, statusColor: '#0d6efd', startDate: '16/04/2026', endDate: '30/04/2026', navigateTo: 'evaluation' },
-  { id: 'settings', title: 'Configuracoes', icon: 'bi-sliders', description: 'Tema visual, modo claro ou escuro e paletas acessiveis.', progress: 100, statusColor: '#0f7a8c', startDate: 'Disponivel', endDate: 'Sempre', navigateTo: 'settings' },
 ]
 
 const documentosDisponiveis = ['Edital completo', 'Anexo III', 'Anexo IV', 'Anexo V', 'Anexo VI', 'Anexo VII', 'Modelo de declaracao trabalhista e social']
@@ -38,8 +37,10 @@ const uploadChecklist = [
 
 const initialApplicationData = {
   companyType: '', cnpj: '', companyName: '', tradeName: '', email: '', phone: '', website: '',
+  phoneSecondary: '', street: '', streetNumber: '', zipCode: '', landmark: '', neighborhood: '',
+  addressComplement: '', city: '', state: '',
   foundationDate: '', shareCapital: '', primaryCnae: '', secondaryCnaes: '', address: '',
-  bank: 'BRADESCO', agency: '', account: '', legalRepresentative: '', legalRepresentativeCpf: '',
+  bank: '', agency: '', account: '', legalRepresentative: '', legalRepresentativeCpf: '',
   legalRepresentativeRole: '', commercialContact: '', commercialContactCpf: '', commercialContactPhone: '',
   projectTitle: '', projectAmount: '', projectCounterpart: '', alignmentLevel: '', workPlan: '', mediaPlan: '',
   declarations: { socialRegularity: false, articleSeven: false, noticeAgreement: false },
@@ -62,20 +63,27 @@ function PainelNavbar({ onExit }) {
   return (
     <nav className="navbar navbar-expand-lg navbar-painel">
       <div className="container-fluid px-4">
-        <div className="d-flex align-items-center gap-3">
+        <div className="d-flex align-items-center gap-3 navbar-branding">
           <div className="brand-square">
-            <span>ESP</span>
-            <span>CE</span>
+            <i className="bi bi-clipboard-check" />
           </div>
           <div>
-            <div className="fw-bold text-primary mb-0 navbar-titulo">{selection.title}</div>
-            <small className="text-muted">{selection.notice}</small>
+            <div className="fw-bold mb-0 navbar-titulo">{selection.title}</div>
           </div>
         </div>
-        <div className="d-flex align-items-center gap-3 ms-auto">
-          <span className="text-muted small d-none d-md-inline">{selection.candidateName}</span>
-          <button className="btn btn-outline-primary btn-sm" onClick={onExit}>
-            <i className="bi bi-box-arrow-right me-1" />
+        <div className="d-flex align-items-center gap-3 ms-auto navbar-actions">
+          <button type="button" className="navbar-icon-button" aria-label="Notificacoes">
+            <i className="bi bi-bell" />
+            <span className="navbar-icon-badge">9+</span>
+          </button>
+          <div className="navbar-user">
+            <div className="navbar-avatar">
+              <i className="bi bi-people" />
+            </div>
+            <span>{selection.candidateName}</span>
+            <i className="bi bi-chevron-down navbar-user__chevron" />
+          </div>
+          <button className="btn btn-outline-secondary btn-sm navbar-exit-button" onClick={onExit}>
             Sair
           </button>
         </div>
@@ -113,10 +121,10 @@ function DashboardCard({ title, icon, description, progress, statusColor, startD
   )
 }
 
-function DashboardScreen({ onNavigate }) {
+function DashboardScreen({ onNavigate, onExit }) {
   return (
     <div className="painel-page">
-      <PainelNavbar onExit={() => {}} />
+      <PainelNavbar onExit={onExit} />
       <main className="main-wrapper">
         <div className="container-xl">
           <div className="dashboard-hero">
@@ -142,7 +150,7 @@ function DashboardScreen({ onNavigate }) {
               <div className="footer-info">
                 <strong>Escola de Saude Publica do Ceara Paulo Marcelo Martins Rodrigues - ESP/CE</strong>
                 <div><i className="bi bi-geo-alt-fill me-1" />Antonio Justa, 3161, Meireles, Fortaleza - CE, CEP 60165-090</div>
-                <div><i className="bi bi-envelope me-1" />selecoes@esp.ce.gov.br</div>
+                <div><i className="bi bi-envelope me-1" />chamamentopublico@esp.ce.gov.br</div>
               </div>
             </div>
             <div className="text-end footer-rights"><strong>Governo do Estado do Ceara</strong><div>Todos os direitos reservados</div></div>
@@ -169,7 +177,7 @@ function FormSection({ title, subtitle, children }) {
 function SidebarStatus({ applicationData, progressItems, completedSteps, activeStep, isEditing }) {
   const summaryItems = [
     { label: 'Razao social', value: applicationData.companyName },
-    { label: 'CNPJ', value: applicationData.cnpj, tone: 'text-primary' },
+    { label: 'CNPJ', value: applicationData.cnpj },
     { label: 'Email', value: applicationData.email },
     { label: 'Telefone', value: applicationData.phone },
     { label: 'Representante', value: applicationData.legalRepresentative },
@@ -182,12 +190,11 @@ function SidebarStatus({ applicationData, progressItems, completedSteps, activeS
     <Card className="sidebar-status-card">
       <Card.Body>
         <h3 className="sidebar-status-card__title">Situacao da Inscricao</h3>
-        <div className="status-line"><span>Status</span><strong className="text-warning-emphasis">{isEditing ? 'Edicao em andamento' : 'Em andamento'}</strong></div>
-        <div className="status-line"><span>Resumo</span><strong>{summaryItems.length} informacoes</strong></div>
-        <div className="status-line"><span>Etapa atual</span><strong>{activeStep}</strong></div>
-        <div className="status-line"><span>Prazo final</span><strong className="text-danger">15/04/2026</strong></div>
+        <div className="status-line"><span>Status:</span><strong>{isEditing ? 'Edicao em andamento' : 'Em andamento'}</strong></div>
+        <div className="status-line"><span>Etapa atual:</span><strong>{activeStep}</strong></div>
+        <div className="status-line"><span>Prazo final:</span><strong className="status-line__deadline">15/04/2026</strong></div>
         <div className="summary-panel">
-          <div className="summary-panel__header"><h4>Resumo do cadastro</h4><span>{isEditing ? 'Modo edicao' : 'Preenchimento automatico'}</span></div>
+          <div className="summary-panel__header"><h4>Resumo do cadastro:</h4></div>
           {summaryItems.length > 0 ? (
             <div className="summary-list">
               {summaryItems.map((item) => <div key={item.label} className="summary-list__item"><span>{item.label}</span><strong className={item.tone}>{item.value}</strong></div>)}
@@ -195,7 +202,7 @@ function SidebarStatus({ applicationData, progressItems, completedSteps, activeS
           ) : <p className="summary-empty">O resumo sera preenchido conforme a empresa informar os dados principais do cadastro.</p>}
         </div>
         <div className="sidebar-progress">
-          <div className="sidebar-progress__header"><h4>Progresso das Etapas</h4><span>{completedSteps}/{progressItems.length} concluidas</span></div>
+          <div className="sidebar-progress__header"><h4>Progresso das Etapas</h4></div>
           <ProgressBar now={progressPercent} variant="success" className="sidebar-progress__bar" />
           <div className="progress-list">
             {progressItems.map((item) => <div key={item.title} className="progress-list__item"><span>{item.title}</span><Badge className={`status-chip status-chip--${item.tone}`}>{item.status}</Badge></div>)}
@@ -232,82 +239,132 @@ function UploadItemCard({ item, isUploaded, onChange }) {
     </div>
   )
 }
-function CompanyRegistrationForm({ applicationData, updateField }) {
+
+function StageFooterActions({ onBack }) {
+  return (
+    <div className="form-actions form-actions--footer">
+      <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onBack}>Cancelar</Button>
+      <Button type="button" variant="success" className="action-button action-button--success">Salvar</Button>
+    </div>
+  )
+}
+
+function CompanyRegistrationForm({ applicationData, updateField, onBack }) {
   return (
     <FormSection title="Identificacao da empresa" subtitle="Campos basicos pedidos no edital para cadastro da pessoa juridica.">
-      <div className="section-block-title">Dados cadastrais</div>
-      <Row className="g-3">
-        <Col lg={2} md={6}><Form.Group><Form.Label>Tipo de empresa *</Form.Label><Form.Select value={applicationData.companyType} onChange={updateField('companyType')}><option value="" disabled>Selecione...</option><option>LTDA</option><option>SLU</option><option>S/A</option><option>EIRELI</option><option>OSCIP</option><option>Outro</option></Form.Select></Form.Group></Col>
-        <Col lg={2} md={6}><Form.Group><Form.Label>CNPJ *</Form.Label><Form.Control placeholder="00.000.000/0000-00" value={applicationData.cnpj} onChange={updateField('cnpj')} /></Form.Group></Col>
-        <Col lg={8} md={12}><Form.Group><Form.Label>Razao social *</Form.Label><Form.Control placeholder="Nome juridico da empresa" value={applicationData.companyName} onChange={updateField('companyName')} /></Form.Group></Col>
-        <Col lg={4} md={6}><Form.Group><Form.Label>Nome fantasia</Form.Label><Form.Control placeholder="Opcional" value={applicationData.tradeName} onChange={updateField('tradeName')} /></Form.Group></Col>
-        <Col lg={4} md={6}><Form.Group><Form.Label>Email institucional *</Form.Label><Form.Control type="email" placeholder="contato@empresa.com.br" value={applicationData.email} onChange={updateField('email')} /></Form.Group></Col>
-        <Col lg={4} md={6}><Form.Group><Form.Label>Telefone *</Form.Label><Form.Control placeholder="(85) 99999-9999" value={applicationData.phone} onChange={updateField('phone')} /></Form.Group></Col>
-        <Col lg={4} md={6}><Form.Group><Form.Label>Website</Form.Label><Form.Control placeholder="https://..." value={applicationData.website} onChange={updateField('website')} /></Form.Group></Col>
-        <Col lg={4} md={6}><Form.Group><Form.Label>Data de criacao *</Form.Label><Form.Control type="date" value={applicationData.foundationDate} onChange={updateField('foundationDate')} /></Form.Group></Col>
-        <Col lg={4} md={6}><Form.Group><Form.Label>Capital declarado</Form.Label><Form.Control placeholder="R$ 0,00" value={applicationData.shareCapital} onChange={updateField('shareCapital')} /></Form.Group></Col>
-        <Col lg={6} md={6}><Form.Group><Form.Label>CNAE principal</Form.Label><Form.Control placeholder="Descricao ou codigo" value={applicationData.primaryCnae} onChange={updateField('primaryCnae')} /></Form.Group></Col>
-        <Col lg={6} md={6}><Form.Group><Form.Label>CNAEs secundarios</Form.Label><Form.Control placeholder="Informe os CNAEs secundarios" value={applicationData.secondaryCnaes} onChange={updateField('secondaryCnaes')} /></Form.Group></Col>
-      </Row>
-      <div className="section-block-title mt-4">Endereco e dados bancarios</div>
-      <Row className="g-3">
-        <Col lg={8}><Form.Group><Form.Label>Endereco completo *</Form.Label><Form.Control placeholder="Rua, numero, bairro, municipio, UF e CEP" value={applicationData.address} onChange={updateField('address')} /></Form.Group></Col>
-        <Col lg={4} md={6}><Form.Group><Form.Label>Banco *</Form.Label><Form.Select value={applicationData.bank} onChange={updateField('bank')}><option>BRADESCO</option><option>Outro</option></Form.Select></Form.Group></Col>
-        <Col lg={3} md={6}><Form.Group><Form.Label>Agencia *</Form.Label><Form.Control placeholder="0000" value={applicationData.agency} onChange={updateField('agency')} /></Form.Group></Col>
-        <Col lg={5} md={6}><Form.Group><Form.Label>Conta *</Form.Label><Form.Control placeholder="000000-0" value={applicationData.account} onChange={updateField('account')} /></Form.Group></Col>
-      </Row>
+      <div className="company-form-group">
+        <div className="company-form-group__title">Dados cadastrais</div>
+        <Row className="g-3">
+          <Col md={6}><Form.Group><Form.Label>Tipo de empresa *</Form.Label><Form.Select value={applicationData.companyType} onChange={updateField('companyType')}><option value="" disabled>Selecionar</option><option>LTDA</option><option>SLU</option><option>S/A</option><option>EIRELI</option><option>OSCIP</option><option>Outro</option></Form.Select></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>CNPJ *</Form.Label><Form.Control placeholder="Insira o codigo" value={applicationData.cnpj} onChange={updateField('cnpj')} /></Form.Group></Col>
+          <Col xs={12}><Form.Group><Form.Label>Razao social *</Form.Label><Form.Control placeholder="Digite aqui o seu nome" value={applicationData.companyName} onChange={updateField('companyName')} /></Form.Group></Col>
+          <Col xs={12}><Form.Group><Form.Label>Nome fantasia</Form.Label><Form.Control placeholder="Digite aqui o seu nome" value={applicationData.tradeName} onChange={updateField('tradeName')} /></Form.Group></Col>
+          <Col xs={12}><Form.Group><Form.Label>Email institucional *</Form.Label><Form.Control type="email" placeholder="Insira aqui seu email" value={applicationData.email} onChange={updateField('email')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Telefone principal *</Form.Label><Form.Control placeholder="(DDD) 0 0000-0000" value={applicationData.phone} onChange={updateField('phone')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Telefone secundario</Form.Label><Form.Control placeholder="(DDD) 0 0000-0000" value={applicationData.phoneSecondary} onChange={updateField('phoneSecondary')} /></Form.Group></Col>
+          <Col lg={4}><Form.Group><Form.Label>Website *</Form.Label><Form.Control placeholder="Insira aqui seu email" value={applicationData.website} onChange={updateField('website')} /></Form.Group></Col>
+          <Col lg={4}><Form.Group><Form.Label>Data de criacao *</Form.Label><Form.Control type="date" value={applicationData.foundationDate} onChange={updateField('foundationDate')} /></Form.Group></Col>
+          <Col lg={4}><Form.Group><Form.Label>Capital declarado</Form.Label><Form.Control placeholder="R$ 0,00" value={applicationData.shareCapital} onChange={updateField('shareCapital')} /></Form.Group></Col>
+          <Col xs={12}><Form.Group><Form.Label>CNAE principal</Form.Label><Form.Control placeholder="Insira aqui a descricao do CNAE principal" value={applicationData.primaryCnae} onChange={updateField('primaryCnae')} /></Form.Group></Col>
+          <Col xs={12}><Form.Group><Form.Label>CNAEs secundarios</Form.Label><Form.Control placeholder="Insira aqui a descricao do CNAE secundario" value={applicationData.secondaryCnaes} onChange={updateField('secondaryCnaes')} /></Form.Group></Col>
+        </Row>
+      </div>
+
+      <div className="company-form-group">
+        <div className="company-form-group__title">Endereco</div>
+        <Row className="g-3">
+          <Col lg={8}><Form.Group><Form.Label>Logradouro</Form.Label><Form.Control placeholder="Insira o logradouro (Av, Rua, Bairro, etc..)" value={applicationData.street} onChange={updateField('street')} /></Form.Group></Col>
+          <Col lg={4}><Form.Group><Form.Label>Numero</Form.Label><Form.Control placeholder="Numero da casa" value={applicationData.streetNumber} onChange={updateField('streetNumber')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>CEP</Form.Label><Form.Control placeholder="00.000-000" value={applicationData.zipCode} onChange={updateField('zipCode')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Ponto de referencia</Form.Label><Form.Control placeholder="Digite um ponto de referencia" value={applicationData.landmark} onChange={updateField('landmark')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Bairro</Form.Label><Form.Control placeholder="Insira o nome do Bairro" value={applicationData.neighborhood} onChange={updateField('neighborhood')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Complemento</Form.Label><Form.Control placeholder="Digite aqui o complemento se houver" value={applicationData.addressComplement} onChange={updateField('addressComplement')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Cidade</Form.Label><Form.Select value={applicationData.city} onChange={updateField('city')}><option value="" disabled>Selecionar</option><option>Fortaleza</option><option>Caucaia</option><option>Maracanau</option><option>Outro municipio</option></Form.Select></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>UF</Form.Label><Form.Select value={applicationData.state} onChange={updateField('state')}><option value="" disabled>Selecionar</option><option>CE</option><option>PI</option><option>RN</option><option>PE</option></Form.Select></Form.Group></Col>
+        </Row>
+      </div>
+
+      <div className="company-form-group company-form-group--last">
+        <div className="company-form-group__title">Dados bancarios</div>
+        <Row className="g-3">
+          <Col xs={12}><Form.Group><Form.Label>Banco</Form.Label><Form.Control placeholder="Insira o nome do banco" value={applicationData.bank} onChange={updateField('bank')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Agencia *</Form.Label><Form.Control placeholder="Insira o nome da agencia" value={applicationData.agency} onChange={updateField('agency')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Conta *</Form.Label><Form.Control placeholder="Digite aqui a conta" value={applicationData.account} onChange={updateField('account')} /></Form.Group></Col>
+        </Row>
+      </div>
+
+      <StageFooterActions onBack={onBack} />
     </FormSection>
   )
 }
 
-function LegalContactForm({ applicationData, updateField }) {
+function LegalContactForm({ applicationData, updateField, onBack }) {
   return (
     <FormSection title="Representante legal e contato comercial" subtitle="Substitui campos de pessoa fisica por informacoes do responsavel da empresa.">
-      <Row className="g-3">
-        <Col lg={6} md={6}><Form.Group><Form.Label>Nome do representante legal *</Form.Label><Form.Control placeholder="Nome completo" value={applicationData.legalRepresentative} onChange={updateField('legalRepresentative')} /></Form.Group></Col>
-        <Col lg={3} md={6}><Form.Group><Form.Label>CPF do representante *</Form.Label><Form.Control placeholder="000.000.000-00" value={applicationData.legalRepresentativeCpf} onChange={updateField('legalRepresentativeCpf')} /></Form.Group></Col>
-        <Col lg={3} md={6}><Form.Group><Form.Label>Cargo *</Form.Label><Form.Control placeholder="Diretor, socio, procurador..." value={applicationData.legalRepresentativeRole} onChange={updateField('legalRepresentativeRole')} /></Form.Group></Col>
-        <Col lg={6} md={6}><Form.Group><Form.Label>Contato comercial *</Form.Label><Form.Control placeholder="Nome do responsavel pelo contato" value={applicationData.commercialContact} onChange={updateField('commercialContact')} /></Form.Group></Col>
-        <Col lg={3} md={6}><Form.Group><Form.Label>CPF do contato *</Form.Label><Form.Control placeholder="000.000.000-00" value={applicationData.commercialContactCpf} onChange={updateField('commercialContactCpf')} /></Form.Group></Col>
-        <Col lg={3} md={6}><Form.Group><Form.Label>Telefone do contato *</Form.Label><Form.Control placeholder="(85) 99999-9999" value={applicationData.commercialContactPhone} onChange={updateField('commercialContactPhone')} /></Form.Group></Col>
-      </Row>
+      <div className="company-form-group">
+        <div className="company-form-group__title">Responsavel legal</div>
+        <Row className="g-3">
+          <Col lg={6} md={12}><Form.Group><Form.Label>Nome do representante legal *</Form.Label><Form.Control placeholder="Nome completo" value={applicationData.legalRepresentative} onChange={updateField('legalRepresentative')} /></Form.Group></Col>
+          <Col lg={3} md={6}><Form.Group><Form.Label>CPF do representante *</Form.Label><Form.Control placeholder="000.000.000-00" value={applicationData.legalRepresentativeCpf} onChange={updateField('legalRepresentativeCpf')} /></Form.Group></Col>
+          <Col lg={3} md={6}><Form.Group><Form.Label>Cargo *</Form.Label><Form.Control placeholder="Diretor, socio, procurador..." value={applicationData.legalRepresentativeRole} onChange={updateField('legalRepresentativeRole')} /></Form.Group></Col>
+        </Row>
+      </div>
+
+      <div className="company-form-group company-form-group--last">
+        <div className="company-form-group__title">Contato comercial</div>
+        <Row className="g-3">
+          <Col lg={6} md={12}><Form.Group><Form.Label>Contato comercial *</Form.Label><Form.Control placeholder="Nome do responsavel pelo contato" value={applicationData.commercialContact} onChange={updateField('commercialContact')} /></Form.Group></Col>
+          <Col lg={3} md={6}><Form.Group><Form.Label>CPF do contato *</Form.Label><Form.Control placeholder="000.000.000-00" value={applicationData.commercialContactCpf} onChange={updateField('commercialContactCpf')} /></Form.Group></Col>
+          <Col lg={3} md={6}><Form.Group><Form.Label>Telefone do contato *</Form.Label><Form.Control placeholder="(85) 99999-9999" value={applicationData.commercialContactPhone} onChange={updateField('commercialContactPhone')} /></Form.Group></Col>
+        </Row>
+      </div>
+
       <div className="info-banner mt-4"><i className="bi bi-info-circle" /><span>Esta etapa concentra apenas os dados dos responsaveis da empresa. O restante do cadastro continua nas outras opcoes da pagina inicial.</span></div>
+      <StageFooterActions onBack={onBack} />
     </FormSection>
   )
 }
 
-function FiscalForm({ applicationData, setUploadStatus }) {
+function FiscalForm({ applicationData, setUploadStatus, onBack }) {
   const fiscalUploads = uploadChecklist.slice(0, 8)
   return (
     <FormSection title="Regularidade fiscal e trabalhista" subtitle="Certidoes fiscais e comprovacoes de regularidade exigidas na fase de inscricao.">
-      <div className="upload-grid">
-        {fiscalUploads.map((item) => (
-          <UploadItemCard
-            key={item.key}
-            item={item}
-            isUploaded={applicationData.uploads[item.key]}
-            onChange={(hasFile) => setUploadStatus(item.key, hasFile)}
-          />
-        ))}
+      <div className="company-form-group company-form-group--last">
+        <div className="company-form-group__title">Certidoes e comprovacoes</div>
+        <div className="upload-grid">
+          {fiscalUploads.map((item) => (
+            <UploadItemCard
+              key={item.key}
+              item={item}
+              isUploaded={applicationData.uploads[item.key]}
+              onChange={(hasFile) => setUploadStatus(item.key, hasFile)}
+            />
+          ))}
+        </div>
       </div>
+      <StageFooterActions onBack={onBack} />
     </FormSection>
   )
 }
 
-function AttachmentsForm({ applicationData, setUploadStatus }) {
+function AttachmentsForm({ applicationData, setUploadStatus, onBack }) {
   const attachmentUploads = uploadChecklist.slice(8)
   return (
     <FormSection title="Documentos institucionais e anexos" subtitle="Uploads complementares, modelos assinados e comprovantes da empresa.">
-      <div className="upload-grid">
-        {attachmentUploads.map((item) => (
-          <UploadItemCard
-            key={item.key}
-            item={item}
-            isUploaded={applicationData.uploads[item.key]}
-            onChange={(hasFile) => setUploadStatus(item.key, hasFile)}
-          />
-        ))}
+      <div className="company-form-group company-form-group--last">
+        <div className="company-form-group__title">Documentos complementares</div>
+        <div className="upload-grid">
+          {attachmentUploads.map((item) => (
+            <UploadItemCard
+              key={item.key}
+              item={item}
+              isUploaded={applicationData.uploads[item.key]}
+              onChange={(hasFile) => setUploadStatus(item.key, hasFile)}
+            />
+          ))}
+        </div>
       </div>
+      <StageFooterActions onBack={onBack} />
     </FormSection>
   )
 }
@@ -472,38 +529,48 @@ function MarkdownField({ label, field, placeholder, value, updateField }) {
   )
 }
 
-function ProjectForm({ applicationData, updateField }) {
+function ProjectForm({ applicationData, updateField, onBack }) {
   return (
     <FormSection title="Projeto, plano de trabalho e midia" subtitle="Campos ligados ao evento ou projeto que sera analisado pela comissao.">
-      <Row className="g-3">
-        <Col lg={8}><Form.Group><Form.Label>Titulo do projeto *</Form.Label><Form.Control placeholder="Nome do evento ou projeto" value={applicationData.projectTitle} onChange={updateField('projectTitle')} /></Form.Group></Col>
-        <Col lg={4}><Form.Group><Form.Label>PDF do projeto *</Form.Label><Form.Control type="file" /></Form.Group></Col>
-        <Col lg={4} md={6}><Form.Group><Form.Label>Valor solicitado *</Form.Label><Form.Control placeholder="R$ 0,00" value={applicationData.projectAmount} onChange={updateField('projectAmount')} /></Form.Group></Col>
-        <Col lg={4} md={6}><Form.Group><Form.Label>Contrapartida proposta *</Form.Label><Form.Control placeholder="R$ 0,00" value={applicationData.projectCounterpart} onChange={updateField('projectCounterpart')} /></Form.Group></Col>
-        <Col lg={12}>
-          <MarkdownField
-            label="Plano de trabalho *"
-            field="workPlan"
-            placeholder="Descreva escopo, entregas, cronograma e publico."
-            value={applicationData.workPlan}
-            updateField={updateField}
-          />
-        </Col>
-        <Col lg={12}>
-          <MarkdownField
-            label="Plano de midia *"
-            field="mediaPlan"
-            placeholder="Explique visibilidade, divulgacao e exposicao institucional."
-            value={applicationData.mediaPlan}
-            updateField={updateField}
-          />
-        </Col>
-      </Row>
+      <div className="company-form-group">
+        <div className="company-form-group__title">Dados do projeto</div>
+        <Row className="g-3">
+          <Col lg={8}><Form.Group><Form.Label>Titulo do projeto *</Form.Label><Form.Control placeholder="Nome do evento ou projeto" value={applicationData.projectTitle} onChange={updateField('projectTitle')} /></Form.Group></Col>
+          <Col lg={4}><Form.Group><Form.Label>PDF do projeto *</Form.Label><Form.Control type="file" /></Form.Group></Col>
+          <Col lg={6} md={6}><Form.Group><Form.Label>Valor solicitado *</Form.Label><Form.Control placeholder="R$ 0,00" value={applicationData.projectAmount} onChange={updateField('projectAmount')} /></Form.Group></Col>
+          <Col lg={6} md={6}><Form.Group><Form.Label>Contrapartida proposta *</Form.Label><Form.Control placeholder="R$ 0,00" value={applicationData.projectCounterpart} onChange={updateField('projectCounterpart')} /></Form.Group></Col>
+        </Row>
+      </div>
+
+      <div className="company-form-group company-form-group--last">
+        <div className="company-form-group__title">Plano de trabalho e midia</div>
+        <Row className="g-3">
+          <Col lg={12}>
+            <MarkdownField
+              label="Plano de trabalho *"
+              field="workPlan"
+              placeholder="Descreva escopo, entregas, cronograma e publico."
+              value={applicationData.workPlan}
+              updateField={updateField}
+            />
+          </Col>
+          <Col lg={12}>
+            <MarkdownField
+              label="Plano de midia *"
+              field="mediaPlan"
+              placeholder="Explique visibilidade, divulgacao e exposicao institucional."
+              value={applicationData.mediaPlan}
+              updateField={updateField}
+            />
+          </Col>
+        </Row>
+      </div>
+      <StageFooterActions onBack={onBack} />
     </FormSection>
   )
 }
 
-function DeclarationsForm({ applicationData, setDeclarationValue }) {
+function DeclarationsForm({ applicationData, setDeclarationValue, onBack }) {
   const companyName = applicationData.companyName || '[RAZAO SOCIAL]'
   const cnpj = applicationData.cnpj || '[●]'
   const representativeName = applicationData.legalRepresentative || '[NOME]'
@@ -526,14 +593,17 @@ function DeclarationsForm({ applicationData, setDeclarationValue }) {
 
   return (
     <FormSection title="Declaracoes obrigatorias e revisao" subtitle="Espaco para substituir declaracoes de pessoa fisica por termos da empresa.">
-      <div className="declaration-list">
-        <Form.Check type="checkbox" id="social-regularity" checked={applicationData.declarations.socialRegularity} onChange={(event) => setDeclarationValue('socialRegularity', event.target.checked)} label="Declaro que a empresa atende aos requisitos de regularidade trabalhista e social previstos no edital." />
-        <Form.Check type="checkbox" id="art-7" checked={applicationData.declarations.articleSeven} onChange={(event) => setDeclarationValue('articleSeven', event.target.checked)} label="Declaro cumprimento do inciso XXXIII do art. 7o da Constituicao Federal." />
-        <Form.Check type="checkbox" id="notice-agreement" checked={applicationData.declarations.noticeAgreement} onChange={(event) => setDeclarationValue('noticeAgreement', event.target.checked)} label="Declaro que li o edital, os anexos e concordo com as condicoes da selecao." />
+      <div className="company-form-group">
+        <div className="company-form-group__title">Confirmacoes obrigatorias</div>
+        <div className="declaration-list">
+          <Form.Check type="checkbox" id="social-regularity" checked={applicationData.declarations.socialRegularity} onChange={(event) => setDeclarationValue('socialRegularity', event.target.checked)} label="Declaro que a empresa atende aos requisitos de regularidade trabalhista e social previstos no edital." />
+          <Form.Check type="checkbox" id="art-7" checked={applicationData.declarations.articleSeven} onChange={(event) => setDeclarationValue('articleSeven', event.target.checked)} label="Declaro cumprimento do inciso XXXIII do art. 7o da Constituicao Federal." />
+          <Form.Check type="checkbox" id="notice-agreement" checked={applicationData.declarations.noticeAgreement} onChange={(event) => setDeclarationValue('noticeAgreement', event.target.checked)} label="Declaro que li o edital, os anexos e concordo com as condicoes da selecao." />
+        </div>
       </div>
 
-      <div className="declaration-preview">
-        <div className="section-block-title">Declaracao gerada</div>
+      <div className="company-form-group company-form-group--last declaration-preview">
+        <div className="company-form-group__title">Declaracao gerada</div>
 
         {declarationItems.length > 0 ? (
           <div className="declaration-document">
@@ -569,11 +639,12 @@ function DeclarationsForm({ applicationData, setDeclarationValue }) {
           </p>
         )}
       </div>
+      <StageFooterActions onBack={onBack} />
     </FormSection>
   )
 }
 
-function SettingsForm({ preferences, setPreferences }) {
+function SettingsForm({ preferences, setPreferences, onBack }) {
   const updatePreference = (field) => (event) => {
     setPreferences((current) => ({
       ...current,
@@ -584,8 +655,8 @@ function SettingsForm({ preferences, setPreferences }) {
   return (
     <FormSection title="Configuracoes visuais" subtitle="Aplicacao da tipografia Kanit, tema claro ou escuro e paletas acessiveis.">
       <div className="settings-stack">
-        <div className="settings-block">
-          <div className="section-block-title">Modo de aparencia</div>
+        <div className="company-form-group">
+          <div className="company-form-group__title">Modo de aparencia</div>
           <div className="settings-options">
             <label className={`settings-option${preferences.themeMode === 'light' ? ' is-selected' : ''}`}>
               <input type="radio" name="themeMode" value="light" checked={preferences.themeMode === 'light'} onChange={updatePreference('themeMode')} />
@@ -604,8 +675,8 @@ function SettingsForm({ preferences, setPreferences }) {
           </div>
         </div>
 
-        <div className="settings-block">
-          <div className="section-block-title">Paleta acessivel</div>
+        <div className="company-form-group company-form-group--last">
+          <div className="company-form-group__title">Paleta acessivel</div>
           <Form.Select value={preferences.visionMode} onChange={updatePreference('visionMode')}>
             <option value="default">Padrao</option>
             <option value="deuteranopia">Deuteranopia</option>
@@ -617,20 +688,42 @@ function SettingsForm({ preferences, setPreferences }) {
           </p>
         </div>
       </div>
+      <StageFooterActions onBack={onBack} />
     </FormSection>
   )
 }
 
 export default App
-function PlaceholderStage({ title, body }) {
+function PlaceholderStage({ title, body, onBack }) {
   return (
     <FormSection title={title} subtitle="Tela preparada para a fase seguinte do processo.">
-      <p className="summary-empty">{body}</p>
+      <div className="company-form-group company-form-group--last">
+        <p className="summary-empty">{body}</p>
+      </div>
+      <StageFooterActions onBack={onBack} />
     </FormSection>
   )
 }
 
-function StageFormScreen({ currentStage, applicationData, setApplicationData, progressItems, completedSteps, activeStep, preferences, setPreferences, onBack }) {
+function LoggedOutScreen() {
+  return (
+    <div className="candidate-dashboard logout-screen">
+      <main className="candidate-content">
+        <Container className="logout-screen__container">
+          <Card className="form-section-card logout-card">
+            <Card.Body className="logout-card__body">
+              <p className="eyebrow">Sessao encerrada</p>
+              <h1>Voce saiu do sistema</h1>
+              <p>Feche esta aba ou faca um novo acesso para continuar utilizando a aplicacao.</p>
+            </Card.Body>
+          </Card>
+        </Container>
+      </main>
+    </div>
+  )
+}
+
+function StageFormScreen({ currentStage, applicationData, setApplicationData, progressItems, completedSteps, activeStep, preferences, setPreferences, onBack, onExit }) {
   const isEditing = false
   const content = stageContent[currentStage]
 
@@ -649,23 +742,23 @@ function StageFormScreen({ currentStage, applicationData, setApplicationData, pr
   const renderStage = () => {
     switch (currentStage) {
       case 'company-registration':
-        return <CompanyRegistrationForm applicationData={applicationData} updateField={updateField} />
+        return <CompanyRegistrationForm applicationData={applicationData} updateField={updateField} onBack={onBack} />
       case 'legal-contact':
-        return <LegalContactForm applicationData={applicationData} updateField={updateField} />
+        return <LegalContactForm applicationData={applicationData} updateField={updateField} onBack={onBack} />
       case 'fiscal':
-        return <FiscalForm applicationData={applicationData} setUploadStatus={setUploadStatus} />
+        return <FiscalForm applicationData={applicationData} setUploadStatus={setUploadStatus} onBack={onBack} />
       case 'attachments':
-        return <AttachmentsForm applicationData={applicationData} setUploadStatus={setUploadStatus} />
+        return <AttachmentsForm applicationData={applicationData} setUploadStatus={setUploadStatus} onBack={onBack} />
       case 'project':
-        return <ProjectForm applicationData={applicationData} updateField={updateField} />
+        return <ProjectForm applicationData={applicationData} updateField={updateField} onBack={onBack} />
       case 'declarations':
-        return <DeclarationsForm applicationData={applicationData} setDeclarationValue={setDeclarationValue} />
+        return <DeclarationsForm applicationData={applicationData} setDeclarationValue={setDeclarationValue} onBack={onBack} />
       case 'appeal':
-        return <PlaceholderStage title="Recurso do resultado" body="Quando o edital abrir fase de recurso, este card pode receber o formulario especifico para fundamentacao e anexos." />
+        return <PlaceholderStage title="Recurso do resultado" body="Quando o edital abrir fase de recurso, este card pode receber o formulario especifico para fundamentacao e anexos." onBack={onBack} />
       case 'evaluation':
-        return <PlaceholderStage title="Avaliacao final" body="Esta area pode exibir resultado, criterios de desempate, parecer da comissao e historico da proposta." />
+        return <PlaceholderStage title="Avaliacao final" body="Esta area pode exibir resultado, criterios de desempate, parecer da comissao e historico da proposta." onBack={onBack} />
       case 'settings':
-        return <SettingsForm preferences={preferences} setPreferences={setPreferences} />
+        return <SettingsForm preferences={preferences} setPreferences={setPreferences} onBack={onBack} />
       default:
         return null
     }
@@ -673,10 +766,10 @@ function StageFormScreen({ currentStage, applicationData, setApplicationData, pr
 
   return (
     <div className="candidate-dashboard registration-flow">
-      <PainelNavbar onExit={onBack} />
+      <PainelNavbar onExit={onExit} />
       <main className="candidate-content registration-flow__content">
         <Container fluid className="px-0">
-          <section className="page-intro">
+          <section className="page-intro page-intro--company">
             <div>
               <p className="eyebrow">{content.eyebrow}</p>
               <h2>{content.title}</h2>
@@ -691,11 +784,6 @@ function StageFormScreen({ currentStage, applicationData, setApplicationData, pr
               </div>
             </Col>
           </Row>
-          <div className="form-actions">
-            <Button variant="light" className="action-button action-button--secondary" onClick={onBack}>Voltar ao painel</Button>
-            <Button variant="outline-primary" className="action-button">Salvar rascunho</Button>
-            <Button variant="primary" className="action-button action-button--primary">Avancar etapa</Button>
-          </div>
         </Container>
       </main>
     </div>
@@ -716,7 +804,7 @@ function App() {
   }, [preferences])
 
   const sectionRules = [
-    { title: 'Cadastro da empresa', fields: ['companyType', 'cnpj', 'companyName', 'email', 'phone', 'address', 'bank', 'agency', 'account'] },
+    { title: 'Cadastro da empresa', fields: ['companyType', 'cnpj', 'companyName', 'email', 'phone', 'street', 'zipCode', 'city', 'state', 'bank', 'agency', 'account'] },
     { title: 'Representante legal', fields: ['legalRepresentative', 'legalRepresentativeCpf', 'legalRepresentativeRole', 'commercialContact', 'commercialContactCpf', 'commercialContactPhone'] },
     { title: 'Regularidade fiscal', fields: ['sponsorshipRequest', 'nationalTax', 'stateTax', 'municipalTax', 'fgts', 'cndt', 'correctionalCertificate', 'tcuCertificate'], source: 'uploads' },
     { title: 'Projeto e plano de midia', fields: ['projectTitle', 'projectAmount', 'projectCounterpart', 'alignmentLevel', 'workPlan', 'mediaPlan'] },
@@ -741,9 +829,15 @@ function App() {
   const activeItem = progressItems.find((item) => item.current) || progressItems.find((item) => !item.done)
   const activeStep = activeItem?.title || 'Cadastro concluido'
 
-  if (screen !== 'dashboard') {
-    return <StageFormScreen currentStage={screen} applicationData={applicationData} setApplicationData={setApplicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} preferences={preferences} setPreferences={setPreferences} onBack={() => setScreen('dashboard')} />
+  const handleExit = () => setScreen('logged-out')
+
+  if (screen === 'logged-out') {
+    return <LoggedOutScreen />
   }
 
-  return <DashboardScreen onNavigate={setScreen} />
+  if (screen !== 'dashboard') {
+    return <StageFormScreen currentStage={screen} applicationData={applicationData} setApplicationData={setApplicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} preferences={preferences} setPreferences={setPreferences} onBack={() => setScreen('dashboard')} onExit={handleExit} />
+  }
+
+  return <DashboardScreen onNavigate={setScreen} onExit={handleExit} />
 }
