@@ -46,7 +46,7 @@ const uploadChecklist = [
 
 const initialApplicationData = {
   companyType: '', cnpj: '', companyName: '', tradeName: '', email: '', phone: '', website: '',
-  phoneSecondary: '', street: '', streetNumber: '', zipCode: '', landmark: '', neighborhood: '',
+  phoneSecondary: '', street: '', streetNumber: '', zipCode: '', geoFields: '', landmark: '', neighborhood: '',
   addressComplement: '', city: '', state: '',
   foundationDate: '', shareCapital: '', primaryCnae: '', secondaryCnaes: '', address: '',
   bank: '', agency: '', account: '', legalRepresentative: '', legalRepresentativeCpf: '',
@@ -68,7 +68,235 @@ const stageContent = {
   settings: { eyebrow: 'Preferencias', title: 'Configuracoes', description: 'Escolha o modo claro ou escuro e a variacao de cores acessiveis para a interface.' },
 }
 
-function PainelNavbar({ onExit }) {
+const fieldLabels = {
+  companyType: 'Tipo de empresa',
+  cnpj: 'CNPJ',
+  companyName: 'Razao social',
+  tradeName: 'Nome fantasia',
+  email: 'Email institucional',
+  phone: 'Telefone principal',
+  website: 'Website',
+  zipCode: 'CEP',
+  street: 'Logradouro',
+  streetNumber: 'Numero',
+  neighborhood: 'Bairro',
+  city: 'Cidade',
+  state: 'Estado',
+  bank: 'Banco',
+  agency: 'Agencia',
+  account: 'Conta',
+  legalRepresentative: 'Representante legal',
+  legalRepresentativeCpf: 'CPF do representante',
+  legalRepresentativeRole: 'Cargo do representante',
+  commercialContact: 'Contato comercial',
+  commercialContactCpf: 'CPF do contato comercial',
+  commercialContactPhone: 'Telefone do contato comercial',
+  projectTitle: 'Titulo do projeto',
+  projectAmount: 'Valor solicitado',
+  projectCounterpart: 'Contrapartida',
+  alignmentLevel: 'Nivel de alinhamento',
+  workPlan: 'Plano de trabalho',
+  mediaPlan: 'Plano de midia',
+  socialRegularity: 'Regularidade social',
+  articleSeven: 'Artigo 7',
+  noticeAgreement: 'Ciencia do edital',
+}
+
+const adminMenu = [
+  { label: 'Inicio', icon: 'bi-house', target: 'dashboard' },
+  { label: 'Inscritos', icon: 'bi-people-fill', target: 'submissions' },
+  { label: 'Recursos', icon: 'bi-file-earmark-text', target: 'resources' },
+  { label: 'Etapas', icon: 'bi-kanban', target: 'stages' },
+  { label: 'Pendencias', icon: 'bi-exclamation-circle', target: 'pending' },
+  { label: 'Auditorias', icon: 'bi-clipboard-check', target: 'dashboard' },
+]
+
+const adminBaseApplicants = [
+  { id: 'esp-01', companyName: 'Instituto Vida', city: 'FORTALEZA', status: 'Concluido', documents: 8, progress: 5, resources: 2 },
+  { id: 'esp-02', companyName: 'Clinica Horizonte', city: 'ARAPIRACA', status: 'Em analise', documents: 6, progress: 3, resources: 1 },
+  { id: 'esp-03', companyName: 'Associacao Soma', city: 'PONTA GROSSA', status: 'Concluido', documents: 7, progress: 5, resources: 1 },
+  { id: 'esp-04', companyName: 'Rede Saude Popular', city: 'FORTALEZA', status: 'Em analise', documents: 5, progress: 4, resources: 0 },
+  { id: 'esp-05', companyName: 'Projeto Sanar', city: 'FORTALEZA', status: 'Pendente', documents: 2, progress: 1, resources: 0 },
+]
+
+const adminSchedule = [
+  { date: '2026-03-18', title: 'Inicio das inscricoes' },
+  { date: '2026-03-23', title: 'Abertura dos recursos' },
+  { date: '2026-03-27', title: 'Resultado preliminar' },
+  { date: '2026-03-31', title: 'Resultado definitivo' },
+  { date: '2026-04-07', title: 'Analise curricular' },
+  { date: '2026-04-15', title: 'Encerramento da fase documental' },
+]
+
+const adminGraphSeries = [
+  { label: 'Inscritos', value: 6, color: 'var(--color-success)' },
+  { label: 'Documentos', value: 5, color: 'var(--color-primary)' },
+  { label: 'Pendencias', value: 3, color: 'var(--color-warning)' },
+  { label: 'Recursos', value: 2, color: 'var(--color-info)' },
+]
+
+const fixedToday = new Date('2026-04-01T12:00:00')
+
+function formatAuditTimestamp(date = new Date()) {
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date)
+}
+
+function parseIsoDate(value) {
+  return new Date(`${value}T00:00:00`)
+}
+
+function buildAdminContext(applicationData, progressItems, completedSteps, auditTrail) {
+  const hasCurrentRegistration = Boolean(
+    applicationData.companyName ||
+    applicationData.cnpj ||
+    applicationData.email ||
+    applicationData.legalRepresentative,
+  )
+  const uploadedDocuments = Object.values(applicationData.uploads).filter(Boolean).length
+  const activeDeclarations = Object.values(applicationData.declarations).filter(Boolean).length
+  const currentApplicant = hasCurrentRegistration
+    ? {
+        id: 'rascunho-atual',
+        companyName: applicationData.companyName || 'Inscricao em preenchimento',
+        city: (applicationData.city || 'Sem cidade').toUpperCase(),
+        status: completedSteps === progressItems.length ? 'Concluido' : completedSteps > 0 ? 'Em analise' : 'Pendente',
+        documents: uploadedDocuments,
+        progress: completedSteps,
+        resources: Math.max(progressItems.filter((item) => item.current).length, activeDeclarations > 0 ? 1 : 0),
+      }
+    : null
+
+  const applicants = currentApplicant ? [...adminBaseApplicants, currentApplicant] : adminBaseApplicants
+  const applicantsWithStatus = applicants.map((applicant) => {
+    const hasPending = applicant.status !== 'Concluido' || applicant.documents < 5 || applicant.progress < 4
+    const currentStageLabel = applicant.progress >= 5
+      ? 'Revisao final'
+      : applicant.progress >= 4
+        ? 'Projeto e plano de midia'
+        : applicant.progress >= 3
+          ? 'Regularidade fiscal'
+          : applicant.progress >= 2
+            ? 'Representante legal'
+            : 'Cadastro da empresa'
+
+    return {
+      ...applicant,
+      currentStageLabel,
+      hasPending,
+    }
+  })
+  const cityMap = applicants.reduce((accumulator, applicant) => {
+    accumulator[applicant.city] = (accumulator[applicant.city] || 0) + 1
+    return accumulator
+  }, {})
+  const cityRows = Object.entries(cityMap)
+    .map(([city, total]) => ({ city, total }))
+    .sort((first, second) => second.total - first.total || first.city.localeCompare(second.city))
+
+  const pendingStages = progressItems.filter((item) => !item.done).length
+  const inProgressStages = progressItems.filter((item) => item.current).length
+  const totals = {
+    inscritos: applicants.length,
+    recursos: applicants.reduce((sum, applicant) => sum + applicant.resources, 0),
+    documentos: applicants.reduce((sum, applicant) => sum + applicant.documents, 0),
+    concluidos: applicants.reduce((sum, applicant) => sum + applicant.progress, 0),
+    pendencias: applicants.filter((applicant) => applicant.status !== 'Concluido').length + pendingStages,
+  }
+
+  const attendanceGroups = [
+    {
+      label: 'Concluidos',
+      tone: 'success',
+      count: progressItems.filter((item) => item.done).length,
+      items: progressItems.filter((item) => item.done).map((item) => ({
+        title: item.title,
+        status: item.status,
+        detail: 'Etapa liberada para conferencia administrativa.',
+      })),
+    },
+    {
+      label: 'Em andamento',
+      tone: 'warning',
+      count: inProgressStages,
+      items: progressItems.filter((item) => item.current).map((item) => ({
+        title: item.title,
+        status: item.status,
+        detail: 'Recebendo novos dados do formulario do usuario.',
+      })),
+    },
+    {
+      label: 'Pendentes',
+      tone: 'neutral',
+      count: pendingStages - inProgressStages,
+      items: progressItems.filter((item) => !item.done && !item.current).map((item) => ({
+        title: item.title,
+        status: item.status,
+        detail: 'Aguardando preenchimento ou envio de anexos.',
+      })),
+    },
+  ].filter((group) => group.items.length > 0)
+
+  const defaultAudits = [
+    applicationData.companyName && { title: 'Razao social atualizada', time: formatAuditTimestamp(fixedToday), detail: applicationData.companyName },
+    applicationData.city && { title: 'Cidade vinculada ao cadastro', time: formatAuditTimestamp(fixedToday), detail: applicationData.city.toUpperCase() },
+    applicationData.legalRepresentative && { title: 'Representante legal informado', time: formatAuditTimestamp(fixedToday), detail: applicationData.legalRepresentative },
+    uploadedDocuments > 0 && { title: 'Documentos anexados ao processo', time: formatAuditTimestamp(fixedToday), detail: `${uploadedDocuments} arquivo(s)` },
+  ].filter(Boolean)
+
+  return {
+    totals,
+    cityRows,
+    attendanceGroups,
+    audits: [...auditTrail, ...defaultAudits].slice(0, 5),
+    uploadedDocuments,
+    activeDeclarations,
+    currentApplicant,
+    applicants: applicantsWithStatus,
+    pendingApplicants: applicantsWithStatus.filter((applicant) => applicant.hasPending),
+    resourcesRows: applicantsWithStatus
+      .filter((applicant) => applicant.resources > 0)
+      .map((applicant) => ({
+        id: applicant.id,
+        companyName: applicant.companyName,
+        city: applicant.city,
+        volume: applicant.resources,
+        status: applicant.hasPending ? 'Em analise' : 'Resolvido',
+      })),
+    stageTimeline: progressItems.map((item, index) => ({
+      id: item.title,
+      title: item.title,
+      status: item.status,
+      tone: item.tone,
+      period: index === 0 ? '18/03 a 22/03' : index === 1 ? '23/03 a 27/03' : index === 2 ? '28/03 a 03/04' : index === 3 ? '04/04 a 10/04' : '11/04 a 15/04',
+      summary: item.done
+        ? 'Etapa entregue e pronta para validacao administrativa.'
+        : item.current
+          ? 'Etapa ativa, recebendo atualizacoes do formulario.'
+          : 'Etapa aguardando liberacao ou preenchimento.',
+    })),
+  }
+}
+
+function PortalSelector({ portalView, onSelectPortal }) {
+  return (
+    <div className="portal-selector" role="tablist" aria-label="Alternar entre visoes">
+      <button type="button" className={`portal-selector__button${portalView === 'candidate' ? ' is-active' : ''}`} onClick={() => onSelectPortal('candidate')}>
+        Tela do usuario
+      </button>
+      <button type="button" className={`portal-selector__button${portalView === 'admin' ? ' is-active' : ''}`} onClick={() => onSelectPortal('admin')}>
+        Tela do admin
+      </button>
+    </div>
+  )
+}
+
+function PainelNavbar({ onExit, portalView, onSelectPortal }) {
   return (
     <nav className="navbar navbar-expand-lg navbar-painel">
       <div className="container-fluid px-4">
@@ -77,6 +305,7 @@ function PainelNavbar({ onExit }) {
           <div className="fw-bold mb-0 navbar-titulo">{selection.title}</div>
         </div>
         <div className="d-flex align-items-center gap-3 ms-auto navbar-actions">
+          <PortalSelector portalView={portalView} onSelectPortal={onSelectPortal} />
           <div className="navbar-user">
             <div className="navbar-avatar">
               <i className="bi bi-people" />
@@ -90,6 +319,36 @@ function PainelNavbar({ onExit }) {
         </div>
       </div>
     </nav>
+  )
+}
+
+function AdminNavbar({ portalView, onSelectPortal, adminScreen, onNavigate }) {
+  return (
+    <header className="admin-navbar">
+      <div className="admin-navbar__inner">
+        <div className="admin-navbar__brand" onClick={() => onNavigate('dashboard')}>
+          <AppBrand />
+          <img src={logoEstadoCeara} alt={institutionInfo.government} className="admin-navbar__brand-gov" />
+        </div>
+        <div className="admin-navbar__menu">
+          {adminMenu.map((item) => (
+            <div key={item.label} className="admin-menu-item">
+              <button type="button" className={`admin-menu-item__button${adminScreen === item.target ? ' is-active' : ''}`} onClick={() => onNavigate(item.target)}>
+                {item.icon && <i className={`bi ${item.icon}`} />}
+                <span>{item.label}</span>
+              </button>
+            </div>
+          ))}
+        </div>
+        <div className="admin-navbar__actions">
+          <PortalSelector portalView={portalView} onSelectPortal={onSelectPortal} />
+          <button type="button" className="admin-navbar__profile">
+            <span>ADMIN</span>
+            <i className="bi bi-chevron-down" />
+          </button>
+        </div>
+      </div>
+    </header>
   )
 }
 
@@ -161,10 +420,10 @@ function DashboardCard({ title, icon, description, startDate, endDate, onCardCli
   )
 }
 
-function DashboardScreen({ onNavigate, onExit }) {
+function DashboardScreen({ onNavigate, onExit, portalView, onSelectPortal }) {
   return (
     <div className="painel-page">
-      <PainelNavbar onExit={onExit} />
+      <PainelNavbar onExit={onExit} portalView={portalView} onSelectPortal={onSelectPortal} />
       <main className="main-wrapper">
         <div className="dashboard-shell">
           <div className="dashboard-hero">
@@ -190,6 +449,460 @@ function DashboardScreen({ onNavigate, onExit }) {
         </div>
       </main>
       <AppFooter />
+    </div>
+  )
+}
+
+function AdminKpiCard({ title, value, icon, detail, onClick, disabled = false }) {
+  return (
+    <button type="button" className={`admin-kpi-card${disabled ? ' is-disabled' : ' is-clickable'}`} onClick={onClick} disabled={disabled}>
+      <div className="admin-kpi-card__icon">
+        <i className={`bi ${icon}`} />
+      </div>
+      <div className="admin-kpi-card__content">
+        <span className="admin-kpi-card__title">{title}</span>
+        <strong className="admin-kpi-card__value">{value}</strong>
+        <small className="admin-kpi-card__detail">{detail}</small>
+      </div>
+    </button>
+  )
+}
+
+function AdminCalendarCard() {
+  const [activeTab, setActiveTab] = useState('calendar')
+  const [currentMonth, setCurrentMonth] = useState(new Date('2026-04-01T00:00:00'))
+  const monthLabel = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(currentMonth)
+  const progressStart = parseIsoDate('2026-03-18')
+  const progressEnd = parseIsoDate('2026-04-15')
+  const totalDays = Math.max(1, Math.round((progressEnd - progressStart) / 86400000))
+  const elapsedDays = Math.min(totalDays, Math.max(0, Math.round((fixedToday - progressStart) / 86400000)))
+  const progressPercent = Math.round((elapsedDays / totalDays) * 100)
+
+  const renderCalendarCells = () => {
+    const year = currentMonth.getFullYear()
+    const month = currentMonth.getMonth()
+    const firstDay = new Date(year, month, 1).getDay()
+    const daysInMonth = new Date(year, month + 1, 0).getDate()
+    const cells = []
+
+    for (let index = 0; index < firstDay; index += 1) {
+      cells.push(<div key={`empty-${index}`} className="admin-calendar__cell admin-calendar__cell--empty" />)
+    }
+
+    for (let day = 1; day <= daysInMonth; day += 1) {
+      const isoDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+      const events = adminSchedule.filter((event) => event.date === isoDate)
+      const isToday = isoDate === '2026-04-01'
+
+      cells.push(
+        <div key={isoDate} className={`admin-calendar__cell${events.length ? ' has-event' : ''}${isToday ? ' is-today' : ''}`}>
+          <span className="admin-calendar__day-number">{day}</span>
+          {events.slice(0, 2).map((event) => (
+            <span key={event.title} className="admin-calendar__event">{event.title}</span>
+          ))}
+        </div>,
+      )
+    }
+
+    return cells
+  }
+
+  return (
+    <section className="admin-panel-card admin-panel-card--calendar">
+      <header className="admin-panel-card__header">
+        <div className="admin-panel-card__title">
+          <i className="bi bi-calendar3" />
+          <span>Cronograma</span>
+        </div>
+        <div className="admin-tabs">
+          <button type="button" className={`admin-tabs__button${activeTab === 'calendar' ? ' is-active' : ''}`} onClick={() => setActiveTab('calendar')}>
+            Calendario
+          </button>
+          <button type="button" className={`admin-tabs__button${activeTab === 'graph' ? ' is-active' : ''}`} onClick={() => setActiveTab('graph')}>
+            Grafico
+          </button>
+        </div>
+      </header>
+
+      <div className="admin-schedule-progress">
+        <div className="admin-schedule-progress__meta">
+          <span><strong>Inicio:</strong> 18/03/2026</span>
+          <span>Progresso do cronograma</span>
+          <span><strong>Fim:</strong> 15/04/2026</span>
+        </div>
+        <div className="admin-schedule-progress__bar">
+          <div className="admin-schedule-progress__fill" style={{ width: `${progressPercent}%` }} />
+          <span className="admin-schedule-progress__value">{progressPercent}%</span>
+        </div>
+      </div>
+
+      {activeTab === 'calendar' ? (
+        <div className="admin-calendar">
+          <div className="admin-calendar__toolbar">
+            <h3>EDITAL 03/2026 - IMPLANTACAO E IMPLEMENTACAO DA REDE SAUDE</h3>
+            <div className="admin-calendar__month-nav">
+              <button type="button" onClick={() => setCurrentMonth((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1))}>
+                <i className="bi bi-chevron-left" />
+              </button>
+              <span>{monthLabel}</span>
+              <button type="button" onClick={() => setCurrentMonth((current) => new Date(current.getFullYear(), current.getMonth() + 1, 1))}>
+                <i className="bi bi-chevron-right" />
+              </button>
+            </div>
+            <div className="admin-calendar__legend">
+              <span><i className="bi bi-circle-fill admin-dot admin-dot--success" /> Concluidas</span>
+              <span><i className="bi bi-circle-fill admin-dot admin-dot--warning" /> Hoje</span>
+              <span><i className="bi bi-circle-fill admin-dot admin-dot--info" /> Futuras</span>
+            </div>
+          </div>
+          <div className="admin-calendar__weekdays">
+            {['Domingo', 'Segunda', 'Terca', 'Quarta', 'Quinta', 'Sexta', 'Sabado'].map((day) => (
+              <div key={day} className="admin-calendar__weekday">{day}</div>
+            ))}
+          </div>
+          <div className="admin-calendar__grid">
+            {renderCalendarCells()}
+          </div>
+        </div>
+      ) : (
+        <div className="admin-chart">
+          <div className="admin-chart__header">
+            <div>
+              <h3>Evolucao dos registros</h3>
+              <p>Leitura consolidada das informacoes que chegam do formulario do usuario.</p>
+            </div>
+          </div>
+          <div className="admin-chart__bars">
+            {adminGraphSeries.map((item) => (
+              <div key={item.label} className="admin-chart__row">
+                <span>{item.label}</span>
+                <div className="admin-chart__track">
+                  <div className="admin-chart__bar" style={{ width: `${Math.min(item.value * 16, 100)}%`, background: item.color }} />
+                </div>
+                <strong>{item.value}</strong>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  )
+}
+
+function AdminInsightsCard({ adminContext }) {
+  const [activeTab, setActiveTab] = useState('indicators')
+
+  return (
+    <section className="admin-panel-card admin-panel-card--side">
+      <header className="admin-panel-card__header">
+        <div className="admin-panel-card__title">
+          <i className="bi bi-app-indicator" />
+          <span>Indicadores</span>
+        </div>
+        <div className="admin-tabs">
+          <button type="button" className={`admin-tabs__button${activeTab === 'indicators' ? ' is-active' : ''}`} onClick={() => setActiveTab('indicators')}>
+            Indicadores
+          </button>
+          <button type="button" className={`admin-tabs__button${activeTab === 'attendance' ? ' is-active' : ''}`} onClick={() => setActiveTab('attendance')}>
+            Atendimentos
+          </button>
+        </div>
+      </header>
+
+      {activeTab === 'indicators' ? (
+        <div className="admin-insights">
+          <article className="admin-table-card">
+            <div className="admin-table-card__header">
+              <div><i className="bi bi-geo-alt" /> Inscritos por cidade</div>
+              <span className="admin-table-card__badge">{adminContext.cityRows.length} cidades</span>
+            </div>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Cidade</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {adminContext.cityRows.map((row) => (
+                  <tr key={row.city}>
+                    <td>{row.city}</td>
+                    <td>{row.total}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </article>
+
+          <article className="admin-table-card">
+            <div className="admin-table-card__header">
+              <div><i className="bi bi-clipboard-check" /> Auditorias</div>
+              <span className="admin-table-card__badge">{adminContext.audits.length} ultimas atividades</span>
+            </div>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Atividade</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {adminContext.audits.map((audit, index) => (
+                  <tr key={`${audit.title}-${index}`}>
+                    <td>{audit.title}</td>
+                    <td>{audit.time}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </article>
+        </div>
+      ) : (
+        <div className="admin-attendance">
+          {adminContext.attendanceGroups.map((group) => (
+            <article key={group.label} className={`admin-attendance-group admin-attendance-group--${group.tone}`}>
+              <header>
+                <strong>{group.label}</strong>
+                <span>{group.count}</span>
+              </header>
+              <div className="admin-attendance-group__list">
+                {group.items.map((item) => (
+                  <div key={item.title} className="admin-attendance-item">
+                    <div>
+                      <strong>{item.title}</strong>
+                      <small>{item.detail}</small>
+                    </div>
+                    <span>{item.status}</span>
+                  </div>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
+function AdminSectionHeader({ title, subtitle, onBack }) {
+  return (
+    <div className="admin-detail-header">
+      <div>
+        <button type="button" className="admin-back-link" onClick={onBack}>
+          <i className="bi bi-arrow-left" />
+          <span>Voltar ao painel</span>
+        </button>
+        <h2>{title}</h2>
+        <p>{subtitle}</p>
+      </div>
+    </div>
+  )
+}
+
+function AdminApplicantsTable({ title, subtitle, rows, onlyPending = false, onBack, portalView, onSelectPortal, adminScreen, onNavigate }) {
+  const data = onlyPending ? rows.filter((row) => row.hasPending) : rows
+
+  return (
+    <div className="admin-page">
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} />
+      <main className="admin-main">
+        <AdminSectionHeader title={title} subtitle={subtitle} onBack={onBack} />
+        <section className="admin-management-card">
+          <div className="admin-management-card__topline">
+            <strong>{data.length} inscrito(s)</strong>
+            <span>{onlyPending ? 'Filtro: com pendencias' : 'Visao completa de cadastros'}</span>
+          </div>
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Inscrito</th>
+                <th>Cidade</th>
+                <th>Etapa atual</th>
+                <th>Status</th>
+                <th>Documentos</th>
+                <th>Acao</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((row) => (
+                <tr key={row.id}>
+                  <td>{row.companyName}</td>
+                  <td>{row.city}</td>
+                  <td>{row.currentStageLabel}</td>
+                  <td>{row.status}</td>
+                  <td>{row.documents}</td>
+                  <td>
+                    <button type="button" className="admin-inline-action">Gerenciar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      </main>
+      <AppFooter />
+    </div>
+  )
+}
+
+function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate }) {
+  return (
+    <div className="admin-page">
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} />
+      <main className="admin-main">
+        <AdminSectionHeader title="Gerenciar recursos" subtitle="Lista consolidada dos recursos vinculados aos inscritos e prontos para tratamento administrativo." onBack={onBack} />
+        <section className="admin-management-card">
+          <div className="admin-management-card__topline">
+            <strong>{rows.length} recurso(s)</strong>
+            <span>Controle de entrada, analise e resposta</span>
+          </div>
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Inscrito</th>
+                <th>Cidade</th>
+                <th>Volume</th>
+                <th>Status</th>
+                <th>Acao</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.id}>
+                  <td>{row.companyName}</td>
+                  <td>{row.city}</td>
+                  <td>{row.volume}</td>
+                  <td>{row.status}</td>
+                  <td>
+                    <button type="button" className="admin-inline-action">Abrir recurso</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      </main>
+      <AppFooter />
+    </div>
+  )
+}
+
+function AdminStagesScreen({ adminContext, onBack, portalView, onSelectPortal, adminScreen, onNavigate }) {
+  return (
+    <div className="admin-page">
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} />
+      <main className="admin-main">
+        <AdminSectionHeader title="Etapas concluidas e cronologia" subtitle="Resumo operacional das etapas com timeline ocupando a maior area da tela, como voce pediu." onBack={onBack} />
+        <section className="admin-stage-layout">
+          <aside className="admin-stage-sidebar">
+            <h3>Resumo das etapas</h3>
+            <div className="admin-stage-summary">
+              {adminContext.stageTimeline.map((stage) => (
+                <div key={stage.id} className={`admin-stage-summary__item admin-stage-summary__item--${stage.tone}`}>
+                  <strong>{stage.title}</strong>
+                  <span>{stage.status}</span>
+                  <small>{stage.period}</small>
+                </div>
+              ))}
+            </div>
+          </aside>
+
+          <section className="admin-stage-timeline">
+            <h3>Linha do tempo do processo</h3>
+            <div className="admin-timeline">
+              {adminContext.stageTimeline.map((stage, index) => (
+                <div key={stage.id} className="admin-timeline__item">
+                  <div className={`admin-timeline__marker admin-timeline__marker--${stage.tone}`}>{index + 1}</div>
+                  <div className="admin-timeline__content">
+                    <div className="admin-timeline__period">{stage.period}</div>
+                    <strong>{stage.title}</strong>
+                    <span>{stage.status}</span>
+                    <p>{stage.summary}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </section>
+      </main>
+      <AppFooter />
+    </div>
+  )
+}
+
+function AdminChatWidget({ adminContext }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const pendingCount = adminContext.attendanceGroups
+    .filter((group) => group.label !== 'Concluidos')
+    .reduce((sum, group) => sum + group.count, 0)
+
+  return (
+    <>
+      <button type="button" className="admin-chat-toggle" onClick={() => setIsOpen((current) => !current)} aria-label="Abrir assistente">
+        <i className="bi bi-chat-dots" />
+      </button>
+
+      {isOpen && (
+        <section className="admin-chat-window">
+          <header className="admin-chat-window__header">
+            <span>SeleBot</span>
+            <button type="button" onClick={() => setIsOpen(false)}>
+              <i className="bi bi-x-lg" />
+            </button>
+          </header>
+          <div className="admin-chat-window__body">
+            <div className="admin-chat-window__avatar">
+              <i className="bi bi-robot" />
+            </div>
+            <p>Ola! Estes sao os atendimentos em aberto no momento.</p>
+            <strong>{pendingCount} item(ns) aguardando acao</strong>
+            <ul>
+              {adminContext.attendanceGroups
+                .filter((group) => group.label !== 'Concluidos')
+                .flatMap((group) => group.items.slice(0, 2))
+                .map((item) => <li key={item.title}>{item.title}</li>)}
+            </ul>
+          </div>
+          <footer className="admin-chat-window__footer">
+            <input type="text" placeholder="Digite sua mensagem" />
+            <button type="button">Enviar</button>
+          </footer>
+        </section>
+      )}
+    </>
+  )
+}
+
+function AdminDashboardScreen({ portalView, onSelectPortal, adminContext, adminScreen, onNavigate }) {
+  const kpis = [
+    { title: 'Inscritos', value: adminContext.totals.inscritos, icon: 'bi-people-fill', detail: 'Cadastros localizados no contexto atual.', target: 'submissions' },
+    { title: 'Recursos', value: adminContext.totals.recursos, icon: 'bi-file-earmark-text', detail: 'Demandas em revisao ou acompanhamento.', target: 'resources' },
+    { title: 'Documentos', value: adminContext.totals.documentos, icon: 'bi-folder-check', detail: 'Arquivos enviados e prontos para analise.', disabled: true },
+    { title: 'Etapas concluidas', value: adminContext.totals.concluidos, icon: 'bi-check2-square', detail: 'Blocos preenchidos e sinalizados como completos.', target: 'stages' },
+    { title: 'Pendencias', value: adminContext.totals.pendencias, icon: 'bi-exclamation-circle', detail: 'Pontos que ainda dependem de preenchimento.', target: 'pending' },
+  ]
+
+  return (
+    <div className="admin-page">
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} />
+      <main className="admin-main">
+        <section className="admin-kpi-grid">
+          {kpis.map((kpi) => (
+            <AdminKpiCard
+              key={kpi.title}
+              {...kpi}
+              onClick={kpi.target ? () => onNavigate(kpi.target) : undefined}
+            />
+          ))}
+        </section>
+
+        <section className="admin-content-grid">
+          <AdminCalendarCard />
+          <AdminInsightsCard adminContext={adminContext} />
+        </section>
+      </main>
+      <AppFooter />
+      <AdminChatWidget adminContext={adminContext} />
     </div>
   )
 }
@@ -306,10 +1019,11 @@ function CompanyRegistrationForm({ applicationData, updateField, onBack }) {
       <div className="company-form-group">
         <div className="company-form-group__title">Endereco</div>
         <Row className="g-3">
-          <Col lg={8}><Form.Group><Form.Label>Logradouro</Form.Label><Form.Control placeholder="Insira o logradouro (Av, Rua, Bairro, etc..)" value={applicationData.street} onChange={updateField('street')} /></Form.Group></Col>
-          <Col lg={4}><Form.Group><Form.Label>Numero</Form.Label><Form.Control placeholder="Numero da casa" value={applicationData.streetNumber} onChange={updateField('streetNumber')} /></Form.Group></Col>
-          <Col md={6}><Form.Group><Form.Label>CEP</Form.Label><Form.Control placeholder="00.000-000" value={applicationData.zipCode} onChange={updateField('zipCode')} /></Form.Group></Col>
-          <Col md={6}><Form.Group><Form.Label>Ponto de referencia</Form.Label><Form.Control placeholder="Digite um ponto de referencia" value={applicationData.landmark} onChange={updateField('landmark')} /></Form.Group></Col>
+          <Col md={4}><Form.Group><Form.Label>CEP</Form.Label><Form.Control placeholder="00.000-000" value={applicationData.zipCode} onChange={updateField('zipCode')} /></Form.Group></Col>
+          <Col md={4}><Form.Group><Form.Label>Numero</Form.Label><Form.Control placeholder="Numero da casa" value={applicationData.streetNumber} onChange={updateField('streetNumber')} /></Form.Group></Col>
+          <Col md={4}><Form.Group><Form.Label>Geo campos (Lat. e Long.)</Form.Label><Form.Control placeholder="Latitude e Longitude" value={applicationData.geoFields} onChange={updateField('geoFields')} /></Form.Group></Col>
+          <Col xs={12}><Form.Group><Form.Label>Logradouro</Form.Label><Form.Control placeholder="Insira o logradouro (Av, Rua, Bairro, etc..)" value={applicationData.street} onChange={updateField('street')} /></Form.Group></Col>
+          <Col xs={12}><Form.Group><Form.Label>Ponto de referencia</Form.Label><Form.Control placeholder="Digite um ponto de referencia" value={applicationData.landmark} onChange={updateField('landmark')} /></Form.Group></Col>
           <Col md={6}><Form.Group><Form.Label>Bairro</Form.Label><Form.Control placeholder="Insira o nome do Bairro" value={applicationData.neighborhood} onChange={updateField('neighborhood')} /></Form.Group></Col>
           <Col md={6}><Form.Group><Form.Label>Complemento</Form.Label><Form.Control placeholder="Digite aqui o complemento se houver" value={applicationData.addressComplement} onChange={updateField('addressComplement')} /></Form.Group></Col>
           <Col md={6}><Form.Group><Form.Label>Cidade</Form.Label><Form.Select value={applicationData.city} onChange={updateField('city')}><option value="" disabled>Selecionar</option><option>Fortaleza</option><option>Caucaia</option><option>Maracanau</option><option>Outro municipio</option></Form.Select></Form.Group></Col>
@@ -575,29 +1289,7 @@ function ProjectForm({ applicationData, updateField, onBack }) {
         </Row>
       </div>
 
-      <div className="company-form-group company-form-group--last">
-        <div className="company-form-group__title">Plano de trabalho e midia</div>
-        <Row className="g-3">
-          <Col lg={12}>
-            <MarkdownField
-              label="Plano de trabalho *"
-              field="workPlan"
-              placeholder="Descreva escopo, entregas, cronograma e publico."
-              value={applicationData.workPlan}
-              updateField={updateField}
-            />
-          </Col>
-          <Col lg={12}>
-            <MarkdownField
-              label="Plano de midia *"
-              field="mediaPlan"
-              placeholder="Explique visibilidade, divulgacao e exposicao institucional."
-              value={applicationData.mediaPlan}
-              updateField={updateField}
-            />
-          </Col>
-        </Row>
-      </div>
+
       <StageFooterActions onBack={onBack} />
     </FormSection>
   )
@@ -738,10 +1430,10 @@ function PlaceholderStage({ title, body, onBack }) {
   )
 }
 
-function LoggedOutScreen() {
+function LoggedOutScreen({ portalView, onSelectPortal }) {
   return (
     <div className="candidate-dashboard logout-screen">
-      <PainelNavbar onExit={() => {}} />
+      <PainelNavbar onExit={() => {}} portalView={portalView} onSelectPortal={onSelectPortal} />
       <main className="candidate-content">
         <Container className="logout-screen__container">
           <Card className="form-section-card logout-card">
@@ -758,20 +1450,47 @@ function LoggedOutScreen() {
   )
 }
 
-function StageFormScreen({ currentStage, applicationData, setApplicationData, progressItems, completedSteps, activeStep, preferences, setPreferences, onBack, onExit }) {
+function StageFormScreen({ currentStage, applicationData, setApplicationData, progressItems, completedSteps, activeStep, preferences, setPreferences, onBack, onExit, portalView, onSelectPortal, registerAudit }) {
   const isEditing = false
   const content = stageContent[currentStage]
 
   const updateField = (field) => (event) => {
-    setApplicationData((current) => ({ ...current, [field]: event.target.value }))
+    const nextValue = event.target.value
+
+    setApplicationData((current) => {
+      const previousValue = current[field]
+      if (previousValue === nextValue) {
+        return current
+      }
+
+      if ((!previousValue && nextValue) || (field === 'city' && previousValue !== nextValue) || (field === 'companyName' && previousValue !== nextValue)) {
+        registerAudit(`${fieldLabels[field] || field} atualizado`, nextValue)
+      }
+
+      return { ...current, [field]: nextValue }
+    })
   }
 
   const setUploadStatus = (field, hasFile) => {
-    setApplicationData((current) => ({ ...current, uploads: { ...current.uploads, [field]: hasFile } }))
+    setApplicationData((current) => {
+      const previousValue = Boolean(current.uploads[field])
+      if (previousValue !== hasFile) {
+        const item = uploadChecklist.find((entry) => entry.key === field)
+        registerAudit(hasFile ? 'Documento anexado' : 'Documento removido', item?.label || field)
+      }
+
+      return { ...current, uploads: { ...current.uploads, [field]: hasFile } }
+    })
   }
 
   const setDeclarationValue = (field, value) => {
-    setApplicationData((current) => ({ ...current, declarations: { ...current.declarations, [field]: value } }))
+    setApplicationData((current) => {
+      if (current.declarations[field] !== value) {
+        registerAudit(value ? 'Declaracao marcada' : 'Declaracao desmarcada', fieldLabels[field] || field)
+      }
+
+      return { ...current, declarations: { ...current.declarations, [field]: value } }
+    })
   }
 
   const renderStage = () => {
@@ -801,7 +1520,7 @@ function StageFormScreen({ currentStage, applicationData, setApplicationData, pr
 
   return (
     <div className="candidate-dashboard registration-flow">
-      <PainelNavbar onExit={onExit} />
+      <PainelNavbar onExit={onExit} portalView={portalView} onSelectPortal={onSelectPortal} />
       <main className="candidate-content registration-flow__content">
         <Container fluid className="px-0">
           <section className="page-intro page-intro--company">
@@ -828,7 +1547,12 @@ function StageFormScreen({ currentStage, applicationData, setApplicationData, pr
 
 function App() {
   const [screen, setScreen] = useState('dashboard')
+  const [portalView, setPortalView] = useState('candidate')
+  const [adminScreen, setAdminScreen] = useState('dashboard')
   const [applicationData, setApplicationData] = useState(initialApplicationData)
+  const [auditTrail, setAuditTrail] = useState([
+    { title: 'Painel administrativo carregado', time: '01/04/2026 08:00', detail: 'Visao inicial pronta para acompanhamento.' },
+  ])
   const [preferences, setPreferences] = useState({
     themeMode: 'light',
     visionMode: 'default',
@@ -864,16 +1588,43 @@ function App() {
   const completedSteps = progressItems.filter((item) => item.done).length
   const activeItem = progressItems.find((item) => item.current) || progressItems.find((item) => !item.done)
   const activeStep = activeItem?.title || 'Cadastro concluido'
+  const adminContext = buildAdminContext(applicationData, progressItems, completedSteps, auditTrail)
 
   const handleExit = () => setScreen('logged-out')
+  const registerAudit = (title, detail) => {
+    setAuditTrail((current) => [
+      { title, detail, time: formatAuditTimestamp(new Date()) },
+      ...current,
+    ].slice(0, 12))
+  }
 
   if (screen === 'logged-out') {
-    return <LoggedOutScreen />
+    return <LoggedOutScreen portalView={portalView} onSelectPortal={setPortalView} />
+  }
+
+  if (portalView === 'admin') {
+    if (adminScreen === 'submissions') {
+      return <AdminApplicantsTable title="Gerenciar inscritos" subtitle="Tabela principal com os inscritos e acesso rapido para acompanhamento e gestao." rows={adminContext.applicants} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} />
+    }
+
+    if (adminScreen === 'resources') {
+      return <AdminResourcesScreen rows={adminContext.resourcesRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} />
+    }
+
+    if (adminScreen === 'stages') {
+      return <AdminStagesScreen adminContext={adminContext} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} />
+    }
+
+    if (adminScreen === 'pending') {
+      return <AdminApplicantsTable title="Inscritos com pendencias" subtitle="Visao filtrada para destacar apenas quem precisa de acao administrativa ou complemento de cadastro." rows={adminContext.applicants} onlyPending onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} />
+    }
+
+    return <AdminDashboardScreen portalView={portalView} onSelectPortal={setPortalView} adminContext={adminContext} adminScreen={adminScreen} onNavigate={setAdminScreen} />
   }
 
   if (screen !== 'dashboard') {
-    return <StageFormScreen currentStage={screen} applicationData={applicationData} setApplicationData={setApplicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} preferences={preferences} setPreferences={setPreferences} onBack={() => setScreen('dashboard')} onExit={handleExit} />
+    return <StageFormScreen currentStage={screen} applicationData={applicationData} setApplicationData={setApplicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} preferences={preferences} setPreferences={setPreferences} onBack={() => setScreen('dashboard')} onExit={handleExit} portalView={portalView} onSelectPortal={setPortalView} registerAudit={registerAudit} />
   }
 
-  return <DashboardScreen onNavigate={setScreen} onExit={handleExit} />
+  return <DashboardScreen onNavigate={setScreen} onExit={handleExit} portalView={portalView} onSelectPortal={setPortalView} />
 }
