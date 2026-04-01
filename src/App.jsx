@@ -159,8 +159,8 @@ const adminGraphSeries = [
 ]
 
 const adminAuditRows = [
-  { id: 1, location: 'public.pacientes', recordId: 215, action: 'Cadastro', datetime: '2025-08-07 09:02:11', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Cadastro de paciente ID 215 – inclusao de novo registro na tabela public.pacientes.' },
-  { id: 2, location: 'public.pacientes', recordId: 215, action: 'Atualizacao', datetime: '2025-08-07 09:07:34', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Atualizacao de paciente ID 215 – ajuste de dados cadastrais na tabela public.pacientes.' },
+  { id: 1, location: 'public.pacientes', recordId: 215, action: 'Cadastro', datetime: '2025-08-07 09:02:11', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Cadastro de instituição ID 215 – inclusao de novo registro na tabela public.pacientes.' },
+  { id: 2, location: 'public.pacientes', recordId: 215, action: 'Atualizacao', datetime: '2025-08-07 09:07:34', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Atualizacao de instituição ID 215 – ajuste de dados cadastrais na tabela public.instituicoes.' },
   { id: 3, location: 'public.profissionais', recordId: 312, action: 'Desativacao', datetime: '2025-08-07 10:15:27', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Desativacao de profissional ID 312 – alteracao de status para inativo.' },
   { id: 4, location: 'public.usuarios', recordId: 315, action: 'Consulta', datetime: '2025-08-07 10:18:09', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Consulta de usuario ID 315 na tabela public.usuarios.' },
   { id: 5, location: 'public.login', recordId: 250, action: 'Login', datetime: '2025-08-07 08:58:41', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Login realizado com sucesso no sistema administrativo.' },
@@ -1645,7 +1645,7 @@ function LoggedOutScreen({ portalView, onSelectPortal }) {
   )
 }
 
-function AuthScreen({ onLogin, onStartRegistration, authData, setAuthData }) {
+function AuthScreen({ onLogin, onStartRegistration, onSkipToDashboard, authData, setAuthData }) {
   const canLogin = Boolean(authData.email.trim() && authData.password.trim())
 
   return (
@@ -1681,12 +1681,17 @@ function AuthScreen({ onLogin, onStartRegistration, authData, setAuthData }) {
                   <p className="eyebrow">Primeiro acesso</p>
                   <h2>Cadastre sua empresa</h2>
                   <p>O onboarding começa com o cadastro da empresa. Depois disso você será direcionado para a tela inicial e poderá completar as demais etapas.</p>
-                  <div className="auth-side-card__icon">
-                    <i className="bi bi-buildings" />
+                  <div className="auth-side-card__cta">
+                    <div className="auth-side-card__icon">
+                      <i className="bi bi-buildings" />
+                    </div>
+                    <Button type="button" variant="light" className="action-button action-button--secondary auth-side-card__button" onClick={onStartRegistration}>
+                      Iniciar cadastro
+                    </Button>
                   </div>
-                  <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onStartRegistration}>
-                    Iniciar cadastro
-                  </Button>
+                  <button type="button" className="auth-side-card__skip" onClick={onSkipToDashboard}>
+                    Pular e ir para a tela do usuario
+                  </button>
                 </Card.Body>
               </Card>
             </Col>
@@ -1843,7 +1848,12 @@ function App() {
   const activeStep = activeItem?.title || 'Cadastro concluido'
   const adminContext = buildAdminContext(applicationData, progressItems, completedSteps, auditTrail)
 
-  const handleExit = () => setScreen('logged-out')
+  const handleExit = () => {
+    setPortalView('candidate')
+    setAdminScreen('dashboard')
+    setAuthData({ email: '', password: '' })
+    setScreen('auth')
+  }
   const registerAudit = (title, detail) => {
     setAuditTrail((current) => [
       { title, detail, time: formatAuditTimestamp(new Date()) },
@@ -1858,6 +1868,7 @@ function App() {
         setAuthData={setAuthData}
         onLogin={() => setScreen(hasCompletedOnboarding ? 'dashboard' : 'company-registration')}
         onStartRegistration={() => setScreen('company-registration')}
+        onSkipToDashboard={() => setScreen('dashboard')}
       />
     )
   }
