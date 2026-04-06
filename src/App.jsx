@@ -440,13 +440,119 @@ function PortalSelector({ portalView, onSelectPortal }) {
   )
 }
 
-function PainelNavbar({ onExit, onGoToSettings, portalView, onSelectPortal }) {
+function PreviewViewport({ previewDevice, onSelectDevice, compactMode, children }) {
+  const deviceButtons = [
+    { id: 'current', label: 'Atual' },
+    { id: 'device-1', label: 'Dispositivo 1' },
+    { id: 'device-2', label: 'Dispositivo 2' },
+    { id: 'device-3', label: 'Dispositivo 3' },
+  ]
+
+  return (
+    <div className={`preview-shell preview-shell--${previewDevice}${compactMode ? ' is-compact' : ''}`}>
+      <div className="preview-shell__toolbar">
+        <label className="preview-shell__field">
+          <span>Visualização</span>
+          <select value={previewDevice} onChange={(event) => onSelectDevice(event.target.value)} className="preview-shell__select">
+            {deviceButtons.map((device) => (
+              <option key={device.id} value={device.id}>
+                {device.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <div className="preview-shell__frame">{children}</div>
+    </div>
+  )
+}
+
+function ResponsiveSidebar({
+  isOpen,
+  onClose,
+  portalView,
+  onSelectPortal,
+  screen,
+  onNavigateCandidate,
+  adminScreen,
+  onNavigateAdmin,
+  evaluatorScreen,
+  onNavigateEvaluator,
+  onGoToSettings,
+  onExit,
+}) {
+  if (!isOpen) return null
+
+  const candidateItems = [
+    { key: 'dashboard', label: 'Painel', action: () => onNavigateCandidate?.('dashboard'), active: screen === 'dashboard' },
+    ...dashboardStagesTop.map((item) => ({ key: item.navigateTo, label: item.title, action: () => onNavigateCandidate?.(item.navigateTo), active: screen === item.navigateTo })),
+    ...dashboardStagesBottom.map((item) => ({ key: item.navigateTo, label: item.title, action: () => onNavigateCandidate?.(item.navigateTo), active: screen === item.navigateTo })),
+    { key: 'settings', label: 'Minhas preferencias', action: () => onGoToSettings?.(), active: screen === 'settings' },
+  ]
+
+  const sidebarItems = portalView === 'admin'
+    ? adminMenu.map((item) => ({ key: item.target, label: item.label, action: () => onNavigateAdmin?.(item.target), active: adminScreen === item.target }))
+    : portalView === 'evaluator'
+      ? [{ key: 'eval-dashboard', label: 'Projetos para avaliacao', action: () => onNavigateEvaluator?.('eval-dashboard'), active: evaluatorScreen === 'eval-dashboard' }]
+      : candidateItems
+
+  return (
+    <>
+      <button type="button" className="responsive-sidebar__backdrop" onClick={onClose} aria-label="Fechar navegacao lateral" />
+      <aside className="responsive-sidebar" aria-label="Navegacao lateral">
+        <div className="responsive-sidebar__header">
+          <strong>Navegacao</strong>
+          <button type="button" className="responsive-sidebar__close" onClick={onClose} aria-label="Fechar">
+            <i className="bi bi-x-lg" />
+          </button>
+        </div>
+        <PortalSelector
+          portalView={portalView}
+          onSelectPortal={(value) => {
+            onSelectPortal(value)
+            onClose()
+          }}
+        />
+        <nav className="responsive-sidebar__nav">
+          {sidebarItems.map((item) => (
+            <button
+              key={item.key}
+              type="button"
+              className={`responsive-sidebar__item${item.active ? ' is-active' : ''}`}
+              onClick={() => {
+                item.action()
+                onClose()
+              }}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+        <button
+          type="button"
+          className="responsive-sidebar__item responsive-sidebar__item--danger"
+          onClick={() => {
+            onExit?.()
+            onClose()
+          }}
+        >
+          Sair
+        </button>
+      </aside>
+    </>
+  )
+}
+
+function PainelNavbar({ onExit, onGoToSettings, portalView, onSelectPortal, onOpenSidebar }) {
   const [showDropdown, setShowDropdown] = useState(false)
 
   return (
     <nav className="navbar navbar-expand-lg navbar-painel">
       <div className="container-fluid px-4">
         <div className="d-flex align-items-center gap-3 navbar-branding">
+          <button type="button" className="navbar-compact-toggle" onClick={onOpenSidebar} aria-label="Abrir navegacao lateral">
+            <i className="bi bi-list" />
+          </button>
           <AppBrand />
           <div className="mb-0 navbar-titulo">{selection.title}</div>
         </div>
@@ -492,13 +598,16 @@ function PainelNavbar({ onExit, onGoToSettings, portalView, onSelectPortal }) {
   )
 }
 
-function AdminNavbar({ portalView, onSelectPortal, adminScreen, onNavigate, onExit }) {
+function AdminNavbar({ portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
   const [showDropdown, setShowDropdown] = useState(false)
 
   return (
     <nav className="navbar navbar-expand-lg navbar-painel">
       <div className="container-fluid px-4">
         <div className="d-flex align-items-center gap-3 navbar-branding">
+          <button type="button" className="navbar-compact-toggle" onClick={onOpenSidebar} aria-label="Abrir navegacao lateral">
+            <i className="bi bi-list" />
+          </button>
           <AppBrand />
           <div className="mb-0 navbar-titulo">Painel do admin</div>
         </div>
@@ -549,13 +658,16 @@ function AdminNavbar({ portalView, onSelectPortal, adminScreen, onNavigate, onEx
   )
 }
 
-function EvaluatorNavbar({ portalView, onSelectPortal, evaluatorScreen, onNavigate, onExit }) {
+function EvaluatorNavbar({ portalView, onSelectPortal, evaluatorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [showDropdown, setShowDropdown] = useState(false)
 
   return (
     <nav className="navbar navbar-expand-lg navbar-painel">
       <div className="container-fluid px-4">
         <div className="d-flex align-items-center gap-3 navbar-branding">
+          <button type="button" className="navbar-compact-toggle" onClick={onOpenSidebar} aria-label="Abrir navegacao lateral">
+            <i className="bi bi-list" />
+          </button>
           <AppBrand />
           <div className="mb-0 navbar-titulo">Painel do avaliador</div>
         </div>
@@ -616,33 +728,30 @@ function AppBrand({ footer = false }) {
 
 function AppFooter() {
   return (
-    <>
-      <footer className="footer-painel">
-        <div className="footer-painel__stripe" aria-hidden="true">
-          <span className="footer-painel__stripe-part footer-painel__stripe-part--green" />
-          <span className="footer-painel__stripe-part footer-painel__stripe-part--blue" />
-          <span className="footer-painel__stripe-part footer-painel__stripe-part--red" />
-        </div>
-        <div className="footer-painel__content">
-          <div className="container-fluid px-4">
-            <div className="footer-painel__inner">
-              <div className="footer-painel__identity">
-                <AppBrand footer />
-                <div className="footer-info">
-                  <strong>{institutionInfo.fullName}</strong>
-                  <div><i className="bi bi-geo-alt-fill me-2" />{institutionInfo.address}</div>
-                  <div><i className="bi bi-envelope-fill me-2" />{institutionInfo.email}</div>
-                </div>
+    <footer className="footer-painel">
+      <div className="footer-painel__stripe" aria-hidden="true">
+        <span className="footer-painel__stripe-part footer-painel__stripe-part--green" />
+        <span className="footer-painel__stripe-part footer-painel__stripe-part--blue" />
+        <span className="footer-painel__stripe-part footer-painel__stripe-part--red" />
+      </div>
+      <div className="footer-painel__content">
+        <div className="container-fluid px-4">
+          <div className="footer-painel__inner">
+            <div className="footer-painel__identity">
+              <AppBrand footer />
+              <div className="footer-info">
+                <strong>{institutionInfo.fullName}</strong>
+                <div><i className="bi bi-geo-alt-fill me-2" />{institutionInfo.address}</div>
+                <div><i className="bi bi-envelope-fill me-2" />{institutionInfo.email}</div>
               </div>
-              <div className="footer-rights">
-                <img src={logoEstadoCeara} alt={institutionInfo.government} className="footer-rights__logo" />
-              </div>
+            </div>
+            <div className="footer-rights">
+              <img src={logoEstadoCeara} alt={institutionInfo.government} className="footer-rights__logo" />
             </div>
           </div>
         </div>
-      </footer>
-      <AdminChatWidget />
-    </>
+      </div>
+    </footer>
   )
 }
 
@@ -670,10 +779,33 @@ function DashboardCard({ title, icon, description, startDate, endDate, onCardCli
   )
 }
 
-function DashboardScreen({ onNavigate, onExit, portalView, onSelectPortal, applicationData, progressItems, completedSteps, activeStep }) {
+function TableSearchBar({ value, onChange, placeholder, actionLabel, onAction, searchLabel = 'Pesquisar' }) {
+  return (
+    <div className="admin-users-crud__topbar">
+      <div className="admin-users-search">
+        <input
+          type="search"
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder={placeholder}
+        />
+        <button type="button" aria-label={searchLabel}>
+          <i className="bi bi-search" />
+        </button>
+      </div>
+      {actionLabel && onAction && (
+        <Button type="button" className="admin-users-add-button" onClick={onAction}>
+          <span>{actionLabel}</span>
+        </Button>
+      )}
+    </div>
+  )
+}
+
+function DashboardScreen({ onNavigate, onExit, portalView, onSelectPortal, applicationData, progressItems, completedSteps, activeStep, onOpenSidebar }) {
   return (
     <div className="painel-page">
-      <PainelNavbar onExit={onExit} onGoToSettings={() => onNavigate('settings')} portalView={portalView} onSelectPortal={onSelectPortal} />
+      <PainelNavbar onExit={onExit} onGoToSettings={() => onNavigate('settings')} portalView={portalView} onSelectPortal={onSelectPortal} onOpenSidebar={onOpenSidebar} />
       <main className="main-wrapper">
         <div className="dashboard-shell">
           <div className="dashboard-hero">
@@ -850,6 +982,12 @@ function AdminCalendarCard() {
 }
 
 function AdminInsightsCard({ adminContext }) {
+  const [searchTerm, setSearchTerm] = useState('')
+  const filteredProjects = adminContext.projectsRows.filter((project) =>
+    [project.institution, project.email, project.phone, project.notice, project.amount, project.status]
+      .some((value) => String(value || '').toLowerCase().includes(searchTerm.trim().toLowerCase())),
+  )
+
   return (
     <section className="admin-panel-card admin-panel-card--side">
       <header className="admin-panel-card__header">
@@ -862,7 +1000,14 @@ function AdminInsightsCard({ adminContext }) {
 
       <div className="admin-insights admin-insights--single">
         <article className="admin-table-card">
-          <table className="admin-table">
+          <TableSearchBar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="Pesquisar por instituicao, e-mail, telefone ou status"
+            searchLabel="Pesquisar projetos em analise"
+          />
+          <div className="admin-users-table-wrap">
+          <table className="admin-table admin-table--cards">
             <thead>
               <tr>
                 <th>Instituicao</th>
@@ -872,16 +1017,17 @@ function AdminInsightsCard({ adminContext }) {
               </tr>
             </thead>
             <tbody>
-              {adminContext.projectsRows.slice(0, 6).map((project) => (
+              {filteredProjects.slice(0, 6).map((project) => (
                 <tr key={project.id}>
-                  <td>{project.institution}</td>
-                  <td>{project.email}</td>
-                  <td>{project.phone}</td>
-                  <td>{project.status}</td>
+                  <td data-label="Instituicao">{project.institution}</td>
+                  <td data-label="E-mail">{project.email}</td>
+                  <td data-label="Telefone">{project.phone}</td>
+                  <td data-label="Status">{project.status}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </div>
         </article>
       </div>
     </section>
@@ -903,18 +1049,30 @@ function AdminSectionHeader({ title, subtitle, onBack }) {
   )
 }
 
-function AdminApplicantsTable({ title, subtitle, rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit }) {
+function AdminApplicantsTable({ title, subtitle, rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+  const [searchTerm, setSearchTerm] = useState('')
+  const filteredRows = rows.filter((row) =>
+    [row.companyName, row.city, row.currentStageLabel, row.status, row.documents]
+      .some((value) => String(value || '').toLowerCase().includes(searchTerm.trim().toLowerCase())),
+  )
+
   return (
     <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} />
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
       <main className="admin-main">
         <AdminSectionHeader title={title}  onBack={onBack} />
-        <section className="admin-management-card">
+        <section className="admin-management-card admin-users-crud">
           <div className="admin-management-card__topline">
-            <strong>{rows.length} instituicao(oes)</strong>
-            <span>Visao completa das instituicoes cadastradas</span>
+            <strong>{filteredRows.length} instituicao(oes)</strong>
           </div>
-          <table className="admin-table">
+          <TableSearchBar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="Pesquisar por instituicao, cidade, etapa ou status"
+            searchLabel="Pesquisar instituicoes"
+          />
+          <div className="admin-users-table-wrap">
+          <table className="admin-table admin-table--cards">
             <thead>
               <tr>
                 <th>Instituicao</th>
@@ -926,18 +1084,19 @@ function AdminApplicantsTable({ title, subtitle, rows, onBack, portalView, onSel
               </tr>
             </thead>
             <tbody>
-              {rows.map((row) => (
+              {filteredRows.map((row) => (
                 <tr key={row.id}>
-                  <td>{row.companyName}</td>
-                  <td>{row.city}</td>
-                  <td>{row.currentStageLabel}</td>
-                  <td>{row.status}</td>
-                  <td>{row.documents}</td>
-                  <td><div className="admin-users-actions"><button type="button" className="admin-inline-action">Documentos</button><button type="button" className="admin-inline-action">Gerenciar</button></div></td>
+                  <td data-label="Instituicao">{row.companyName}</td>
+                  <td data-label="Cidade">{row.city}</td>
+                  <td data-label="Etapa atual">{row.currentStageLabel}</td>
+                  <td data-label="Status">{row.status}</td>
+                  <td data-label="Documentos">{row.documents}</td>
+                  <td data-label="Acoes"><div className="admin-users-actions"><button type="button" className="admin-inline-action">Documentos</button><button type="button" className="admin-inline-action">Gerenciar</button></div></td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </div>
         </section>
       </main>
       <AppFooter />
@@ -945,18 +1104,30 @@ function AdminApplicantsTable({ title, subtitle, rows, onBack, portalView, onSel
   )
 }
 
-function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit }) {
+function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+  const [searchTerm, setSearchTerm] = useState('')
+  const filteredRows = rows.filter((row) =>
+    [row.companyName, row.city, row.volume, row.status]
+      .some((value) => String(value || '').toLowerCase().includes(searchTerm.trim().toLowerCase())),
+  )
+
   return (
     <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} />
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
       <main className="admin-main">
         <AdminSectionHeader title="Gerenciar recursos" subtitle="Lista consolidada dos recursos vinculados aos inscritos e prontos para tratamento administrativo." onBack={onBack} />
-        <section className="admin-management-card">
+        <section className="admin-management-card admin-users-crud">
           <div className="admin-management-card__topline">
-            <strong>{rows.length} recurso(s)</strong>
-            <span>Controle de entrada, analise e resposta</span>
+            <strong>{filteredRows.length} recurso(s)</strong>
           </div>
-          <table className="admin-table">
+          <TableSearchBar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="Pesquisar por inscrito, cidade, volume ou status"
+            searchLabel="Pesquisar recursos"
+          />
+          <div className="admin-users-table-wrap">
+          <table className="admin-table admin-table--cards">
             <thead>
               <tr>
                 <th>Inscrito</th>
@@ -967,19 +1138,20 @@ function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminS
               </tr>
             </thead>
             <tbody>
-              {rows.map((row) => (
+              {filteredRows.map((row) => (
                 <tr key={row.id}>
-                  <td>{row.companyName}</td>
-                  <td>{row.city}</td>
-                  <td>{row.volume}</td>
-                  <td>{row.status}</td>
-                  <td>
+                  <td data-label="Inscrito">{row.companyName}</td>
+                  <td data-label="Cidade">{row.city}</td>
+                  <td data-label="Volume">{row.volume}</td>
+                  <td data-label="Status">{row.status}</td>
+                  <td data-label="Acoes">
                     <button type="button" className="admin-inline-action">Abrir recurso</button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </div>
         </section>
       </main>
       <AppFooter />
@@ -987,18 +1159,30 @@ function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminS
   )
 }
 
-function AdminProjectsScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit }) {
+function AdminProjectsScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+  const [searchTerm, setSearchTerm] = useState('')
+  const filteredRows = rows.filter((row) =>
+    [row.institution, row.notice, row.project, row.amount, row.status]
+      .some((value) => String(value || '').toLowerCase().includes(searchTerm.trim().toLowerCase())),
+  )
+
   return (
     <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} />
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
       <main className="admin-main">
         <AdminSectionHeader title="Projetos" subtitle="Lista dos projetos vinculados as instituicoes cadastradas, com edital, valor e situacao atual." onBack={onBack} />
-        <section className="admin-management-card">
+        <section className="admin-management-card admin-users-crud">
           <div className="admin-management-card__topline">
-            <strong>{rows.length} projeto(s)</strong>
-            <span>Controle central dos projetos enviados</span>
+            <strong>{filteredRows.length} projeto(s)</strong>
           </div>
-          <table className="admin-table">
+          <TableSearchBar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="Pesquisar por instituicao, edital, projeto ou status"
+            searchLabel="Pesquisar projetos"
+          />
+          <div className="admin-users-table-wrap">
+          <table className="admin-table admin-table--cards">
             <thead>
               <tr>
                 <th>Instituicao</th>
@@ -1009,17 +1193,18 @@ function AdminProjectsScreen({ rows, onBack, portalView, onSelectPortal, adminSc
               </tr>
             </thead>
             <tbody>
-              {rows.map((row) => (
+              {filteredRows.map((row) => (
                 <tr key={row.id}>
-                  <td>{row.institution}</td>
-                  <td>{row.notice}</td>
-                  <td>{row.project}</td>
-                  <td>{row.amount}</td>
-                  <td>{row.status}</td>
+                  <td data-label="Instituicao">{row.institution}</td>
+                  <td data-label="Edital">{row.notice}</td>
+                  <td data-label="Projeto">{row.project}</td>
+                  <td data-label="Valor">{row.amount}</td>
+                  <td data-label="Status">{row.status}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </div>
         </section>
       </main>
       <AppFooter />
@@ -1027,17 +1212,19 @@ function AdminProjectsScreen({ rows, onBack, portalView, onSelectPortal, adminSc
   )
 }
 
-function AdminAuditsScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit }) {
+function AdminAuditsScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
   const selectedAudit = rows[0]
+  const [searchTerm, setSearchTerm] = useState('')
+  const filteredRows = rows.filter((row) =>
+    [row.id, row.location, row.recordId, row.action, row.datetime]
+      .some((value) => String(value || '').toLowerCase().includes(searchTerm.trim().toLowerCase())),
+  )
   return (
     <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} />
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
       <main className="admin-main">
         <AdminSectionHeader title="Auditoria" subtitle="Acompanhe e registre as acoes realizadas no sistema para garantir integridade, rastreabilidade e seguranca dos dados." onBack={onBack} />
         <section className="admin-management-card admin-audit-card">
-          <div className="admin-audit-intro">
-            Cada operação feita por um usuário é registrada automaticamente com data, horário, IP de origem e detalhes da alteração. Use essas informações para verificação técnica, auditorias internas e análises administrativas.
-          </div>
 
           <div className="admin-audit-block">
             <h3>Registro de usuário</h3>
@@ -1046,7 +1233,14 @@ function AdminAuditsScreen({ rows, onBack, portalView, onSelectPortal, adminScre
 
           <div className="admin-audit-block">
             <h3>Acoes</h3>
-            <table className="admin-table">
+            <TableSearchBar
+              value={searchTerm}
+              onChange={setSearchTerm}
+              placeholder="Pesquisar por localizacao, acao, data ou registro"
+              searchLabel="Pesquisar auditoria"
+            />
+            <div className="admin-users-table-wrap">
+            <table className="admin-table admin-table--cards">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -1058,18 +1252,19 @@ function AdminAuditsScreen({ rows, onBack, portalView, onSelectPortal, adminScre
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row) => (
+                {filteredRows.map((row) => (
                   <tr key={row.id}>
-                    <td>{row.id}</td>
-                    <td>{row.location}</td>
-                    <td>{row.recordId}</td>
-                    <td>{row.action}</td>
-                    <td>{row.datetime}</td>
-                    <td><button type="button" className="admin-eye-button"><i className="bi bi-eye-fill" /></button></td>
+                    <td data-label="ID">{row.id}</td>
+                    <td data-label="Localizacao">{row.location}</td>
+                    <td data-label="ID Registro">{row.recordId}</td>
+                    <td data-label="Acao">{row.action}</td>
+                    <td data-label="Data/Hora">{row.datetime}</td>
+                    <td data-label="Detalhes"><button type="button" className="admin-eye-button"><i className="bi bi-eye-fill" /></button></td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
 
           <div className="admin-audit-detail-grid">
@@ -1157,7 +1352,7 @@ function AdminChatWidget({ adminContext }) {
   )
 }
 
-function AdminDashboardScreen({ portalView, onSelectPortal, adminContext, adminScreen, onNavigate, onExit }) {
+function AdminDashboardScreen({ portalView, onSelectPortal, adminContext, adminScreen, onNavigate, onExit, onOpenSidebar }) {
   const kpis = [
     { title: 'Instituições', value: adminContext.totals.inscritos, icon: 'bi-people-fill', detail: 'Instituições localizadas no contexto atual.', target: 'institutions' },
     { title: 'Projetos', value: adminContext.projectsRows.length, icon: 'bi-kanban', detail: 'Projetos vinculados aos editais ativos.', target: 'projects' },
@@ -1167,7 +1362,7 @@ function AdminDashboardScreen({ portalView, onSelectPortal, adminContext, adminS
 
   return (
     <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} />
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
       <main className="admin-main">
         <section className="admin-kpi-grid">
           {kpis.map((kpi) => (
@@ -1759,7 +1954,8 @@ function SettingsForm({ preferences, setPreferences, onBack, onSave, saveDisable
 
 export default App
 
-function AdminReportsScreen({ adminContext, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit }) {
+function AdminReportsScreen({ adminContext, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+  const [searchTerms, setSearchTerms] = useState({})
   const reportSections = [
     {
       title: 'Projetos em análise',
@@ -1788,7 +1984,7 @@ function AdminReportsScreen({ adminContext, onBack, portalView, onSelectPortal, 
 
   return (
     <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} />
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
       <main className="admin-main">
         <AdminSectionHeader title="Relatórios" subtitle="Visão consolidada dos dados do processo seletivo para análise e acompanhamento." onBack={onBack} />
 
@@ -1805,20 +2001,32 @@ function AdminReportsScreen({ adminContext, onBack, portalView, onSelectPortal, 
           <section key={section.title} className="admin-management-card" style={{ marginBottom: '1rem' }}>
             <div className="admin-management-card__topline">
               <strong><i className={`bi ${section.icon} me-2`} />{section.title}</strong>
-              <span>{section.rows.length} registro(s)</span>
+              <span>{section.rows.filter((row) =>
+                section.cells(row).some((cell) => String(cell || '').toLowerCase().includes((searchTerms[section.title] || '').trim().toLowerCase())),
+              ).length} registro(s)</span>
             </div>
-            <table className="admin-table">
+            <TableSearchBar
+              value={searchTerms[section.title] || ''}
+              onChange={(value) => setSearchTerms((current) => ({ ...current, [section.title]: value }))}
+              placeholder={`Pesquisar em ${section.title.toLowerCase()}`}
+              searchLabel={`Pesquisar em ${section.title}`}
+            />
+            <div className="admin-users-table-wrap">
+            <table className="admin-table admin-table--cards">
               <thead>
                 <tr>{section.headers.map((h) => <th key={h}>{h}</th>)}</tr>
               </thead>
               <tbody>
-                {section.rows.map((row, index) => (
+                {section.rows.filter((row) =>
+                  section.cells(row).some((cell) => String(cell || '').toLowerCase().includes((searchTerms[section.title] || '').trim().toLowerCase())),
+                ).map((row, index) => (
                   <tr key={index}>
-                    {section.cells(row).map((cell, ci) => <td key={ci}>{cell}</td>)}
+                    {section.cells(row).map((cell, ci) => <td key={ci} data-label={section.headers[ci]}>{cell}</td>)}
                   </tr>
                 ))}
               </tbody>
             </table>
+            </div>
           </section>
         ))}
       </main>
@@ -1942,7 +2150,7 @@ function AdminSuccessModal({ message, onClose }) {
   )
 }
 
-function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUser, portalView, onSelectPortal, adminScreen, onNavigate, onExit }) {
+function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUser, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingUser, setEditingUser] = useState(null)
@@ -2039,7 +2247,7 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
 
   return (
     <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} />
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
       <main className="admin-main">
         <AdminSectionHeader title="Gerenciar usuários" subtitle="CRUD administrativo para cadastro, edição e exclusão de perfis de acesso do sistema." onBack={onBack} />
 
@@ -2063,7 +2271,7 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
           </div>
 
           <div className="admin-users-table-wrap">
-            <table className="admin-table admin-users-table">
+            <table className="admin-table admin-users-table admin-table--cards">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -2077,12 +2285,12 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
               <tbody>
                 {filteredRows.map((row) => (
                   <tr key={row.id}>
-                    <td>{row.id}</td>
-                    <td>{row.fullName}</td>
-                    <td>{row.email}</td>
-                    <td>{getAdminUserRoles(row)}</td>
-                    <td>{row.status}</td>
-                    <td>
+                    <td data-label="ID">{row.id}</td>
+                    <td data-label="Nome">{row.fullName}</td>
+                    <td data-label="E-mail">{row.email}</td>
+                    <td data-label="Perfis">{getAdminUserRoles(row)}</td>
+                    <td data-label="Status">{row.status}</td>
+                    <td data-label="Acoes">
                       <div className="admin-users-actions">
                         <button type="button" className="admin-inline-action" onClick={() => openEditModal(row)}>Editar</button>
                         <button
@@ -2142,7 +2350,7 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
   )
 }
 
-function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelectPortal, onNavigate, onExit, selectedProjectId, onSelectProject }) {
+function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelectPortal, onNavigate, onExit, selectedProjectId, onSelectProject, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
 
   const statusBadge = (status) => {
@@ -2161,7 +2369,7 @@ function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelectPortal,
 
   return (
     <div className="admin-page">
-      <EvaluatorNavbar portalView={portalView} onSelectPortal={onSelectPortal} evaluatorScreen={evaluatorScreen} onNavigate={onNavigate} onExit={onExit} />
+      <EvaluatorNavbar portalView={portalView} onSelectPortal={onSelectPortal} evaluatorScreen={evaluatorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
       <main className="admin-main">
         <div className="admin-detail-header">
           <div>
@@ -2188,18 +2396,20 @@ function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelectPortal,
         <section className="admin-management-card admin-users-crud">
           <div className="admin-users-crud__topbar">
             <div className="admin-users-search">
-              <i className="bi bi-search" />
               <input
                 type="search"
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
                 placeholder="Pesquisar por instituicao, projeto, edital ou status"
               />
+              <button type="button" aria-label="Pesquisar projetos">
+                <i className="bi bi-search" />
+              </button>
             </div>
           </div>
 
           <div className="admin-users-table-wrap">
-            <table className="admin-table admin-users-table">
+            <table className="admin-table admin-users-table admin-table--cards">
               <thead>
                 <tr>
                   <th>Instituicao</th>
@@ -2213,16 +2423,16 @@ function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelectPortal,
               <tbody>
                 {filteredProjects.map((project) => (
                   <tr key={project.id} className={selectedProjectId === project.id ? 'admin-table__row--highlight' : ''}>
-                    <td>{project.institution}</td>
-                    <td>
+                    <td data-label="Instituicao">{project.institution}</td>
+                    <td data-label="Projeto">
                       <button type="button" className="admin-table-link" onClick={() => onSelectProject?.(project.id)}>
                         {project.project}
                       </button>
                     </td>
-                    <td>{project.notice}</td>
-                    <td>{project.amount}</td>
-                    <td><Badge className={`status-chip status-chip--${statusBadge(project.status)}`}>{project.status}</Badge></td>
-                    <td><button type="button" className="admin-inline-action">Avaliar</button></td>
+                    <td data-label="Edital">{project.notice}</td>
+                    <td data-label="Valor solicitado">{project.amount}</td>
+                    <td data-label="Status"><Badge className={`status-chip status-chip--${statusBadge(project.status)}`}>{project.status}</Badge></td>
+                    <td data-label="Acao"><button type="button" className="admin-inline-action">Avaliar</button></td>
                   </tr>
                 ))}
               </tbody>
@@ -2235,7 +2445,7 @@ function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelectPortal,
   )
 }
 
-function StageFormScreen({ currentStage, applicationData, setApplicationData, progressItems, completedSteps, activeStep, onBack, onSaveStage, onExit, onGoToSettings, portalView, onSelectPortal, registerAudit, isOnboarding = false }) {
+function StageFormScreen({ currentStage, applicationData, setApplicationData, progressItems, completedSteps, activeStep, onBack, onSaveStage, onExit, onGoToSettings, portalView, onSelectPortal, registerAudit, isOnboarding = false, onOpenSidebar }) {
   const content = stageContent[currentStage] || stageContent['company-registration']
   const isEditing = !isOnboarding
 
@@ -2304,7 +2514,7 @@ function StageFormScreen({ currentStage, applicationData, setApplicationData, pr
 
   return (
     <div className="candidate-dashboard registration-flow">
-      <PainelNavbar onExit={onExit} onGoToSettings={() => onGoToSettings?.()} portalView={portalView} onSelectPortal={onSelectPortal} />
+      <PainelNavbar onExit={onExit} onGoToSettings={() => onGoToSettings?.()} portalView={portalView} onSelectPortal={onSelectPortal} onOpenSidebar={onOpenSidebar} />
       <main className="candidate-content registration-flow__content">
         <Container fluid className="px-0">
           <section className="page-intro page-intro--company">
@@ -2329,10 +2539,10 @@ function StageFormScreen({ currentStage, applicationData, setApplicationData, pr
   )
 }
 
-function LoggedOutScreen({ portalView, onSelectPortal }) {
+function LoggedOutScreen({ portalView, onSelectPortal, onOpenSidebar }) {
   return (
     <div className="candidate-dashboard logout-screen">
-      <PainelNavbar onExit={() => {}} portalView={portalView} onSelectPortal={onSelectPortal} />
+      <PainelNavbar onExit={() => {}} portalView={portalView} onSelectPortal={onSelectPortal} onOpenSidebar={onOpenSidebar} />
       <main className="candidate-content">
         <Container className="logout-screen__container">
           <Card className="form-section-card logout-card">
@@ -2413,6 +2623,8 @@ function App() {
   const [portalView, setPortalView] = useState('candidate')
   const [adminScreen, setAdminScreen] = useState('dashboard')
   const [evaluatorScreen, setEvaluatorScreen] = useState('eval-dashboard')
+  const [previewDevice, setPreviewDevice] = useState('current')
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [selectedEvaluatorProjectId, setSelectedEvaluatorProjectId] = useState(evaluatorProjects[0]?.id || null)
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false)
   const [authData, setAuthData] = useState({ email: '', password: '' })
@@ -2456,8 +2668,10 @@ function App() {
   const activeItem = progressItems.find((item) => item.current) || progressItems.find((item) => !item.done)
   const activeStep = activeItem?.title || 'Cadastro concluído'
   const adminContext = buildAdminContext(applicationData, progressItems, completedSteps, auditTrail)
+  const compactMode = previewDevice !== 'current'
 
   const handleExit = () => {
+    setIsSidebarOpen(false)
     setPortalView('candidate')
     setAdminScreen('dashboard')
     setEvaluatorScreen('eval-dashboard')
@@ -2491,8 +2705,28 @@ function App() {
     }
   }
 
+  const renderWithPreview = (content) => (
+    <PreviewViewport previewDevice={previewDevice} onSelectDevice={setPreviewDevice} compactMode={compactMode}>
+      <ResponsiveSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        portalView={portalView}
+        onSelectPortal={setPortalView}
+        screen={screen}
+        onNavigateCandidate={setScreen}
+        adminScreen={adminScreen}
+        onNavigateAdmin={setAdminScreen}
+        evaluatorScreen={evaluatorScreen}
+        onNavigateEvaluator={setEvaluatorScreen}
+        onGoToSettings={() => setScreen('settings')}
+        onExit={handleExit}
+      />
+      {content}
+    </PreviewViewport>
+  )
+
   if (screen === 'auth') {
-    return (
+    return renderWithPreview(
       <AuthScreen
         authData={authData}
         setAuthData={setAuthData}
@@ -2504,48 +2738,50 @@ function App() {
   }
 
   if (screen === 'logged-out') {
-    return <LoggedOutScreen portalView={portalView} onSelectPortal={setPortalView} />
+    return renderWithPreview(<LoggedOutScreen portalView={portalView} onSelectPortal={setPortalView} onOpenSidebar={() => setIsSidebarOpen(true)} />)
   }
 
   if (portalView === 'evaluator') {
-    return <EvaluatorDashboardScreen evaluatorScreen={evaluatorScreen} portalView={portalView} onSelectPortal={setPortalView} onNavigate={setEvaluatorScreen} onExit={handleExit} selectedProjectId={selectedEvaluatorProjectId} onSelectProject={setSelectedEvaluatorProjectId} />
+    return renderWithPreview(<EvaluatorDashboardScreen evaluatorScreen={evaluatorScreen} portalView={portalView} onSelectPortal={setPortalView} onNavigate={setEvaluatorScreen} onExit={handleExit} selectedProjectId={selectedEvaluatorProjectId} onSelectProject={setSelectedEvaluatorProjectId} onOpenSidebar={() => setIsSidebarOpen(true)} />)
   }
 
   if (portalView === 'admin') {
     if (adminScreen === 'institutions') {
-      return <AdminApplicantsTable title="Instituições" subtitle="Tabela principal com as instituições e acesso rápido para acompanhamento e gestão." rows={adminContext.applicants} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} />
+      return renderWithPreview(<AdminApplicantsTable title="Instituições" subtitle="Tabela principal com as instituições e acesso rápido para acompanhamento e gestão." rows={adminContext.applicants} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
     if (adminScreen === 'projects') {
-      return <AdminProjectsScreen rows={adminContext.projectsRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} />
+      return renderWithPreview(<AdminProjectsScreen rows={adminContext.projectsRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
     if (adminScreen === 'resources') {
-      return <AdminResourcesScreen rows={adminContext.resourcesRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} />
+      return renderWithPreview(<AdminResourcesScreen rows={adminContext.resourcesRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
     if (adminScreen === 'audits') {
-      return <AdminAuditsScreen rows={adminContext.auditRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} />
+      return renderWithPreview(<AdminAuditsScreen rows={adminContext.auditRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
     if (adminScreen === 'reports') {
-      return <AdminReportsScreen adminContext={adminContext} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} />
+      return renderWithPreview(<AdminReportsScreen adminContext={adminContext} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
     if (adminScreen === 'users') {
-      return <AdminUsersScreen rows={adminUsers} onBack={() => setAdminScreen('dashboard')} onCreateUser={createAdminUser} onUpdateUser={updateAdminUser} onDeleteUser={deleteAdminUser} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} />
+      return renderWithPreview(<AdminUsersScreen rows={adminUsers} onBack={() => setAdminScreen('dashboard')} onCreateUser={createAdminUser} onUpdateUser={updateAdminUser} onDeleteUser={deleteAdminUser} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
-    return <AdminDashboardScreen portalView={portalView} onSelectPortal={setPortalView} adminContext={adminContext} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} />
+    return renderWithPreview(<AdminDashboardScreen portalView={portalView} onSelectPortal={setPortalView} adminContext={adminContext} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
   }
 
   if (screen !== 'dashboard') {
     const isOnboarding = !hasCompletedOnboarding && screen === 'company-registration'
-    return <StageFormScreen currentStage={screen} applicationData={applicationData} setApplicationData={setApplicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} preferences={preferences} setPreferences={setPreferences} onBack={() => setScreen(isOnboarding ? 'auth' : 'dashboard')} onSaveStage={() => { if (isOnboarding) { setHasCompletedOnboarding(true) } setScreen('dashboard') }} onExit={handleExit} onGoToSettings={() => setScreen('settings')} portalView={portalView} onSelectPortal={setPortalView} registerAudit={registerAudit} isOnboarding={isOnboarding} />
+    return renderWithPreview(<StageFormScreen currentStage={screen} applicationData={applicationData} setApplicationData={setApplicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} preferences={preferences} setPreferences={setPreferences} onBack={() => setScreen(isOnboarding ? 'auth' : 'dashboard')} onSaveStage={() => { if (isOnboarding) { setHasCompletedOnboarding(true) } setScreen('dashboard') }} onExit={handleExit} onGoToSettings={() => setScreen('settings')} portalView={portalView} onSelectPortal={setPortalView} registerAudit={registerAudit} isOnboarding={isOnboarding} onOpenSidebar={() => setIsSidebarOpen(true)} />)
   }
 
-  return <DashboardScreen onNavigate={setScreen} onExit={handleExit} portalView={portalView} onSelectPortal={setPortalView} applicationData={applicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} />
+  return renderWithPreview(<DashboardScreen onNavigate={setScreen} onExit={handleExit} portalView={portalView} onSelectPortal={setPortalView} applicationData={applicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} onOpenSidebar={() => setIsSidebarOpen(true)} />)
 }
+
+
 
 
 
