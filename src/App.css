@@ -1898,6 +1898,26 @@
   font-weight: var(--weight-medium);
 }
 
+.admin-user-form__checks {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  min-height: 3rem;
+  padding: 0.35rem 0;
+}
+
+.admin-user-form__check {
+  margin-bottom: 0;
+}
+
+.admin-user-form__check .form-check-input {
+  margin-top: 0.15rem;
+}
+
+.admin-user-form__check .form-check-label {
+  font-weight: var(--weight-medium);
+}
+
 .admin-user-form__footer {
   display: flex;
   align-items: center;

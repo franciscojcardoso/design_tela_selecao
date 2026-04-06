@@ -2065,18 +2065,34 @@ function AdminUserRecordModal({ title, formData, onChange, onClose, onSubmit, su
                 <Form.Control type="email" value={formData.emailConfirm} onChange={onChange('emailConfirm')} placeholder="Repita o e-mail" />
               </Form.Group>
             </Col>
-            <Col md={4}>
+            <Col md={6}>
               <Form.Group>
                 <Form.Label>CPF *</Form.Label>
                 <Form.Control value={formData.cpf} onChange={onChange('cpf')} placeholder="000.000.000-00" />
               </Form.Group>
             </Col>
-            <Col md={8}>
-              <div className="admin-user-form__roles admin-user-form__roles--inline">
-                <span className="admin-user-form__roles-label">Perfis de acesso *</span>
-                <Form.Check type="checkbox" id="modal-admin-role" label="Admin" checked={formData.isAdmin} onChange={onChange('isAdmin')} />
-                <Form.Check type="checkbox" id="modal-evaluator-role" label="Avaliador" checked={formData.isEvaluator} onChange={onChange('isEvaluator')} />
-              </div>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Perfis de acesso *</Form.Label>
+                <div className="admin-user-form__checks">
+                  <Form.Check
+                    type="checkbox"
+                    id="modal-admin-role"
+                    label="Administrador"
+                    checked={formData.isAdmin}
+                    onChange={onChange('isAdmin')}
+                    className="admin-user-form__check"
+                  />
+                  <Form.Check
+                    type="checkbox"
+                    id="modal-evaluator-role"
+                    label="Avaliador"
+                    checked={formData.isEvaluator}
+                    onChange={onChange('isEvaluator')}
+                    className="admin-user-form__check"
+                  />
+                </div>
+              </Form.Group>
             </Col>
             <Col md={6}>
               <Form.Group>
