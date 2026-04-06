@@ -16,16 +16,18 @@ const institutionInfo = {
   government: 'Governo do Estado do Ceara',
 }
 
-const dashboardStages = [
-  { id: 'company-registration', title: 'Cadastro da Empresa', icon: 'bi-buildings', description: 'Dados cadastrais, endereco e conta bancaria da pessoa juridica.', progress: 40, statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'company-registration' },
-  { id: 'legal-contact', title: 'Representante Legal', icon: 'bi-person-vcard', description: 'Informacoes do representante legal e do contato comercial.', progress: 15, statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'legal-contact' },
-  { id: 'fiscal', title: 'Regularidade Fiscal', icon: 'bi-shield-check', description: 'Certidoes e comprovantes de regularidade fiscal da empresa.', progress: 0, statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'fiscal' },
-  { id: 'attachments', title: 'Documentos obrigatorios', icon: 'bi-folder2-open', description: 'Anexos institucionais, comprovantes e modelos assinados.', progress: 0, statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'attachments' },
-  { id: 'declarations', title: 'Declaracoes', icon: 'bi-file-earmark-check', description: 'Termos obrigatorios e confirmacoes de ciencia do edital.', progress: 0, statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'declarations' },
-  { id: 'settings', title: 'Configuracoes', icon: 'bi-sliders', description: 'Tema visual, modo claro ou escuro e paletas acessiveis.', progress: 100, statusColor: '#282828', startDate: 'Disponivel', endDate: 'Sempre', navigateTo: 'settings' },
-  { id: 'project', title: 'Plano de trabalho', icon: 'bi-kanban', description: 'Projeto, plano de trabalho, plano de midia e valores.', progress: 0, statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'project' },
-  { id: 'appeal', title: 'Recurso do Resultado', icon: 'bi-chat-left-text', description: 'Etapa futura: exibida somente se o edital abrir recurso.', progress: 0, statusColor: '#5C646B', startDate: '--', endDate: '--', navigateTo: 'appeal' },
-  { id: 'evaluation', title: 'Avaliacao final', icon: 'bi-clipboard-data', description: 'Acompanhamento da analise da comissao avaliadora', progress: 0, statusColor: '#5C646B', startDate: '16/04/2026', endDate: '30/04/2026', navigateTo: 'evaluation' },
+const dashboardStagesTop = [
+  { id: 'company-registration', title: 'Cadastro da empresa', icon: 'bi-buildings', description: 'Dados cadastrais, endereço e conta bancária da pessoa jurídica.', statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'company-registration' },
+  { id: 'legal-contact', title: 'Representante legal', icon: 'bi-person-vcard', description: 'Informações do representante legal e do contato comercial.', statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'legal-contact' },
+  { id: 'fiscal', title: 'Regularidade fiscal', icon: 'bi-shield-check', description: 'Certidões e comprovantes de regularidade fiscal da empresa.', statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'fiscal' },
+  { id: 'attachments', title: 'Documentos obrigatórios', icon: 'bi-folder2-open', description: 'Anexos institucionais, comprovantes e modelos assinados.', statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'attachments' },
+  { id: 'declarations', title: 'Declarações', icon: 'bi-file-earmark-check', description: 'Termos obrigatórios e confirmações de ciência do edital.', statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'declarations' },
+]
+
+const dashboardStagesBottom = [
+  { id: 'project', title: 'Plano de trabalho', icon: 'bi-kanban', description: 'Projeto, plano de trabalho, plano de mídia e valores.', statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'project' },
+  { id: 'appeal', title: 'Recurso do resultado', icon: 'bi-chat-left-text', description: 'Etapa futura: exibida somente se o edital abrir recurso.', statusColor: '#5C646B', startDate: '--', endDate: '--', navigateTo: 'appeal' },
+  // { id: 'evaluation', title: 'Avaliação final', icon: 'bi-clipboard-data', description: 'Acompanhamento da análise da comissão avaliadora', statusColor: '#5C646B', startDate: '16/04/2026', endDate: '30/04/2026', navigateTo: 'evaluation' },
 ]
 
 const documentosDisponiveis = ['Edital completo', 'Anexo III', 'Anexo IV', 'Anexo V', 'Anexo VI', 'Anexo VII', 'Modelo de declaracao trabalhista e social']
@@ -69,27 +71,53 @@ const uploadChecklist = [
 ]
 
 const initialApplicationData = {
-  companyType: '', cnpj: '', companyName: '', tradeName: '', email: '', phone: '', website: '',
+  companyType: '', cnpj: '', companyName: '', tradeName: '', email: '', emailConfirm: '', phone: '', website: '',
   phoneSecondary: '', street: '', streetNumber: '', zipCode: '', geoFields: '', landmark: '', neighborhood: '',
   addressComplement: '', city: '', state: '',
   foundationDate: '', shareCapital: '', primaryCnae: '', secondaryCnaes: '', address: '',
-  bank: '', agency: '', account: '', legalRepresentative: '', legalRepresentativeCpf: '',
+  bank: '', agency: '', account: '',
+  password: '', passwordConfirm: '',
+  legalRepresentative: '', legalRepresentativeCpf: '',
   legalRepresentativeRole: '', commercialContact: '', commercialContactCpf: '', commercialContactPhone: '',
   selectedNotice: '', projectTitle: '', projectAmount: '', projectCounterpart: '', alignmentLevel: '', workPlan: '', mediaPlan: '',
   declarations: { socialRegularity: false, articleSeven: false, noticeAgreement: false },
   uploads: {},
 }
 
+const initialAdminUserForm = {
+  fullName: '',
+  email: '',
+  emailConfirm: '',
+  cpf: '',
+  phone: '',
+  phoneSecondary: '',
+  isAdmin: false,
+  isEvaluator: true,
+}
+
+const initialAdminUsers = [
+  { id: 1, fullName: 'Maria Fernanda Alves', email: 'maria.alves@esp.ce.gov.br', emailConfirm: 'maria.alves@esp.ce.gov.br', cpf: '123.456.789-00', phone: '(85) 98888-1111', phoneSecondary: '(85) 3222-1111', isAdmin: true, isEvaluator: true, status: 'Convite enviado' },
+  { id: 2, fullName: 'Joao Pedro Lima', email: 'joao.lima@esp.ce.gov.br', emailConfirm: 'joao.lima@esp.ce.gov.br', cpf: '234.567.890-11', phone: '(85) 97777-2222', phoneSecondary: '', isAdmin: false, isEvaluator: true, status: 'Ativo' },
+  { id: 3, fullName: 'Ana Carolina Sousa', email: 'ana.sousa@esp.ce.gov.br', emailConfirm: 'ana.sousa@esp.ce.gov.br', cpf: '345.678.901-22', phone: '(85) 96666-3333', phoneSecondary: '(85) 3111-0000', isAdmin: true, isEvaluator: false, status: 'Convite pendente' },
+]
+
+function getAdminUserRoles(user) {
+  return [
+    user.isAdmin ? 'Admin' : null,
+    user.isEvaluator ? 'Avaliador' : null,
+  ].filter(Boolean).join(' / ')
+}
+
 const stageContent = {
-  'company-registration': { eyebrow: 'Etapa 1', title: 'Cadastro da Empresa', description: 'Dados institucionais da pessoa juridica, endereco e conta bancaria do proponente.' },
-  'legal-contact': { eyebrow: 'Etapa 2', title: 'Representante Legal', description: 'Dados do representante legal e do contato comercial responsavel pela proposta.' },
-  fiscal: { eyebrow: 'Etapa 3', title: 'Regularidade Fiscal', description: 'Certidoes fiscais e trabalhistas usadas para comprovar regularidade da empresa.' },
-  attachments: { eyebrow: 'Etapa 4', title: 'Documentos Obrigatorios', description: 'Uploads institucionais e comprovantes formais exigidos pelo edital.' },
-  project: { eyebrow: 'Etapa 5', title: 'Plano de Trabalho', description: 'Projeto, valores, contrapartida, plano de trabalho e plano de midia.' },
-  declarations: { eyebrow: 'Etapa 6', title: 'Declaracoes', description: 'Confirmacoes obrigatorias antes do envio final da inscricao.' },
-  appeal: { eyebrow: 'Pos-inscricao', title: 'Recurso do Resultado', description: 'Esta tela fica preparada para eventual abertura de recurso apos a avaliacao.' },
-  evaluation: { eyebrow: 'Acompanhamento', title: 'Avaliacao Final', description: 'Resumo da fase de analise e criterios observados pela comissao avaliadora.' },
-  settings: { eyebrow: 'Preferencias', title: 'Configuracoes', description: 'Escolha o modo claro ou escuro e a variacao de cores acessiveis para a interface.' },
+  'company-registration': { eyebrow: 'Etapa 1', title: 'Identificação da empresa', description: 'Dados institucionais da pessoa jurídica, endereço e conta bancária do proponente.' },
+  'legal-contact': { eyebrow: 'Etapa 2', title: 'Representante legal e contato comercial', description: 'Dados do representante legal e do contato comercial responsável pela proposta.' },
+  fiscal: { eyebrow: 'Etapa 3', title: 'Regularidade fiscal e trabalhista', description: 'Certidões fiscais e trabalhistas usadas para comprovar regularidade da empresa.' },
+  attachments: { eyebrow: 'Etapa 4', title: 'Documentos institucionais e anexos', description: 'Uploads institucionais e comprovantes formais exigidos pelo edital.' },
+  project: { eyebrow: 'Etapa 5', title: 'Projeto, plano de trabalho e mídia', description: 'Projeto, valores, contrapartida, plano de trabalho e plano de mídia.' },
+  declarations: { eyebrow: 'Etapa 6', title: 'Declarações', description: 'Confirmações obrigatórias antes do envio final da inscrição.' },
+  appeal: { eyebrow: 'Pós-inscrição', title: 'Recurso do resultado', description: 'Esta tela fica preparada para eventual abertura de recurso após a avaliação.' },
+  // evaluation: { eyebrow: 'Acompanhamento', title: 'Avaliação final', description: 'Resumo da fase de análise e critérios observados pela comissão avaliadora.' },
+  settings: { eyebrow: 'Preferências', title: 'Configurações', description: 'Escolha o modo claro ou escuro e a variação de cores acessíveis para a interface.' },
 }
 
 const fieldLabels = {
@@ -127,11 +155,39 @@ const fieldLabels = {
 }
 
 const adminMenu = [
-  { label: 'Inicio', icon: 'bi-house', target: 'dashboard' },
-  { label: 'Instituicoes', icon: 'bi-people-fill', target: 'institutions' },
+  { label: 'Início', icon: 'bi-house', target: 'dashboard' },
+  { label: 'Instituições', icon: 'bi-people-fill', target: 'institutions' },
   { label: 'Projetos', icon: 'bi-kanban', target: 'projects' },
   { label: 'Recursos', icon: 'bi-file-earmark-text', target: 'resources' },
   { label: 'Auditorias', icon: 'bi-clipboard-check', target: 'audits' },
+  { label: 'Relatórios', icon: 'bi-bar-chart-line', target: 'reports' },
+  { label: 'Gerenciar usu\u00E1rios', icon: 'bi-person-gear', target: 'users' },
+]
+
+const evaluatorMenu = [
+  { label: 'Início', icon: 'bi-house', target: 'eval-dashboard' },
+  { label: 'Projetos', icon: 'bi-kanban', target: 'eval-projects' },
+  { label: 'Documentos', icon: 'bi-folder-check', target: 'eval-documents' },
+]
+
+const evaluatorProjects = [
+  { id: 'eval-01', institution: 'Instituto Vida', project: 'Fortalecimento da atenção territorial', notice: 'Edital 03/2026', amount: 'R$ 45.000,00', status: 'Aguardando avaliação' },
+  { id: 'eval-02', institution: 'Clínica Horizonte', project: 'Inovação em educação permanente', notice: 'Edital 03/2026', amount: 'R$ 30.000,00', status: 'Em avaliação' },
+  { id: 'eval-03', institution: 'Associação Soma', project: 'Implantação da rede saúde', notice: 'Edital 03/2026', amount: 'R$ 60.000,00', status: 'Avaliado' },
+]
+
+const evaluationCriteria = [
+  { id: 1, description: 'Alinhamento com os objetivos do edital' },
+  { id: 2, description: 'Capacidade técnica da instituição' },
+  { id: 3, description: 'Viabilidade financeira do projeto' },
+  { id: 4, description: 'Impacto social esperado' },
+  { id: 5, description: 'Cobertura territorial' },
+]
+
+const evaluatorDocuments = [
+  { id: 1, institution: 'Instituto Vida', document: 'Ato constitutivo', avaliacao: null, justificativa: '' },
+  { id: 2, institution: 'Clínica Horizonte', document: 'Comprovante de endereço', avaliacao: 1, justificativa: '' },
+  { id: 3, institution: 'Associação Soma', document: 'Documento do representante', avaliacao: 0, justificativa: 'Documento vencido' },
 ]
 
 const adminBaseApplicants = [
@@ -184,9 +240,9 @@ function parseIsoDate(value) {
 
 const stageValidationRules = {
   'company-registration': [
-    'companyType', 'cnpj', 'companyName', 'email', 'phone', 'website',
-    'foundationDate', 'zipCode', 'streetNumber', 'street', 'neighborhood',
-    'city', 'state', 'bank', 'agency', 'account', 'primaryCnae',
+    'companyType', 'cnpj', 'companyName', 'email', 'phone',
+    'zipCode', 'streetNumber', 'street', 'neighborhood',
+    'city', 'state', 'primaryCnae',
   ],
   'legal-contact': [
     'legalRepresentative', 'legalRepresentativeCpf', 'legalRepresentativeRole',
@@ -264,9 +320,9 @@ function buildAdminContext(applicationData, progressItems, completedSteps, audit
   const applicantsWithStatus = applicants.map((applicant) => {
     const hasPending = applicant.status !== 'Concluido' || applicant.documents < 5 || applicant.progress < 4
     const currentStageLabel = applicant.progress >= 5
-      ? 'Revisao final'
+      ? 'Declarações'
       : applicant.progress >= 4
-        ? 'Projeto e plano de midia'
+        ? 'Documentos obrigatórios'
         : applicant.progress >= 3
           ? 'Regularidade fiscal'
           : applicant.progress >= 2
@@ -305,7 +361,7 @@ function buildAdminContext(applicationData, progressItems, completedSteps, audit
       items: progressItems.filter((item) => item.done).map((item) => ({
         title: item.title,
         status: item.status,
-        detail: 'Etapa liberada para conferencia administrativa.',
+        detail: 'Etapa liberada para conferência administrativa.',
       })),
     },
     {
@@ -315,7 +371,7 @@ function buildAdminContext(applicationData, progressItems, completedSteps, audit
       items: progressItems.filter((item) => item.current).map((item) => ({
         title: item.title,
         status: item.status,
-        detail: 'Recebendo novos dados do formulario do usuario.',
+        detail: 'Recebendo novos dados do formulário do usuário.',
       })),
     },
     {
@@ -382,70 +438,183 @@ function buildAdminContext(applicationData, progressItems, completedSteps, audit
 
 function PortalSelector({ portalView, onSelectPortal }) {
   return (
-    <div className="portal-selector" role="tablist" aria-label="Alternar entre visoes">
+    <div className="portal-selector" role="tablist" aria-label="Alternar entre visões">
       <button type="button" className={`portal-selector__button${portalView === 'candidate' ? ' is-active' : ''}`} onClick={() => onSelectPortal('candidate')}>
-        Tela do usuario
+        Candidato
       </button>
       <button type="button" className={`portal-selector__button${portalView === 'admin' ? ' is-active' : ''}`} onClick={() => onSelectPortal('admin')}>
-        Tela do admin
+        Admin
+      </button>
+      <button type="button" className={`portal-selector__button${portalView === 'evaluator' ? ' is-active' : ''}`} onClick={() => onSelectPortal('evaluator')}>
+        Avaliador
       </button>
     </div>
   )
 }
 
-function PainelNavbar({ onExit, portalView, onSelectPortal }) {
+function PainelNavbar({ onExit, onGoToSettings, portalView, onSelectPortal }) {
+  const [showDropdown, setShowDropdown] = useState(false)
+
   return (
     <nav className="navbar navbar-expand-lg navbar-painel">
       <div className="container-fluid px-4">
         <div className="d-flex align-items-center gap-3 navbar-branding">
           <AppBrand />
-          <div className="fw-bold mb-0 navbar-titulo">{selection.title}</div>
+          <div className="mb-0 navbar-titulo">{selection.title}</div>
         </div>
         <div className="d-flex align-items-center gap-3 ms-auto navbar-actions">
           <PortalSelector portalView={portalView} onSelectPortal={onSelectPortal} />
-          <div className="navbar-user">
-            <div className="navbar-avatar">
-              <i className="bi bi-people" />
-            </div>
-            <span>{selection.candidateName}</span>
-            <i className="bi bi-chevron-down navbar-user__chevron" />
+          <div className="navbar-user-wrap">
+            <button
+              type="button"
+              className="navbar-user"
+              onClick={() => setShowDropdown((v) => !v)}
+              aria-expanded={showDropdown}
+            >
+              <div className="navbar-avatar">
+                <i className="bi bi-person" />
+              </div>
+              <span>{selection.candidateName}</span>
+              <i className="bi bi-chevron-down navbar-user__chevron" />
+            </button>
+            {showDropdown && (
+              <div className="navbar-dropdown">
+                <button
+                  type="button"
+                  className="navbar-dropdown__item"
+                  onClick={() => { setShowDropdown(false); onGoToSettings?.() }}
+                >
+                  <i className="bi bi-sliders" />
+                  Minhas preferências
+                </button>
+                <button
+                  type="button"
+                  className="navbar-dropdown__item navbar-dropdown__item--danger"
+                  onClick={() => { setShowDropdown(false); onExit() }}
+                >
+                  <i className="bi bi-box-arrow-right" />
+                  Sair
+                </button>
+              </div>
+            )}
           </div>
-          <button className="btn btn-outline-secondary btn-sm navbar-exit-button" onClick={onExit}>
-            Sair
-          </button>
         </div>
       </div>
     </nav>
   )
 }
 
-function AdminNavbar({ portalView, onSelectPortal, adminScreen, onNavigate }) {
+function AdminNavbar({ portalView, onSelectPortal, adminScreen, onNavigate, onExit }) {
+  const [showDropdown, setShowDropdown] = useState(false)
+
   return (
-    <header className="admin-navbar">
-      <div className="admin-navbar__inner">
-        <div className="admin-navbar__brand" onClick={() => onNavigate('dashboard')}>
+    <nav className="navbar navbar-expand-lg navbar-painel">
+      <div className="container-fluid px-4">
+        <div className="d-flex align-items-center gap-3 navbar-branding">
           <AppBrand />
-          <img src={logoEstadoCeara} alt={institutionInfo.government} className="admin-navbar__brand-gov" />
+          <div className="mb-0 navbar-titulo">Painel do admin</div>
         </div>
-        <div className="admin-navbar__menu">
+        <div className="d-flex align-items-center gap-2 navbar-painel__menu">
           {adminMenu.map((item) => (
-            <div key={item.label} className="admin-menu-item">
-              <button type="button" className={`admin-menu-item__button${adminScreen === item.target ? ' is-active' : ''}`} onClick={() => onNavigate(item.target)}>
-                {item.icon && <i className={`bi ${item.icon}`} />}
-                <span>{item.label}</span>
-              </button>
-            </div>
+            <button
+              key={item.label}
+              type="button"
+              className={`navbar-menu-item${adminScreen === item.target ? ' is-active' : ''}`}
+              onClick={() => onNavigate(item.target)}
+            >
+              {item.icon && <i className={`bi ${item.icon}`} />}
+              <span>{item.label}</span>
+            </button>
           ))}
         </div>
-        <div className="admin-navbar__actions">
+        <div className="d-flex align-items-center gap-3 ms-auto navbar-actions">
           <PortalSelector portalView={portalView} onSelectPortal={onSelectPortal} />
-          <button type="button" className="admin-navbar__profile">
-            <span>ADMIN</span>
-            <i className="bi bi-chevron-down" />
-          </button>
+          <div className="navbar-user-wrap">
+            <button
+              type="button"
+              className="navbar-user"
+              onClick={() => setShowDropdown((v) => !v)}
+              aria-expanded={showDropdown}
+            >
+              <div className="navbar-avatar">
+                <i className="bi bi-person-gear" />
+              </div>
+              <span>Admin</span>
+              <i className="bi bi-chevron-down navbar-user__chevron" />
+            </button>
+            {showDropdown && (
+              <div className="navbar-dropdown">
+                <button
+                  type="button"
+                  className="navbar-dropdown__item navbar-dropdown__item--danger"
+                  onClick={() => { setShowDropdown(false); onExit?.() }}
+                >
+                  <i className="bi bi-box-arrow-right" />
+                  Sair
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </header>
+    </nav>
+  )
+}
+
+function EvaluatorNavbar({ portalView, onSelectPortal, evaluatorScreen, onNavigate, onExit }) {
+  const [showDropdown, setShowDropdown] = useState(false)
+
+  return (
+    <nav className="navbar navbar-expand-lg navbar-painel">
+      <div className="container-fluid px-4">
+        <div className="d-flex align-items-center gap-3 navbar-branding">
+          <AppBrand />
+          <div className="mb-0 navbar-titulo">Painel do avaliador</div>
+        </div>
+        <div className="d-flex align-items-center gap-2 navbar-painel__menu">
+          {evaluatorMenu.map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              className={`navbar-menu-item${evaluatorScreen === item.target ? ' is-active' : ''}`}
+              onClick={() => onNavigate(item.target)}
+            >
+              {item.icon && <i className={`bi ${item.icon}`} />}
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </div>
+        <div className="d-flex align-items-center gap-3 ms-auto navbar-actions">
+          <PortalSelector portalView={portalView} onSelectPortal={onSelectPortal} />
+          <div className="navbar-user-wrap">
+            <button
+              type="button"
+              className="navbar-user"
+              onClick={() => setShowDropdown((v) => !v)}
+              aria-expanded={showDropdown}
+            >
+              <div className="navbar-avatar">
+                <i className="bi bi-person-check" />
+              </div>
+              <span>Avaliador</span>
+              <i className="bi bi-chevron-down navbar-user__chevron" />
+            </button>
+            {showDropdown && (
+              <div className="navbar-dropdown">
+                <button
+                  type="button"
+                  className="navbar-dropdown__item navbar-dropdown__item--danger"
+                  onClick={() => { setShowDropdown(false); onExit?.() }}
+                >
+                  <i className="bi bi-box-arrow-right" />
+                  Sair
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
   )
 }
 
@@ -509,20 +678,27 @@ function DashboardCard({ title, icon, description, startDate, endDate, onCardCli
 function DashboardScreen({ onNavigate, onExit, portalView, onSelectPortal, applicationData, progressItems, completedSteps, activeStep }) {
   return (
     <div className="painel-page">
-      <PainelNavbar onExit={onExit} portalView={portalView} onSelectPortal={onSelectPortal} />
+      <PainelNavbar onExit={onExit} onGoToSettings={() => onNavigate('settings')} portalView={portalView} onSelectPortal={onSelectPortal} />
       <main className="main-wrapper">
         <div className="dashboard-shell">
           <div className="dashboard-hero">
             <div>
-              <h1>Inscricao para pessoa juridica</h1>
-              <p>Preencha as informacoes dos cards. O card de cadastro da empresa abre os dados ja preenchidos para consulta e ajuste conforme a LGPD.</p>
+              <h1>Inscrição para pessoa jurídica</h1>
+              <p>Preencha as informações dos cards. O card de cadastro da empresa abre os dados já preenchidos para consulta e ajuste conforme a LGPD.</p>
             </div>
           </div>
 
           <Row className="g-4 align-items-start">
             <Col xl={9}>
-              <div className="dashboard-cards-grid dashboard-cards-grid--six dashboard-cards-grid--home">
-                {dashboardStages.map((stage) => (
+              <div className="dashboard-cards-grid dashboard-cards-grid--top">
+                {dashboardStagesTop.map((stage) => (
+                  <div key={stage.id} className="card-col">
+                    <DashboardCard {...stage} onCardClick={() => onNavigate(stage.navigateTo)} />
+                  </div>
+                ))}
+              </div>
+              <div className="dashboard-cards-grid dashboard-cards-grid--bottom">
+                {dashboardStagesBottom.filter((s) => !s.id.startsWith('//')).map((stage) => (
                   <div key={stage.id} className="card-col">
                     <DashboardCard {...stage} onCardClick={() => onNavigate(stage.navigateTo)} />
                   </div>
@@ -702,7 +878,7 @@ function AdminInsightsCard({ adminContext }) {
         <div className="admin-insights">
           <article className="admin-table-card">
             <div className="admin-table-card__header">
-              <div><i className="bi bi-geo-alt" /> Instituicoes por cidade</div>
+              <div><i className="bi bi-geo-alt" /> Instituições por cidade</div>
               <span className="admin-table-card__badge">{adminContext.cityRows.length} cidades</span>
             </div>
             <table className="admin-table">
@@ -725,7 +901,7 @@ function AdminInsightsCard({ adminContext }) {
 
           <article className="admin-table-card">
             <div className="admin-table-card__header">
-              <div><i className="bi bi-kanban" /> Projetos em analise</div>
+              <div><i className="bi bi-kanban" /> Projetos em análise</div>
               <span className="admin-table-card__badge">{adminContext.projectsRows.length} projetos</span>
             </div>
             <table className="admin-table">
@@ -773,6 +949,96 @@ function AdminInsightsCard({ adminContext }) {
   )
 }
 
+function AdminUserCreationCard({ onRegister }) {
+  const [formData, setFormData] = useState(initialAdminUserForm)
+  const [feedback, setFeedback] = useState('')
+
+  const updateField = (field) => (event) => {
+    const { type, checked, value } = event.target
+    setFormData((current) => ({
+      ...current,
+      [field]: type === 'checkbox' ? checked : value,
+    }))
+    setFeedback('')
+  }
+
+  const hasRoleSelected = formData.isAdmin || formData.isEvaluator
+  const isValid = Boolean(formData.fullName.trim() && formData.email.trim() && formData.cpf.trim() && hasRoleSelected)
+  const roleSummary = [
+    formData.isAdmin && 'admin',
+    formData.isEvaluator && 'avaliador',
+  ].filter(Boolean).join(' e ')
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+
+    if (!hasRoleSelected) {
+      setFeedback('Selecione pelo menos um perfil para o usuário.')
+      return
+    }
+
+    onRegister?.(formData, roleSummary)
+    setFeedback(`Convite preparado para ${formData.email} com perfil de ${roleSummary}.`)
+    setFormData(initialAdminUserForm)
+  }
+
+  return (
+    <section className="admin-panel-card admin-user-card">
+      <header className="admin-panel-card__header">
+        <div className="admin-panel-card__title">
+          <i className="bi bi-person-plus" />
+          <span>Criar usuário</span>
+        </div>
+      </header>
+
+      <Form className="admin-user-form" onSubmit={handleSubmit}>
+        <Row className="g-3">
+          <Col lg={6}>
+            <Form.Group>
+              <Form.Label>Nome completo *</Form.Label>
+              <Form.Control value={formData.fullName} onChange={updateField('fullName')} placeholder="Nome da pessoa usuária" />
+            </Form.Group>
+          </Col>
+          <Col lg={6}>
+            <Form.Group>
+              <Form.Label>E-mail *</Form.Label>
+              <Form.Control type="email" value={formData.email} onChange={updateField('email')} placeholder="email@instituicao.org.br" />
+            </Form.Group>
+          </Col>
+          <Col md={6} lg={4}>
+            <Form.Group>
+              <Form.Label>CPF *</Form.Label>
+              <Form.Control value={formData.cpf} onChange={updateField('cpf')} placeholder="000.000.000-00" />
+            </Form.Group>
+          </Col>
+          <Col md={6} lg={4}>
+            <Form.Group>
+              <Form.Label>Telefone</Form.Label>
+              <Form.Control value={formData.phone} onChange={updateField('phone')} placeholder="(85) 99999-9999" />
+            </Form.Group>
+          </Col>
+          <Col lg={4}>
+            <div className="admin-user-form__roles">
+              <span className="admin-user-form__roles-label">Perfis de acesso *</span>
+              <Form.Check type="checkbox" id="admin-role" label="Admin" checked={formData.isAdmin} onChange={updateField('isAdmin')} />
+              <Form.Check type="checkbox" id="evaluator-role" label="Avaliador" checked={formData.isEvaluator} onChange={updateField('isEvaluator')} />
+            </div>
+          </Col>
+        </Row>
+
+        <div className="admin-user-form__footer">
+          <p className="admin-user-form__helper">A senha inicial será enviada por e-mail para a pessoa cadastrada.</p>
+          <Button type="submit" variant="success" className="action-button action-button--success" disabled={!isValid}>
+            Enviar convite
+          </Button>
+        </div>
+
+        {feedback && <p className="admin-user-form__feedback">{feedback}</p>}
+      </Form>
+    </section>
+  )
+}
+
 function AdminSectionHeader({ title, subtitle, onBack }) {
   return (
     <div className="admin-detail-header">
@@ -788,12 +1054,12 @@ function AdminSectionHeader({ title, subtitle, onBack }) {
   )
 }
 
-function AdminApplicantsTable({ title, subtitle, rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate }) {
+function AdminApplicantsTable({ title, subtitle, rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit }) {
   return (
     <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} />
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} />
       <main className="admin-main">
-        <AdminSectionHeader title={title} subtitle={subtitle} onBack={onBack} />
+        <AdminSectionHeader title={title}  onBack={onBack} />
         <section className="admin-management-card">
           <div className="admin-management-card__topline">
             <strong>{rows.length} instituicao(oes)</strong>
@@ -832,10 +1098,10 @@ function AdminApplicantsTable({ title, subtitle, rows, onBack, portalView, onSel
   )
 }
 
-function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate }) {
+function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit }) {
   return (
     <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} />
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} />
       <main className="admin-main">
         <AdminSectionHeader title="Gerenciar recursos" subtitle="Lista consolidada dos recursos vinculados aos inscritos e prontos para tratamento administrativo." onBack={onBack} />
         <section className="admin-management-card">
@@ -874,10 +1140,10 @@ function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminS
   )
 }
 
-function AdminProjectsScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate }) {
+function AdminProjectsScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit }) {
   return (
     <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} />
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} />
       <main className="admin-main">
         <AdminSectionHeader title="Projetos" subtitle="Lista dos projetos vinculados as instituicoes cadastradas, com edital, valor e situacao atual." onBack={onBack} />
         <section className="admin-management-card">
@@ -914,20 +1180,20 @@ function AdminProjectsScreen({ rows, onBack, portalView, onSelectPortal, adminSc
   )
 }
 
-function AdminAuditsScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate }) {
+function AdminAuditsScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit }) {
   const selectedAudit = rows[0]
   return (
     <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} />
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} />
       <main className="admin-main">
         <AdminSectionHeader title="Auditoria" subtitle="Acompanhe e registre as acoes realizadas no sistema para garantir integridade, rastreabilidade e seguranca dos dados." onBack={onBack} />
         <section className="admin-management-card admin-audit-card">
           <div className="admin-audit-intro">
-            Cada operacao feita por um usuario e registrada automaticamente com data, horario, IP de origem e detalhes da alteracao. Use essas informacoes para verificacao tecnica, auditorias internas e analises administrativas.
+            Cada operação feita por um usuário é registrada automaticamente com data, horário, IP de origem e detalhes da alteração. Use essas informações para verificação técnica, auditorias internas e análises administrativas.
           </div>
 
           <div className="admin-audit-block">
-            <h3>Registro de usuario</h3>
+            <h3>Registro de usuário</h3>
             <Form.Control value={selectedAudit.user} readOnly />
           </div>
 
@@ -965,18 +1231,18 @@ function AdminAuditsScreen({ rows, onBack, portalView, onSelectPortal, adminScre
               <div className="admin-audit-detail-lines">
                 <div><strong>Nome do usuario:</strong> {selectedAudit.userName}</div>
                 <div><strong>Login do usuario:</strong> {selectedAudit.user}</div>
-                <div><strong>Acoes realizadas:</strong> {rows.map((row) => row.action).join(', ')}</div>
-                <div><strong>Quantidade total de acoes:</strong> {rows.length}</div>
-                <div><strong>Periodo das acoes:</strong> {rows[rows.length - 1].datetime} a {rows[0].datetime}</div>
+                <div><strong>Ações realizadas:</strong> {rows.map((row) => row.action).join(', ')}</div>
+                <div><strong>Quantidade total de ações:</strong> {rows.length}</div>
+                <div><strong>Período das ações:</strong> {rows[rows.length - 1].datetime} a {rows[0].datetime}</div>
               </div>
             </section>
 
             <section className="admin-audit-detail-card">
               <h3>Detalhes da acao registrada</h3>
               <div className="admin-audit-detail-lines">
-                <div><strong>Tipo de acao:</strong> {selectedAudit.action}</div>
+                <div><strong>Tipo de ação:</strong> {selectedAudit.action}</div>
                 <div><strong>ID da auditoria:</strong> {selectedAudit.recordId}</div>
-                <div><strong>Data e hora da acao:</strong> {selectedAudit.datetime}</div>
+                <div><strong>Data e hora da ação:</strong> {selectedAudit.datetime}</div>
                 <div><strong>Nome do usuario:</strong> {selectedAudit.userName}</div>
                 <div><strong>Login do usuario:</strong> {selectedAudit.user}</div>
                 <div><strong>IP de origem:</strong> {selectedAudit.ip}</div>
@@ -1035,18 +1301,19 @@ function AdminChatWidget({ adminContext }) {
   )
 }
 
-function AdminDashboardScreen({ portalView, onSelectPortal, adminContext, adminScreen, onNavigate }) {
+function AdminDashboardScreen({ portalView, onSelectPortal, adminContext, adminScreen, onNavigate, onExit }) {
   const kpis = [
-    { title: 'Instituicoes', value: adminContext.totals.inscritos, icon: 'bi-people-fill', detail: 'Instituicoes localizadas no contexto atual.', target: 'institutions' },
+    { title: 'Instituições', value: adminContext.totals.inscritos, icon: 'bi-people-fill', detail: 'Instituições localizadas no contexto atual.', target: 'institutions' },
     { title: 'Projetos', value: adminContext.projectsRows.length, icon: 'bi-kanban', detail: 'Projetos vinculados aos editais ativos.', target: 'projects' },
-    { title: 'Recursos', value: adminContext.totals.recursos, icon: 'bi-file-earmark-text', detail: 'Demandas em revisao ou acompanhamento.', target: 'resources' },
-    { title: 'Documentos', value: adminContext.totals.documentos, icon: 'bi-folder-check', detail: 'Arquivos enviados e prontos para analise.', disabled: true },
-    { title: 'Auditorias', value: adminContext.auditRows.length, icon: 'bi-clipboard-check', detail: 'Historico rastreavel de operacoes do sistema.', target: 'audits' },
+    { title: 'Recursos', value: adminContext.totals.recursos, icon: 'bi-file-earmark-text', detail: 'Demandas em revisão ou acompanhamento.', target: 'resources' },
+    { title: 'Documentos', value: adminContext.totals.documentos, icon: 'bi-folder-check', detail: 'Arquivos enviados e prontos para análise.', disabled: true },
+    { title: 'Auditorias', value: adminContext.auditRows.length, icon: 'bi-clipboard-check', detail: 'Histórico rastreável de operações do sistema.', target: 'audits' },
+    { title: 'Relatórios', value: '—', icon: 'bi-bar-chart-line', detail: 'Relatórios consolidados do processo seletivo.', target: 'reports' },
   ]
 
   return (
     <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} />
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} />
       <main className="admin-main">
         <section className="admin-kpi-grid">
           {kpis.map((kpi) => (
@@ -1059,7 +1326,8 @@ function AdminDashboardScreen({ portalView, onSelectPortal, adminContext, adminS
         </section>
 
         <section className="admin-content-grid">
-          <AdminCalendarCard />
+          {/* Calendário suprimido — melhoria futura */}
+          {/* <AdminCalendarCard /> */}
           <AdminInsightsCard adminContext={adminContext} />
         </section>
       </main>
@@ -1069,12 +1337,11 @@ function AdminDashboardScreen({ portalView, onSelectPortal, adminContext, adminS
   )
 }
 
-function FormSection({ title, subtitle, children }) {
+function FormSection({ title, children }) {
   return (
     <Card className="form-section-card">
       <Card.Body className="p-0">
         <div className="form-section-card__header">
-          <div><h3>{title}</h3><p>{subtitle}</p></div>
         </div>
         <div className="form-section-card__content">{children}</div>
       </Card.Body>
@@ -1097,8 +1364,8 @@ function SidebarStatus({ applicationData, progressItems, completedSteps, activeS
   return (
     <Card className="sidebar-status-card">
       <Card.Body>
-        <h3 className="sidebar-status-card__title">Situacao da Inscricao</h3>
-        <div className="status-line"><span>Status:</span><strong>{isEditing ? 'Edicao em andamento' : 'Em andamento'}</strong></div>
+        <h3 className="sidebar-status-card__title">Situação da inscrição</h3>
+        <div className="status-line"><span>Status:</span><strong>{isEditing ? 'Edição em andamento' : 'Em andamento'}</strong></div>
         <div className="status-line"><span>Etapa atual:</span><strong>{activeStep}</strong></div>
         <div className="status-line"><span>Prazo final:</span><strong className="status-line__deadline">15/04/2026</strong></div>
         <div className="summary-panel">
@@ -1107,10 +1374,10 @@ function SidebarStatus({ applicationData, progressItems, completedSteps, activeS
             <div className="summary-list">
               {summaryItems.map((item) => <div key={item.label} className="summary-list__item"><span>{item.label}</span><strong className={item.tone}>{item.value}</strong></div>)}
             </div>
-          ) : <p className="summary-empty">O resumo sera preenchido conforme a empresa informar os dados principais do cadastro.</p>}
+          ) : <p className="summary-empty">O resumo será preenchido conforme a empresa informar os dados principais do cadastro.</p>}
         </div>
         <div className="sidebar-progress">
-          <div className="sidebar-progress__header"><h4>Progresso das Etapas</h4></div>
+          <div className="sidebar-progress__header"><h4>Progresso das etapas</h4></div>
           <ProgressBar now={progressPercent} variant="success" className="sidebar-progress__bar" />
           <div className="progress-list">
             {progressItems.map((item) => <div key={item.title} className="progress-list__item"><span>{item.title}</span><Badge className={`status-chip status-chip--${item.tone}`}>{item.status}</Badge></div>)}
@@ -1168,46 +1435,55 @@ function StageFooterActions({ onBack, onSave, saveDisabled, backLabel = 'Cancela
 
 function CompanyRegistrationForm({ applicationData, updateField, onBack, onSave, saveDisabled, saveLabel = 'Salvar' }) {
   return (
-    <FormSection title="Identificacao da empresa" subtitle="Campos basicos pedidos no edital para cadastro da pessoa juridica.">
+    <FormSection title="Identificação da empresa" subtitle="Campos básicos pedidos no edital para cadastro da pessoa jurídica.">
       <div className="company-form-group">
         <div className="company-form-group__title">Dados cadastrais</div>
         <Row className="g-3">
           <Col md={6}><Form.Group><Form.Label>Tipo de empresa *</Form.Label><Form.Select value={applicationData.companyType} onChange={updateField('companyType')}><option value="" disabled>Selecionar</option><option>LTDA</option><option>SLU</option><option>S/A</option><option>EIRELI</option><option>OSCIP</option><option>Outro</option></Form.Select></Form.Group></Col>
-          <Col md={6}><Form.Group><Form.Label>CNPJ *</Form.Label><Form.Control placeholder="Insira o codigo" value={applicationData.cnpj} onChange={updateField('cnpj')} /></Form.Group></Col>
-          <Col xs={12}><Form.Group><Form.Label>Razao social *</Form.Label><Form.Control placeholder="Digite aqui o seu nome" value={applicationData.companyName} onChange={updateField('companyName')} /></Form.Group></Col>
-          <Col xs={12}><Form.Group><Form.Label>Nome fantasia</Form.Label><Form.Control placeholder="Digite aqui o seu nome" value={applicationData.tradeName} onChange={updateField('tradeName')} /></Form.Group></Col>
-          <Col xs={12}><Form.Group><Form.Label>Email institucional *</Form.Label><Form.Control type="email" placeholder="Insira aqui seu email" value={applicationData.email} onChange={updateField('email')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>CNPJ *</Form.Label><Form.Control placeholder="00.000.000/0001-00" value={applicationData.cnpj} onChange={updateField('cnpj')} /></Form.Group></Col>
+          <Col xs={12}><Form.Group><Form.Label>Razão social *</Form.Label><Form.Control placeholder="Nome completo da empresa" value={applicationData.companyName} onChange={updateField('companyName')} /></Form.Group></Col>
+          <Col xs={12}><Form.Group><Form.Label>Nome fantasia</Form.Label><Form.Control placeholder="Nome de uso comercial" value={applicationData.tradeName} onChange={updateField('tradeName')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>E-mail institucional *</Form.Label><Form.Control type="email" placeholder="email@empresa.com.br" value={applicationData.email} onChange={updateField('email')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Confirmação de e-mail *</Form.Label><Form.Control type="email" placeholder="Repita o e-mail" value={applicationData.emailConfirm} onChange={updateField('emailConfirm')} /></Form.Group></Col>
           <Col md={6}><Form.Group><Form.Label>Telefone principal *</Form.Label><Form.Control placeholder="(DDD) 0 0000-0000" value={applicationData.phone} onChange={updateField('phone')} /></Form.Group></Col>
-          <Col md={6}><Form.Group><Form.Label>Telefone secundario</Form.Label><Form.Control placeholder="(DDD) 0 0000-0000" value={applicationData.phoneSecondary} onChange={updateField('phoneSecondary')} /></Form.Group></Col>
-          <Col lg={4}><Form.Group><Form.Label>Website *</Form.Label><Form.Control placeholder="Insira aqui seu email" value={applicationData.website} onChange={updateField('website')} /></Form.Group></Col>
-          <Col lg={4}><Form.Group><Form.Label>Data de criacao *</Form.Label><Form.Control type="date" value={applicationData.foundationDate} onChange={updateField('foundationDate')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Telefone secundário</Form.Label><Form.Control placeholder="(DDD) 0 0000-0000" value={applicationData.phoneSecondary} onChange={updateField('phoneSecondary')} /></Form.Group></Col>
+          <Col lg={4}><Form.Group><Form.Label>Website</Form.Label><Form.Control placeholder="https://www.empresa.com.br" value={applicationData.website} onChange={updateField('website')} /></Form.Group></Col>
+          <Col lg={4}><Form.Group><Form.Label>Data de criação</Form.Label><Form.Control type="date" value={applicationData.foundationDate} onChange={updateField('foundationDate')} /></Form.Group></Col>
           <Col lg={4}><Form.Group><Form.Label>Capital declarado</Form.Label><Form.Control placeholder="R$ 0,00" value={applicationData.shareCapital} onChange={updateField('shareCapital')} /></Form.Group></Col>
           <Col xs={12}><Form.Group><Form.Label>CNAE principal *</Form.Label><Form.Select value={applicationData.primaryCnae} onChange={updateField('primaryCnae')}><option value="" disabled>Selecionar CNAE principal</option>{cnaeOptions.map((option) => <option key={option}>{option}</option>)}</Form.Select></Form.Group></Col>
-          <Col xs={12}><Form.Group><Form.Label>CNAEs secundarios</Form.Label><Form.Select multiple value={applicationData.secondaryCnaes ? applicationData.secondaryCnaes.split(' | ') : []} onChange={(event) => updateField('secondaryCnaes')({ target: { value: Array.from(event.target.selectedOptions).map((option) => option.value).join(' | ') } })}>{cnaeOptions.map((option) => <option key={option}>{option}</option>)}</Form.Select></Form.Group></Col>
+          <Col xs={12}><Form.Group><Form.Label>CNAEs secundários</Form.Label><Form.Select multiple value={applicationData.secondaryCnaes ? applicationData.secondaryCnaes.split(' | ') : []} onChange={(event) => updateField('secondaryCnaes')({ target: { value: Array.from(event.target.selectedOptions).map((option) => option.value).join(' | ') } })}>{cnaeOptions.map((option) => <option key={option}>{option}</option>)}</Form.Select></Form.Group></Col>
         </Row>
       </div>
 
       <div className="company-form-group">
-        <div className="company-form-group__title">Endereco</div>
+        <div className="company-form-group__title">Senha de acesso</div>
         <Row className="g-3">
-          <Col md={4}><Form.Group><Form.Label>CEP</Form.Label><Form.Control placeholder="00.000-000" value={applicationData.zipCode} onChange={updateField('zipCode')} /></Form.Group></Col>
-          <Col md={4}><Form.Group><Form.Label>Numero</Form.Label><Form.Control placeholder="Numero da casa" value={applicationData.streetNumber} onChange={updateField('streetNumber')} /></Form.Group></Col>
-          <Col md={4}><Form.Group><Form.Label>Geo campos (Lat. e Long.)</Form.Label><Form.Control placeholder="Latitude e Longitude" value={applicationData.geoFields} onChange={updateField('geoFields')} /></Form.Group></Col>
-          <Col xs={12}><Form.Group><Form.Label>Logradouro</Form.Label><Form.Control placeholder="Insira o logradouro (Av, Rua, Bairro, etc..)" value={applicationData.street} onChange={updateField('street')} /></Form.Group></Col>
-          <Col xs={12}><Form.Group><Form.Label>Ponto de referencia</Form.Label><Form.Control placeholder="Digite um ponto de referencia" value={applicationData.landmark} onChange={updateField('landmark')} /></Form.Group></Col>
-          <Col md={6}><Form.Group><Form.Label>Bairro</Form.Label><Form.Control placeholder="Insira o nome do Bairro" value={applicationData.neighborhood} onChange={updateField('neighborhood')} /></Form.Group></Col>
-          <Col md={6}><Form.Group><Form.Label>Complemento</Form.Label><Form.Control placeholder="Digite aqui o complemento se houver" value={applicationData.addressComplement} onChange={updateField('addressComplement')} /></Form.Group></Col>
-          <Col md={6}><Form.Group><Form.Label>Cidade</Form.Label><Form.Select value={applicationData.city} onChange={updateField('city')}><option value="" disabled>Selecionar</option><option>Fortaleza</option><option>Caucaia</option><option>Maracanau</option><option>Outro municipio</option></Form.Select></Form.Group></Col>
-          <Col md={6}><Form.Group><Form.Label>UF</Form.Label><Form.Select value={applicationData.state} onChange={updateField('state')}><option value="" disabled>Selecionar</option><option>CE</option><option>PI</option><option>RN</option><option>PE</option></Form.Select></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Senha *</Form.Label><Form.Control type="password" placeholder="Mínimo 8 caracteres" value={applicationData.password} onChange={updateField('password')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Confirmação de senha *</Form.Label><Form.Control type="password" placeholder="Repita a senha" value={applicationData.passwordConfirm} onChange={updateField('passwordConfirm')} /></Form.Group></Col>
+        </Row>
+      </div>
+
+      <div className="company-form-group">
+        <div className="company-form-group__title">Endereço</div>
+        <Row className="g-3">
+          <Col md={4}><Form.Group><Form.Label>CEP *</Form.Label><Form.Control placeholder="00.000-000" value={applicationData.zipCode} onChange={updateField('zipCode')} /></Form.Group></Col>
+          <Col md={4}><Form.Group><Form.Label>Número *</Form.Label><Form.Control placeholder="Número" value={applicationData.streetNumber} onChange={updateField('streetNumber')} /></Form.Group></Col>
+          <Col md={4}><Form.Group><Form.Label>Geolocalização (Lat. e Long.)</Form.Label><Form.Control placeholder="Latitude e Longitude" value={applicationData.geoFields} onChange={updateField('geoFields')} /></Form.Group></Col>
+          <Col xs={12}><Form.Group><Form.Label>Logradouro *</Form.Label><Form.Control placeholder="Av., Rua, etc." value={applicationData.street} onChange={updateField('street')} /></Form.Group></Col>
+          <Col xs={12}><Form.Group><Form.Label>Ponto de referência</Form.Label><Form.Control placeholder="Ponto de referência próximo" value={applicationData.landmark} onChange={updateField('landmark')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Bairro *</Form.Label><Form.Control placeholder="Nome do bairro" value={applicationData.neighborhood} onChange={updateField('neighborhood')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Complemento</Form.Label><Form.Control placeholder="Sala, bloco, apto..." value={applicationData.addressComplement} onChange={updateField('addressComplement')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Cidade *</Form.Label><Form.Select value={applicationData.city} onChange={updateField('city')}><option value="" disabled>Selecionar</option><option>Fortaleza</option><option>Caucaia</option><option>Maracanaú</option><option>Outro município</option></Form.Select></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>UF *</Form.Label><Form.Select value={applicationData.state} onChange={updateField('state')}><option value="" disabled>Selecionar</option><option>CE</option><option>PI</option><option>RN</option><option>PE</option></Form.Select></Form.Group></Col>
         </Row>
       </div>
 
       <div className="company-form-group company-form-group--last">
-        <div className="company-form-group__title">Dados bancarios</div>
+        <div className="company-form-group__title">Dados bancários</div>
         <Row className="g-3">
-          <Col xs={12}><Form.Group><Form.Label>Banco *</Form.Label><Form.Select value={applicationData.bank} onChange={updateField('bank')}><option value="" disabled>Selecione um banco</option>{bankOptions.map((option) => <option key={option}>{option}</option>)}</Form.Select></Form.Group></Col>
-          <Col md={6}><Form.Group><Form.Label>Agencia *</Form.Label><Form.Control placeholder="Insira o nome da agencia" value={applicationData.agency} onChange={updateField('agency')} /></Form.Group></Col>
-          <Col md={6}><Form.Group><Form.Label>Conta *</Form.Label><Form.Control placeholder="Digite aqui a conta" value={applicationData.account} onChange={updateField('account')} /></Form.Group></Col>
+          <Col xs={12}><Form.Group><Form.Label>Banco</Form.Label><Form.Select value={applicationData.bank} onChange={updateField('bank')}><option value="" disabled>Selecione um banco</option>{bankOptions.map((option) => <option key={option}>{option}</option>)}</Form.Select></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Agência</Form.Label><Form.Control placeholder="Número da agência" value={applicationData.agency} onChange={updateField('agency')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Conta</Form.Label><Form.Control placeholder="Número da conta" value={applicationData.account} onChange={updateField('account')} /></Form.Group></Col>
         </Row>
       </div>
 
@@ -1218,26 +1494,26 @@ function CompanyRegistrationForm({ applicationData, updateField, onBack, onSave,
 
 function LegalContactForm({ applicationData, updateField, onBack, onSave, saveDisabled }) {
   return (
-    <FormSection title="Representante legal e contato comercial" subtitle="Substitui campos de pessoa fisica por informacoes do responsavel da empresa.">
+    <FormSection title="Representante legal e contato comercial">
       <div className="company-form-group">
-        <div className="company-form-group__title">Responsavel legal</div>
+        <div className="company-form-group__title">Responsável legal</div>
         <Row className="g-3">
           <Col lg={6} md={12}><Form.Group><Form.Label>Nome do representante legal *</Form.Label><Form.Control placeholder="Nome completo" value={applicationData.legalRepresentative} onChange={updateField('legalRepresentative')} /></Form.Group></Col>
           <Col lg={3} md={6}><Form.Group><Form.Label>CPF do representante *</Form.Label><Form.Control placeholder="000.000.000-00" value={applicationData.legalRepresentativeCpf} onChange={updateField('legalRepresentativeCpf')} /></Form.Group></Col>
-          <Col lg={3} md={6}><Form.Group><Form.Label>Cargo *</Form.Label><Form.Control placeholder="Diretor, socio, procurador..." value={applicationData.legalRepresentativeRole} onChange={updateField('legalRepresentativeRole')} /></Form.Group></Col>
+          <Col lg={3} md={6}><Form.Group><Form.Label>Cargo *</Form.Label><Form.Control placeholder="Diretor, sócio, procurador..." value={applicationData.legalRepresentativeRole} onChange={updateField('legalRepresentativeRole')} /></Form.Group></Col>
         </Row>
       </div>
 
       <div className="company-form-group company-form-group--last">
         <div className="company-form-group__title">Contato comercial</div>
         <Row className="g-3">
-          <Col lg={6} md={12}><Form.Group><Form.Label>Contato comercial *</Form.Label><Form.Control placeholder="Nome do responsavel pelo contato" value={applicationData.commercialContact} onChange={updateField('commercialContact')} /></Form.Group></Col>
+          <Col lg={6} md={12}><Form.Group><Form.Label>Nome do contato comercial *</Form.Label><Form.Control placeholder="Nome do responsável pelo contato" value={applicationData.commercialContact} onChange={updateField('commercialContact')} /></Form.Group></Col>
           <Col lg={3} md={6}><Form.Group><Form.Label>CPF do contato *</Form.Label><Form.Control placeholder="000.000.000-00" value={applicationData.commercialContactCpf} onChange={updateField('commercialContactCpf')} /></Form.Group></Col>
           <Col lg={3} md={6}><Form.Group><Form.Label>Telefone do contato *</Form.Label><Form.Control placeholder="(85) 99999-9999" value={applicationData.commercialContactPhone} onChange={updateField('commercialContactPhone')} /></Form.Group></Col>
         </Row>
       </div>
 
-      <div className="info-banner mt-4"><i className="bi bi-info-circle" /><span>Esta etapa concentra apenas os dados dos responsaveis da empresa. O restante do cadastro continua nas outras opcoes da pagina inicial.</span></div>
+      <div className="info-banner mt-4"><i className="bi bi-info-circle" /><span>Esta etapa concentra apenas os dados dos responsáveis da empresa. O restante do cadastro continua nas outras opções da página inicial.</span></div>
       <StageFooterActions onBack={onBack} onSave={onSave} saveDisabled={saveDisabled} />
     </FormSection>
   )
@@ -1246,9 +1522,9 @@ function LegalContactForm({ applicationData, updateField, onBack, onSave, saveDi
 function FiscalForm({ applicationData, setUploadStatus, onBack, onSave, saveDisabled }) {
   const fiscalUploads = uploadChecklist.slice(0, 8)
   return (
-    <FormSection title="Regularidade fiscal e trabalhista" subtitle="Certidoes fiscais e comprovacoes de regularidade exigidas na fase de inscricao.">
+    <FormSection title="Regularidade fiscal e trabalhista" subtitle="Certidões fiscais e comprovações de regularidade exigidas na fase de inscrição.">
       <div className="company-form-group company-form-group--last">
-        <div className="company-form-group__title">Certidoes e comprovacoes</div>
+        <div className="company-form-group__title">Certidões e comprovações</div>
         <div className="upload-grid">
           {fiscalUploads.map((item) => (
             <UploadItemCard
@@ -1267,9 +1543,11 @@ function FiscalForm({ applicationData, setUploadStatus, onBack, onSave, saveDisa
 
 function AttachmentsForm({ applicationData, setUploadStatus, onBack, onSave, saveDisabled }) {
   const attachmentUploads = uploadChecklist.slice(8)
+  const declaracaoItem = { key: 'declaracaoAssinada', label: 'Declarações assinadas', info: 'Arquivo PDF contendo as declarações obrigatórias assinadas pelo representante legal da empresa.' }
+
   return (
     <FormSection title="Documentos institucionais e anexos" subtitle="Uploads complementares, modelos assinados e comprovantes da empresa.">
-      <div className="company-form-group company-form-group--last">
+      <div className="company-form-group">
         <div className="company-form-group__title">Documentos complementares</div>
         <div className="upload-grid">
           {attachmentUploads.map((item) => (
@@ -1282,6 +1560,19 @@ function AttachmentsForm({ applicationData, setUploadStatus, onBack, onSave, sav
           ))}
         </div>
       </div>
+
+      <div className="company-form-group company-form-group--last">
+        <div className="company-form-group__title">Declarações</div>
+        <div className="upload-grid">
+          <UploadItemCard
+            key={declaracaoItem.key}
+            item={declaracaoItem}
+            uploadedFileName={applicationData.uploads[declaracaoItem.key]}
+            onChange={(fileName) => setUploadStatus(declaracaoItem.key, fileName)}
+          />
+        </div>
+      </div>
+
       <StageFooterActions onBack={onBack} onSave={onSave} saveDisabled={saveDisabled} />
     </FormSection>
   )
@@ -1449,7 +1740,7 @@ function MarkdownField({ label, field, placeholder, value, updateField }) {
 
 function ProjectForm({ applicationData, updateField, setUploadStatus, onBack, onSave, saveDisabled }) {
   return (
-    <FormSection title="Projeto, plano de trabalho e midia" subtitle="Campos ligados ao evento ou projeto que sera analisado pela comissao.">
+    <FormSection title="Projeto, plano de trabalho e mídia" subtitle="Campos ligados ao evento ou projeto que será analisado pela comissão.">
       <div className="company-form-group">
         <div className="company-form-group__title">Selecione um edital</div>
         <Row className="g-3">
@@ -1491,7 +1782,7 @@ function ProjectForm({ applicationData, updateField, setUploadStatus, onBack, on
 }
 
 function DeclarationsForm({ applicationData, setDeclarationValue, onBack, onSave, saveDisabled }) {
-  const companyName = applicationData.companyName || '[RAZAO SOCIAL]'
+  const companyName = applicationData.companyName || '[RAZÃO SOCIAL]'
   const cnpj = applicationData.cnpj || '[●]'
   const representativeName = applicationData.legalRepresentative || '[NOME]'
   const representativeCpf = applicationData.legalRepresentativeCpf || '[●]'
@@ -1502,33 +1793,33 @@ function DeclarationsForm({ applicationData, setDeclarationValue, onBack, onSave
   }
 
   if (applicationData.declarations.articleSeven) {
-    declarationItems.push('Nao emprega menor de 18 (dezoito) anos em trabalho noturno, perigoso ou insalubre;')
-    declarationItems.push('Nao emprega menor de 16 (dezesseis) anos;')
-    declarationItems.push('Emprega menor, a partir de 14 (quatorze) anos, apenas na condicao de aprendiz, quando aplicavel;')
+    declarationItems.push('Não emprega menor de 18 (dezoito) anos em trabalho noturno, perigoso ou insalubre;')
+    declarationItems.push('Não emprega menor de 16 (dezesseis) anos;')
+    declarationItems.push('Emprega menor, a partir de 14 (quatorze) anos, apenas na condição de aprendiz, quando aplicável;')
   }
 
   if (applicationData.declarations.noticeAgreement) {
-    declarationItems.push('Leu o edital, os anexos e concorda com as condicoes de participacao no presente processo seletivo;')
+    declarationItems.push('Leu o edital, os anexos e concorda com as condições de participação no presente processo seletivo;')
   }
 
   return (
-    <FormSection title="Declaracoes obrigatorias e revisao" subtitle="Espaco para substituir declaracoes de pessoa fisica por termos da empresa.">
+    <FormSection title="Declarações obrigatórias e revisão" subtitle="Termos de ciência e declarações necessárias para a conclusão da inscrição.">
       <div className="company-form-group">
-        <div className="company-form-group__title">Confirmacoes obrigatorias</div>
+        <div className="company-form-group__title">Confirmações obrigatórias</div>
         <div className="declaration-list">
           <Form.Check type="checkbox" id="social-regularity" checked={applicationData.declarations.socialRegularity} onChange={(event) => setDeclarationValue('socialRegularity', event.target.checked)} label="Declaro que a empresa atende aos requisitos de regularidade trabalhista e social previstos no edital." />
-          <Form.Check type="checkbox" id="art-7" checked={applicationData.declarations.articleSeven} onChange={(event) => setDeclarationValue('articleSeven', event.target.checked)} label="Declaro cumprimento do inciso XXXIII do art. 7o da Constituicao Federal." />
-          <Form.Check type="checkbox" id="notice-agreement" checked={applicationData.declarations.noticeAgreement} onChange={(event) => setDeclarationValue('noticeAgreement', event.target.checked)} label="Declaro que li o edital, os anexos e concordo com as condicoes da selecao." />
+          <Form.Check type="checkbox" id="art-7" checked={applicationData.declarations.articleSeven} onChange={(event) => setDeclarationValue('articleSeven', event.target.checked)} label="Declaro cumprimento do inciso XXXIII do art. 7º da Constituição Federal." />
+          <Form.Check type="checkbox" id="notice-agreement" checked={applicationData.declarations.noticeAgreement} onChange={(event) => setDeclarationValue('noticeAgreement', event.target.checked)} label="Declaro que li o edital, os anexos e concordo com as condições da seleção." />
         </div>
       </div>
 
       <div className="company-form-group company-form-group--last declaration-preview">
-        <div className="company-form-group__title">Declaracao gerada</div>
+        <div className="company-form-group__title">Declaração gerada</div>
 
         {declarationItems.length > 0 ? (
           <div className="declaration-document">
             <p className="declaration-document__title">
-              DECLARACAO DE CUMPRIMENTO DO INCISO XXXIII DO ART. 7o DA CONSTITUICAO FEDERAL
+              DECLARAÇÃO DE CUMPRIMENTO DO INCISO XXXIII DO ART. 7º DA CONSTITUIÇÃO FEDERAL
             </p>
             <p>
               A empresa <strong>{companyName}</strong>, inscrita no CNPJ no <strong>{cnpj}</strong>, por
@@ -1545,16 +1836,16 @@ function DeclarationsForm({ applicationData, setDeclarationValue, onBack, onSave
             </div>
 
             <p>
-              Declara, ainda, estar ciente de que a falsidade da presente declaracao sujeitara
-              a empresa as sancoes previstas em lei, inclusive quanto a inabilitacao no processo
-              seletivo e demais penalidades cabiveis.
+              Declara, ainda, estar ciente de que a falsidade da presente declaração sujeitará
+              a empresa às sanções previstas em lei, inclusive quanto à inabilitação no processo
+              seletivo e demais penalidades cabíveis.
             </p>
 
             <p>Local e data. Nome e assinatura do representante legal.</p>
           </div>
         ) : (
           <p className="summary-empty">
-            Marque as declaracoes obrigatorias para montar automaticamente o texto final com os
+            Marque as declarações obrigatórias para montar automaticamente o texto final com os
             dados da empresa e do representante legal.
           </p>
         )}
@@ -1573,10 +1864,10 @@ function SettingsForm({ preferences, setPreferences, onBack, onSave, saveDisable
   }
 
   return (
-    <FormSection title="Configuracoes visuais" subtitle="Aplicacao da tipografia Kanit, tema claro ou escuro e paletas acessiveis.">
+    <FormSection title="Configurações visuais" subtitle="Aplicação da tipografia Kanit, tema claro ou escuro e paletas acessíveis.">
       <div className="settings-stack">
         <div className="company-form-group">
-          <div className="company-form-group__title">Modo de aparencia</div>
+          <div className="company-form-group__title">Modo de aparência</div>
           <div className="settings-options">
             <label className={`settings-option${preferences.themeMode === 'light' ? ' is-selected' : ''}`}>
               <input type="radio" name="themeMode" value="light" checked={preferences.themeMode === 'light'} onChange={updatePreference('themeMode')} />
@@ -1589,22 +1880,22 @@ function SettingsForm({ preferences, setPreferences, onBack, onSave, saveDisable
               <input type="radio" name="themeMode" value="dark" checked={preferences.themeMode === 'dark'} onChange={updatePreference('themeMode')} />
               <div>
                 <strong>Modo escuro</strong>
-                <span>Usa a paleta escura com contraste reforcado.</span>
+                <span>Usa a paleta escura com contraste reforçado.</span>
               </div>
             </label>
           </div>
         </div>
 
         <div className="company-form-group company-form-group--last">
-          <div className="company-form-group__title">Paleta acessivel</div>
+          <div className="company-form-group__title">Paleta acessível</div>
           <Form.Select value={preferences.visionMode} onChange={updatePreference('visionMode')}>
-            <option value="default">Padrao</option>
+            <option value="default">Padrão</option>
             <option value="deuteranopia">Deuteranopia</option>
             <option value="protanopia">Protanopia</option>
             <option value="tritanopia">Tritanopia</option>
           </Form.Select>
           <p className="settings-helper">
-            As cores principais, de status e de destaque seguem as variacoes acessiveis presentes nos tokens.
+            As cores principais, de status e de destaque seguem as variações acessíveis presentes nos tokens.
           </p>
         </div>
       </div>
@@ -1614,6 +1905,599 @@ function SettingsForm({ preferences, setPreferences, onBack, onSave, saveDisable
 }
 
 export default App
+
+function AdminReportsScreen({ adminContext, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit }) {
+  const reportSections = [
+    {
+      title: 'Instituições por cidade',
+      icon: 'bi-geo-alt',
+      rows: adminContext.cityRows,
+      headers: ['Cidade', 'Total'],
+      cells: (row) => [row.city, row.total],
+    },
+    {
+      title: 'Situação dos projetos',
+      icon: 'bi-kanban',
+      rows: adminContext.projectsRows,
+      headers: ['Instituição', 'Edital', 'Valor', 'Status'],
+      cells: (row) => [row.institution, row.notice.split(' - ')[0], row.amount, row.status],
+    },
+    {
+      title: 'Recursos e demandas',
+      icon: 'bi-file-earmark-text',
+      rows: adminContext.resourcesRows,
+      headers: ['Inscrito', 'Cidade', 'Volume', 'Status'],
+      cells: (row) => [row.companyName, row.city, row.volume, row.status],
+    },
+  ]
+
+  const summaryKpis = [
+    { label: 'Total de instituições', value: adminContext.totals.inscritos },
+    { label: 'Total de projetos', value: adminContext.projectsRows.length },
+    { label: 'Total de recursos', value: adminContext.totals.recursos },
+    { label: 'Documentos recebidos', value: adminContext.totals.documentos },
+    { label: 'Etapas concluídas', value: adminContext.totals.concluidos },
+    { label: 'Pendências', value: adminContext.totals.pendencias },
+  ]
+
+  return (
+    <div className="admin-page">
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} />
+      <main className="admin-main">
+        <AdminSectionHeader title="Relatórios" subtitle="Visão consolidada dos dados do processo seletivo para análise e acompanhamento." onBack={onBack} />
+
+        <div className="reports-summary-grid">
+          {summaryKpis.map((kpi) => (
+            <div key={kpi.label} className="reports-kpi-card">
+              <span className="reports-kpi-card__label">{kpi.label}</span>
+              <strong className="reports-kpi-card__value">{kpi.value}</strong>
+            </div>
+          ))}
+        </div>
+
+        {reportSections.map((section) => (
+          <section key={section.title} className="admin-management-card" style={{ marginBottom: '1rem' }}>
+            <div className="admin-management-card__topline">
+              <strong><i className={`bi ${section.icon} me-2`} />{section.title}</strong>
+              <span>{section.rows.length} registro(s)</span>
+            </div>
+            <table className="admin-table">
+              <thead>
+                <tr>{section.headers.map((h) => <th key={h}>{h}</th>)}</tr>
+              </thead>
+              <tbody>
+                {section.rows.map((row, index) => (
+                  <tr key={index}>
+                    {section.cells(row).map((cell, ci) => <td key={ci}>{cell}</td>)}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        ))}
+      </main>
+      <AppFooter />
+    </div>
+  )
+}
+
+function AdminUserRecordModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar' }) {
+  return (
+    <div className="admin-modal-backdrop">
+      <section className="admin-modal-card admin-modal-card--form">
+        <header className="admin-modal-card__header">
+          <h3>{title}</h3>
+          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+            <i className="bi bi-x-lg" />
+          </button>
+        </header>
+        <div className="admin-modal-card__body">
+          <Row className="g-3">
+            <Col xs={12}>
+              <Form.Group>
+                <Form.Label>Nome completo *</Form.Label>
+                <Form.Control value={formData.fullName} onChange={onChange('fullName')} placeholder="Insira aqui o nome" />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>E-mail *</Form.Label>
+                <Form.Control type="email" value={formData.email} onChange={onChange('email')} placeholder="email@instituicao.org.br" />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Confirmar e-mail *</Form.Label>
+                <Form.Control type="email" value={formData.emailConfirm} onChange={onChange('emailConfirm')} placeholder="Repita o e-mail" />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Telefone principal *</Form.Label>
+                <Form.Control value={formData.phone} onChange={onChange('phone')} placeholder="(85) 99999-9999" />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Telefone secundário</Form.Label>
+                <Form.Control value={formData.phoneSecondary} onChange={onChange('phoneSecondary')} placeholder="(85) 99999-9999" />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>CPF *</Form.Label>
+                <Form.Control value={formData.cpf} onChange={onChange('cpf')} placeholder="000.000.000-00" />
+              </Form.Group>
+            </Col>
+            <Col xs={12}>
+              <div className="admin-user-form__roles">
+                <span className="admin-user-form__roles-label">Perfis de acesso *</span>
+                <Form.Check type="checkbox" id="modal-admin-role" label="Admin" checked={formData.isAdmin} onChange={onChange('isAdmin')} />
+                <Form.Check type="checkbox" id="modal-evaluator-role" label="Avaliador" checked={formData.isEvaluator} onChange={onChange('isEvaluator')} />
+              </div>
+            </Col>
+          </Row>
+          <p className="admin-user-form__helper">A senha inicial será enviada por e-mail para a pessoa cadastrada.</p>
+        </div>
+        <footer className="admin-modal-card__footer">
+          <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>Cancelar</Button>
+          <Button type="button" variant="primary" className="action-button" onClick={onSubmit}>{
+            submitLabel
+          }</Button>
+        </footer>
+      </section>
+    </div>
+  )
+}
+
+function AdminConfirmModal({ title, message, onCancel, onConfirm }) {
+  return (
+    <div className="admin-modal-backdrop">
+      <section className="admin-modal-card admin-modal-card--confirm">
+        <header className="admin-modal-card__header">
+          <div className="admin-modal-card__headline">
+            <i className="bi bi-exclamation-triangle-fill" />
+            <h3>{title}</h3>
+          </div>
+          <button type="button" className="admin-modal-card__close" onClick={onCancel}>
+            <i className="bi bi-x-lg" />
+          </button>
+        </header>
+        <div className="admin-modal-card__body">
+          <p>{message}</p>
+        </div>
+        <footer className="admin-modal-card__footer">
+          <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onCancel}>Cancelar</Button>
+          <Button type="button" variant="primary" className="action-button" onClick={onConfirm}>Confirmar</Button>
+        </footer>
+      </section>
+    </div>
+  )
+}
+
+function AdminSuccessModal({ message, onClose }) {
+  return (
+    <div className="admin-modal-backdrop">
+      <section className="admin-modal-card admin-modal-card--success">
+        <header className="admin-modal-card__header">
+          <div className="admin-modal-card__headline admin-modal-card__headline--success">
+            <i className="bi bi-check-circle" />
+            <h3>Sucesso</h3>
+          </div>
+          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+            <i className="bi bi-x-lg" />
+          </button>
+        </header>
+        <div className="admin-modal-card__body">
+          <p>{message}</p>
+        </div>
+      </section>
+    </div>
+  )
+}
+
+function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUser, portalView, onSelectPortal, adminScreen, onNavigate, onExit }) {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editingUser, setEditingUser] = useState(null)
+  const [draftUser, setDraftUser] = useState(initialAdminUserForm)
+  const [confirmState, setConfirmState] = useState(null)
+  const [successMessage, setSuccessMessage] = useState('')
+
+  const filteredRows = rows.filter((row) => {
+    const term = searchTerm.trim().toLowerCase()
+    if (!term) return true
+
+    return [
+      String(row.id),
+      row.fullName,
+      row.email,
+      row.cpf,
+      row.phone,
+      getAdminUserRoles(row),
+      row.status,
+    ].some((value) => String(value || '').toLowerCase().includes(term))
+  })
+
+  const updateDraftField = (field) => (event) => {
+    const { type, checked, value } = event.target
+    setDraftUser((current) => ({
+      ...current,
+      [field]: type === 'checkbox' ? checked : value,
+    }))
+  }
+
+  const openCreateModal = () => {
+    setEditingUser(null)
+    setDraftUser(initialAdminUserForm)
+    setIsFormOpen(true)
+  }
+
+  const openEditModal = (user) => {
+    setEditingUser(user)
+    setDraftUser({
+      fullName: user.fullName,
+      email: user.email,
+      emailConfirm: user.emailConfirm || user.email,
+      cpf: user.cpf,
+      phone: user.phone,
+      phoneSecondary: user.phoneSecondary || '',
+      isAdmin: user.isAdmin,
+      isEvaluator: user.isEvaluator,
+    })
+    setIsFormOpen(true)
+  }
+
+  const handlePersistRequest = () => {
+    if (
+      !draftUser.fullName.trim()
+      || !draftUser.email.trim()
+      || !draftUser.emailConfirm.trim()
+      || draftUser.email.trim() !== draftUser.emailConfirm.trim()
+      || !draftUser.phone.trim()
+      || !draftUser.cpf.trim()
+      || (!draftUser.isAdmin && !draftUser.isEvaluator)
+    ) {
+      return
+    }
+
+    setConfirmState({
+      type: editingUser ? 'edit' : 'create',
+      payload: editingUser ? { ...editingUser, ...draftUser } : draftUser,
+    })
+  }
+
+  const handleConfirm = () => {
+    if (!confirmState) return
+
+    if (confirmState.type === 'create') {
+      onCreateUser(confirmState.payload)
+      setSuccessMessage('Registro salvo com sucesso.')
+    }
+
+    if (confirmState.type === 'edit') {
+      onUpdateUser(confirmState.payload)
+      setSuccessMessage('Registro atualizado com sucesso.')
+    }
+
+    if (confirmState.type === 'delete') {
+      onDeleteUser(confirmState.payload.id)
+      setSuccessMessage('Registro removido com sucesso.')
+    }
+
+    setConfirmState(null)
+    setIsFormOpen(false)
+    setEditingUser(null)
+    setDraftUser(initialAdminUserForm)
+  }
+
+  return (
+    <div className="admin-page">
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} />
+      <main className="admin-main">
+        <AdminSectionHeader title="Gerenciar usuários" subtitle="CRUD administrativo para cadastro, edição e exclusão de perfis de acesso do sistema." onBack={onBack} />
+
+        <section className="admin-management-card admin-users-crud">
+          <div className="admin-users-crud__topbar">
+            <div className="admin-users-search">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Insira uma palavra para pesquisar"
+              />
+              <button type="button" aria-label="Pesquisar usuários">
+                <i className="bi bi-search" />
+              </button>
+            </div>
+            <Button type="button" className="admin-users-add-button" onClick={openCreateModal}>
+              <i className="bi bi-plus-square" />
+              <span>Adicionar registro</span>
+            </Button>
+          </div>
+
+          <div className="admin-users-table-wrap">
+            <table className="admin-table admin-users-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>E-mail</th>
+                  <th>Perfis</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredRows.map((row) => (
+                  <tr key={row.id}>
+                    <td>{row.id}</td>
+                    <td>{row.fullName}</td>
+                    <td>{row.email}</td>
+                    <td>{getAdminUserRoles(row)}</td>
+                    <td>{row.status}</td>
+                    <td>
+                      <div className="admin-users-actions">
+                        <button type="button" className="admin-inline-action" onClick={() => openEditModal(row)}>Editar</button>
+                        <button
+                          type="button"
+                          className="admin-inline-action admin-inline-action--danger"
+                          onClick={() => setConfirmState({ type: 'delete', payload: row })}
+                        >
+                          Excluir
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="admin-users-crud__footer">
+            <div className="admin-users-pagination">
+              <button type="button" disabled>Anterior</button>
+              <button type="button" className="is-active">1</button>
+              <button type="button" disabled>Próximo</button>
+            </div>
+            <span>Mostrando de 1 até {filteredRows.length} de {rows.length} registros</span>
+            <div className="admin-users-per-page">
+              <strong>Exibir</strong>
+              <div className="admin-users-per-page__value">50</div>
+              <strong>resultados por página</strong>
+            </div>
+          </div>
+        </section>
+      </main>
+      <AppFooter />
+
+      {isFormOpen && (
+        <AdminUserRecordModal
+          title={editingUser ? 'Editar registro' : 'Adicionar registro'}
+          formData={draftUser}
+          onChange={updateDraftField}
+          onClose={() => { setIsFormOpen(false); setEditingUser(null); setDraftUser(initialAdminUserForm) }}
+          onSubmit={handlePersistRequest}
+          submitLabel={editingUser ? 'Salvar alterações' : 'Salvar'}
+        />
+      )}
+
+      {confirmState && (
+        <AdminConfirmModal
+          title={confirmState.type === 'delete' ? 'Confirmar exclusão do registro' : 'Confirmar modificação do registro'}
+          message={confirmState.type === 'delete' ? 'Esse usuário será removido da listagem, deseja prosseguir?' : 'Os dados a seguir serão salvos, deseja prosseguir?'}
+          onCancel={() => setConfirmState(null)}
+          onConfirm={handleConfirm}
+        />
+      )}
+
+      {successMessage && <AdminSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
+    </div>
+  )
+}
+
+function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelectPortal, onNavigate, onExit, selectedProjectId, onSelectProject }) {
+  const statusBadge = (status) => {
+    if (status === 'Avaliado') return 'success'
+    if (status === 'Em avaliação') return 'warning'
+    return 'neutral'
+  }
+
+  const docBadge = (avaliacao) => {
+    if (avaliacao === 1) return { label: 'Aceito', tone: 'success' }
+    if (avaliacao === 0) return { label: 'Recusado', tone: 'danger' }
+    return { label: 'Pendente', tone: 'neutral' }
+  }
+
+  const recentProjects = evaluatorProjects.slice(0, 3)
+
+  return (
+    <div className="admin-page">
+      <EvaluatorNavbar portalView={portalView} onSelectPortal={onSelectPortal} evaluatorScreen={evaluatorScreen} onNavigate={onNavigate} onExit={onExit} />
+      <main className="admin-main">
+        {(!evaluatorScreen || evaluatorScreen === 'eval-dashboard') && (
+          <>
+            <div className="admin-detail-header">
+              <div>
+                <h2>Painel do avaliador</h2>
+                <p>Gerencie as avaliações de projetos e documentos atribuídas ao seu perfil.</p>
+              </div>
+            </div>
+
+            <div className="reports-summary-grid" style={{ marginBottom: '1rem' }}>
+              <div className="reports-kpi-card">
+                <span className="reports-kpi-card__label">Projetos atribuídos</span>
+                <strong className="reports-kpi-card__value">{evaluatorProjects.length}</strong>
+              </div>
+              <div className="reports-kpi-card">
+                <span className="reports-kpi-card__label">Avaliados</span>
+                <strong className="reports-kpi-card__value">{evaluatorProjects.filter((p) => p.status === 'Avaliado').length}</strong>
+              </div>
+              <div className="reports-kpi-card">
+                <span className="reports-kpi-card__label">Pendentes</span>
+                <strong className="reports-kpi-card__value">{evaluatorProjects.filter((p) => p.status !== 'Avaliado').length}</strong>
+              </div>
+              <div className="reports-kpi-card">
+                <span className="reports-kpi-card__label">Critérios ativos</span>
+                <strong className="reports-kpi-card__value">{evaluationCriteria.length}</strong>
+              </div>
+            </div>
+
+            <section className="admin-management-card evaluator-recent-projects" style={{ marginBottom: '1rem' }}>
+              <div className="admin-management-card__topline">
+                <strong>Projetos para avaliação</strong>
+                <span>{recentProjects.length} projeto(s)</span>
+              </div>
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Instituição</th>
+                    <th>Projeto</th>
+                    <th>Edital</th>
+                    <th>Valor solicitado</th>
+                    <th>Status</th>
+                    <th>Ação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentProjects.map((proj) => (
+                    <tr key={proj.id}>
+                      <td>{proj.institution}</td>
+                      <td>
+                        <button type="button" className="admin-table-link" onClick={() => { onSelectProject?.(proj.id); onNavigate('eval-projects') }}>
+                          {proj.project}
+                        </button>
+                      </td>
+                      <td>{proj.notice}</td>
+                      <td>{proj.amount}</td>
+                      <td><Badge className={`status-chip status-chip--${statusBadge(proj.status)}`}>{proj.status}</Badge></td>
+                      <td><button type="button" className="admin-inline-action">Avaliar</button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+
+            <section className="admin-management-card">
+              <div className="admin-management-card__topline">
+                <strong>Critérios de avaliação</strong>
+                <span>{evaluationCriteria.length} critério(s)</span>
+              </div>
+              <table className="admin-table">
+                <thead>
+                  <tr><th>Nº</th><th>Descrição do critério</th></tr>
+                </thead>
+                <tbody>
+                  {evaluationCriteria.map((c) => (
+                    <tr key={c.id}>
+                      <td>{c.id}</td>
+                      <td>{c.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+          </>
+        )}
+
+        {evaluatorScreen === 'eval-projects' && (
+          <>
+            <div className="admin-detail-header">
+              <div>
+                <button type="button" className="admin-back-link" onClick={() => onNavigate('eval-dashboard')}>
+                  <i className="bi bi-arrow-left" /><span>Voltar ao painel</span>
+                </button>
+                <h2>Projetos atribuídos</h2>
+                <p>O projeto escolhido no painel fica destacado aqui, mas a lista completa continua disponível.</p>
+              </div>
+            </div>
+            <section className="admin-management-card">
+              <div className="admin-management-card__topline">
+                <strong>Fila completa de projetos</strong>
+                <span>{evaluatorProjects.length} projeto(s)</span>
+              </div>
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Instituição</th>
+                    <th>Projeto</th>
+                    <th>Edital</th>
+                    <th>Valor solicitado</th>
+                    <th>Status</th>
+                    <th>Ação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {evaluatorProjects.map((proj) => (
+                    <tr key={proj.id} className={selectedProjectId === proj.id ? 'admin-table__row--highlight' : ''}>
+                      <td>{proj.institution}</td>
+                      <td>
+                        <button type="button" className="admin-table-link" onClick={() => onSelectProject?.(proj.id)}>
+                          {proj.project}
+                        </button>
+                      </td>
+                      <td>{proj.notice}</td>
+                      <td>{proj.amount}</td>
+                      <td><Badge className={`status-chip status-chip--${statusBadge(proj.status)}`}>{proj.status}</Badge></td>
+                      <td><button type="button" className="admin-inline-action">Abrir avaliação</button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+          </>
+        )}
+
+        {evaluatorScreen === 'eval-documents' && (
+          <>
+            <div className="admin-detail-header">
+              <div>
+                <button type="button" className="admin-back-link" onClick={() => onNavigate('eval-dashboard')}>
+                  <i className="bi bi-arrow-left" /><span>Voltar ao painel</span>
+                </button>
+                <h2>Avaliação de documentos</h2>
+                <p>Documentos institucionais aguardando parecer do avaliador.</p>
+              </div>
+            </div>
+            <section className="admin-management-card">
+              <div className="admin-management-card__topline">
+                <strong>Documentos recebidos</strong>
+                <span>{evaluatorDocuments.length} documento(s)</span>
+              </div>
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Instituição</th>
+                    <th>Documento</th>
+                    <th>Status</th>
+                    <th>Justificativa</th>
+                    <th>Ação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {evaluatorDocuments.map((doc) => {
+                    const badge = docBadge(doc.avaliacao)
+                    return (
+                      <tr key={doc.id}>
+                        <td>{doc.institution}</td>
+                        <td>{doc.document}</td>
+                        <td><Badge className={`status-chip status-chip--${badge.tone}`}>{badge.label}</Badge></td>
+                        <td>{doc.justificativa || '—'}</td>
+                        <td><button type="button" className="admin-inline-action">Analisar</button></td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </section>
+          </>
+        )}
+      </main>
+      <AppFooter />
+    </div>
+  )
+}
+
 function PlaceholderStage({ title, body, onBack }) {
   return (
     <FormSection title={title} subtitle="Tela preparada para a fase seguinte do processo.">
@@ -1633,9 +2517,9 @@ function LoggedOutScreen({ portalView, onSelectPortal }) {
         <Container className="logout-screen__container">
           <Card className="form-section-card logout-card">
             <Card.Body className="logout-card__body">
-              <p className="eyebrow">Sessao encerrada</p>
-              <h1>Voce saiu do sistema</h1>
-              <p>Feche esta aba ou faca um novo acesso para continuar utilizando a aplicacao.</p>
+              <p className="eyebrow">Sessão encerrada</p>
+              <h1>Você saiu do sistema</h1>
+              <p>Feche esta aba ou faça um novo acesso para continuar utilizando a aplicação.</p>
             </Card.Body>
           </Card>
         </Container>
@@ -1658,11 +2542,11 @@ function AuthScreen({ onLogin, onStartRegistration, onSkipToDashboard, authData,
                 <Card.Body className="auth-card__body">
                   <p className="eyebrow">Acesso ao sistema</p>
                   <h1>Entrar</h1>
-                  <p>Faça login para continuar. Se for o primeiro acesso, você seguirá para o cadastro da empresa antes de entrar no painel.</p>
+                  <p>Faça login para continuar.</p>
                   <Form className="auth-form">
                     <Form.Group>
-                      <Form.Label>Email</Form.Label>
-                      <Form.Control type="email" value={authData.email} onChange={(event) => setAuthData((current) => ({ ...current, email: event.target.value }))} placeholder="seuemail@empresa.com" />
+                      <Form.Label>CNPJ</Form.Label>
+                      <Form.Control type="text" value={authData.email} onChange={(event) => setAuthData((current) => ({ ...current, email: event.target.value }))} placeholder="00.000.000/0001-00" />
                     </Form.Group>
                     <Form.Group>
                       <Form.Label>Senha</Form.Label>
@@ -1680,7 +2564,7 @@ function AuthScreen({ onLogin, onStartRegistration, onSkipToDashboard, authData,
                 <Card.Body className="auth-card__body">
                   <p className="eyebrow">Primeiro acesso</p>
                   <h2>Cadastre sua empresa</h2>
-                  <p>O onboarding começa com o cadastro da empresa. Depois disso você será direcionado para a tela inicial e poderá completar as demais etapas.</p>
+                  <p>O cadastro da empresa é o primeiro passo. Após a conclusão, você será direcionado ao painel principal.</p>
                   <div className="auth-side-card__cta">
                     <div className="auth-side-card__icon">
                       <i className="bi bi-buildings" />
@@ -1690,7 +2574,7 @@ function AuthScreen({ onLogin, onStartRegistration, onSkipToDashboard, authData,
                     </Button>
                   </div>
                   <button type="button" className="auth-side-card__skip" onClick={onSkipToDashboard}>
-                    Pular e ir para a tela do usuario
+                    Pular e ir para a tela do usuário
                   </button>
                 </Card.Body>
               </Card>
@@ -1703,7 +2587,7 @@ function AuthScreen({ onLogin, onStartRegistration, onSkipToDashboard, authData,
   )
 }
 
-function StageFormScreen({ currentStage, applicationData, setApplicationData, progressItems, completedSteps, activeStep, preferences, setPreferences, onBack, onSaveStage, onExit, portalView, onSelectPortal, registerAudit, isOnboarding = false }) {
+function StageFormScreen({ currentStage, applicationData, setApplicationData, progressItems, completedSteps, activeStep, preferences, setPreferences, onBack, onSaveStage, onExit, onGoToSettings, portalView, onSelectPortal, registerAudit, isOnboarding = false }) {
   const isEditing = false
   const content = stageContent[currentStage]
   const saveDisabled = !isStageValid(currentStage, applicationData, preferences)
@@ -1740,7 +2624,7 @@ function StageFormScreen({ currentStage, applicationData, setApplicationData, pr
   const setDeclarationValue = (field, value) => {
     setApplicationData((current) => {
       if (current.declarations[field] !== value) {
-        registerAudit(value ? 'Declaracao marcada' : 'Declaracao desmarcada', fieldLabels[field] || field)
+        registerAudit(value ? 'Declaração marcada' : 'Declaração desmarcada', fieldLabels[field] || field)
       }
 
       return { ...current, declarations: { ...current.declarations, [field]: value } }
@@ -1762,9 +2646,9 @@ function StageFormScreen({ currentStage, applicationData, setApplicationData, pr
       case 'declarations':
         return <DeclarationsForm applicationData={applicationData} setDeclarationValue={setDeclarationValue} onBack={onBack} onSave={onSaveStage} saveDisabled={saveDisabled} />
       case 'appeal':
-        return <PlaceholderStage title="Recurso do resultado" body="Quando o edital abrir fase de recurso, este card pode receber o formulario especifico para fundamentacao e anexos." onBack={onBack} />
-      case 'evaluation':
-        return <PlaceholderStage title="Avaliacao final" body="Esta area pode exibir resultado, criterios de desempate, parecer da comissao e historico da proposta." onBack={onBack} />
+        return <PlaceholderStage title="Recurso do resultado" body="Quando o edital abrir fase de recurso, este card pode receber o formulário específico para fundamentação e anexos." onBack={onBack} />
+      // case 'evaluation':
+      //   return <PlaceholderStage title="Avaliação final" body="Esta área pode exibir resultado, critérios de desempate, parecer da comissão e histórico da proposta." onBack={onBack} />
       case 'settings':
         return <SettingsForm preferences={preferences} setPreferences={setPreferences} onBack={onBack} onSave={onSaveStage} saveDisabled={saveDisabled} />
       default:
@@ -1772,9 +2656,11 @@ function StageFormScreen({ currentStage, applicationData, setApplicationData, pr
     }
   }
 
+  const showSidebar = !isOnboarding || currentStage === 'company-registration'
+
   return (
     <div className="candidate-dashboard registration-flow">
-      <PainelNavbar onExit={onExit} portalView={portalView} onSelectPortal={onSelectPortal} />
+      <PainelNavbar onExit={onExit} onGoToSettings={() => onGoToSettings?.()} portalView={portalView} onSelectPortal={onSelectPortal} />
       <main className="candidate-content registration-flow__content">
         <Container fluid className="px-0">
           <section className="page-intro page-intro--company">
@@ -1786,7 +2672,7 @@ function StageFormScreen({ currentStage, applicationData, setApplicationData, pr
           </section>
           <Row className="g-4 align-items-start">
             <Col xl={9}><div className="form-stack">{renderStage()}</div></Col>
-            {!isOnboarding && <Col xl={3}>
+            {showSidebar && <Col xl={3}>
               <div className="sidebar-column">
                 <SidebarStatus applicationData={applicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} isEditing={isEditing} />
               </div>
@@ -1803,9 +2689,12 @@ function App() {
   const [screen, setScreen] = useState('auth')
   const [portalView, setPortalView] = useState('candidate')
   const [adminScreen, setAdminScreen] = useState('dashboard')
+  const [evaluatorScreen, setEvaluatorScreen] = useState('eval-dashboard')
+  const [selectedEvaluatorProjectId, setSelectedEvaluatorProjectId] = useState(evaluatorProjects[0]?.id || null)
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false)
   const [authData, setAuthData] = useState({ email: '', password: '' })
   const [applicationData, setApplicationData] = useState(initialApplicationData)
+  const [adminUsers, setAdminUsers] = useState(initialAdminUsers)
   const [auditTrail, setAuditTrail] = useState([
     { title: 'Painel administrativo carregado', time: '01/04/2026 08:00', detail: 'Visao inicial pronta para acompanhamento.' },
   ])
@@ -1820,18 +2709,16 @@ function App() {
   }, [preferences])
 
   const sectionRules = [
-    { title: 'Cadastro da empresa', fields: ['companyType', 'cnpj', 'companyName', 'email', 'phone', 'street', 'zipCode', 'city', 'state', 'bank', 'agency', 'account'] },
+    { title: 'Cadastro da empresa', fields: ['companyType', 'cnpj', 'companyName', 'email', 'phone', 'street', 'zipCode', 'city', 'state'] },
     { title: 'Representante legal', fields: ['legalRepresentative', 'legalRepresentativeCpf', 'legalRepresentativeRole', 'commercialContact', 'commercialContactCpf', 'commercialContactPhone'] },
     { title: 'Regularidade fiscal', fields: ['sponsorshipRequest', 'nationalTax', 'stateTax', 'municipalTax', 'fgts', 'cndt', 'correctionalCertificate', 'tcuCertificate'], source: 'uploads' },
-    { title: 'Projeto e plano de midia', fields: ['selectedNotice', 'projectTitle', 'projectAmount', 'projectCounterpart', 'projectPdf'], source: 'project-mixed' },
-    { title: 'Revisao final', fields: ['socialRegularity', 'articleSeven', 'noticeAgreement'], source: 'declarations' },
+    { title: 'Documentos obrigatórios', fields: ['constitutiveAct', 'legalRepresentativeDocument', 'representativeAddress'], source: 'uploads' },
+    { title: 'Declarações', fields: ['socialRegularity', 'articleSeven', 'noticeAgreement'], source: 'declarations' },
   ]
 
   const progressItems = sectionRules.map((section) => {
     const values = section.source === 'uploads'
       ? section.fields.map((field) => Boolean(applicationData.uploads[field]))
-      : section.source === 'project-mixed'
-        ? section.fields.map((field) => (field === 'projectPdf' ? Boolean(applicationData.uploads[field]) : Boolean(applicationData[field])))
       : section.source === 'declarations'
         ? section.fields.map((field) => Boolean(applicationData.declarations[field]))
         : section.fields.map((field) => Boolean(applicationData[field]))
@@ -1840,17 +2727,19 @@ function App() {
     const isDone = filled > 0 && filled === values.length
     const isCurrent = !isDone && filled > 0
 
-    return { title: section.title, status: isDone ? 'Concluido' : isCurrent ? 'Em andamento' : 'Pendente', tone: isDone ? 'success' : isCurrent ? 'warning' : 'neutral', done: isDone, current: isCurrent }
+    return { title: section.title, status: isDone ? 'Concluído' : isCurrent ? 'Em andamento' : 'Pendente', tone: isDone ? 'success' : isCurrent ? 'warning' : 'neutral', done: isDone, current: isCurrent }
   })
 
   const completedSteps = progressItems.filter((item) => item.done).length
   const activeItem = progressItems.find((item) => item.current) || progressItems.find((item) => !item.done)
-  const activeStep = activeItem?.title || 'Cadastro concluido'
+  const activeStep = activeItem?.title || 'Cadastro concluído'
   const adminContext = buildAdminContext(applicationData, progressItems, completedSteps, auditTrail)
 
   const handleExit = () => {
     setPortalView('candidate')
     setAdminScreen('dashboard')
+    setEvaluatorScreen('eval-dashboard')
+    setSelectedEvaluatorProjectId(evaluatorProjects[0]?.id || null)
     setAuthData({ email: '', password: '' })
     setScreen('auth')
   }
@@ -1859,6 +2748,25 @@ function App() {
       { title, detail, time: formatAuditTimestamp(new Date()) },
       ...current,
     ].slice(0, 12))
+  }
+
+  const createAdminUser = (userData) => {
+    const nextId = Math.max(0, ...adminUsers.map((user) => user.id)) + 1
+    setAdminUsers((current) => [...current, { ...userData, id: nextId, status: 'Convite enviado' }])
+    registerAudit('Convite de usuario preparado', `${userData.fullName} (${getAdminUserRoles(userData)}) - ${userData.email}`)
+  }
+
+  const updateAdminUser = (userData) => {
+    setAdminUsers((current) => current.map((user) => (user.id === userData.id ? { ...user, ...userData } : user)))
+    registerAudit('Usuario atualizado', `${userData.fullName} (${getAdminUserRoles(userData)})`)
+  }
+
+  const deleteAdminUser = (userId) => {
+    const targetUser = adminUsers.find((user) => user.id === userId)
+    setAdminUsers((current) => current.filter((user) => user.id !== userId))
+    if (targetUser) {
+      registerAudit('Usuario removido', `${targetUser.fullName} - ${targetUser.email}`)
+    }
   }
 
   if (screen === 'auth') {
@@ -1877,29 +2785,41 @@ function App() {
     return <LoggedOutScreen portalView={portalView} onSelectPortal={setPortalView} />
   }
 
+  if (portalView === 'evaluator') {
+    return <EvaluatorDashboardScreen evaluatorScreen={evaluatorScreen} portalView={portalView} onSelectPortal={setPortalView} onNavigate={setEvaluatorScreen} onExit={handleExit} selectedProjectId={selectedEvaluatorProjectId} onSelectProject={setSelectedEvaluatorProjectId} />
+  }
+
   if (portalView === 'admin') {
     if (adminScreen === 'institutions') {
-      return <AdminApplicantsTable title="Instituicoes" subtitle="Tabela principal com as instituicoes e acesso rapido para acompanhamento e gestao." rows={adminContext.applicants} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} />
+      return <AdminApplicantsTable title="Instituições" subtitle="Tabela principal com as instituições e acesso rápido para acompanhamento e gestão." rows={adminContext.applicants} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} />
     }
 
     if (adminScreen === 'projects') {
-      return <AdminProjectsScreen rows={adminContext.projectsRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} />
+      return <AdminProjectsScreen rows={adminContext.projectsRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} />
     }
 
     if (adminScreen === 'resources') {
-      return <AdminResourcesScreen rows={adminContext.resourcesRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} />
+      return <AdminResourcesScreen rows={adminContext.resourcesRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} />
     }
 
     if (adminScreen === 'audits') {
-      return <AdminAuditsScreen rows={adminContext.auditRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} />
+      return <AdminAuditsScreen rows={adminContext.auditRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} />
     }
 
-    return <AdminDashboardScreen portalView={portalView} onSelectPortal={setPortalView} adminContext={adminContext} adminScreen={adminScreen} onNavigate={setAdminScreen} />
+    if (adminScreen === 'reports') {
+      return <AdminReportsScreen adminContext={adminContext} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} />
+    }
+
+    if (adminScreen === 'users') {
+      return <AdminUsersScreen rows={adminUsers} onBack={() => setAdminScreen('dashboard')} onCreateUser={createAdminUser} onUpdateUser={updateAdminUser} onDeleteUser={deleteAdminUser} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} />
+    }
+
+    return <AdminDashboardScreen portalView={portalView} onSelectPortal={setPortalView} adminContext={adminContext} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} />
   }
 
   if (screen !== 'dashboard') {
     const isOnboarding = !hasCompletedOnboarding && screen === 'company-registration'
-    return <StageFormScreen currentStage={screen} applicationData={applicationData} setApplicationData={setApplicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} preferences={preferences} setPreferences={setPreferences} onBack={() => setScreen(isOnboarding ? 'auth' : 'dashboard')} onSaveStage={() => { if (isOnboarding) { setHasCompletedOnboarding(true) } setScreen('dashboard') }} onExit={handleExit} portalView={portalView} onSelectPortal={setPortalView} registerAudit={registerAudit} isOnboarding={isOnboarding} />
+    return <StageFormScreen currentStage={screen} applicationData={applicationData} setApplicationData={setApplicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} preferences={preferences} setPreferences={setPreferences} onBack={() => setScreen(isOnboarding ? 'auth' : 'dashboard')} onSaveStage={() => { if (isOnboarding) { setHasCompletedOnboarding(true) } setScreen('dashboard') }} onExit={handleExit} onGoToSettings={() => setScreen('settings')} portalView={portalView} onSelectPortal={setPortalView} registerAudit={registerAudit} isOnboarding={isOnboarding} />
   }
 
   return <DashboardScreen onNavigate={setScreen} onExit={handleExit} portalView={portalView} onSelectPortal={setPortalView} applicationData={applicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} />

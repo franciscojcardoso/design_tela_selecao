@@ -1,12 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap');
 
 :root {
   --font-ui: 'Kanit', 'Segoe UI', system-ui, sans-serif;
-  --weight-regular: 400;
-  --weight-medium: 500;
-  --weight-semibold: 500;
-  --weight-bold: 600;
-  --weight-xbold: 700;
+  --weight-regular: 300;
+  --weight-medium: 400;
+  --weight-semibold: 400;
+  --weight-bold: 500;
+  --weight-xbold: 600;
 
   --type-display-large-size: 1.2rem;
   --type-display-large-line: 4rem;
