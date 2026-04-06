@@ -17,11 +17,10 @@ const institutionInfo = {
 }
 
 const dashboardStagesTop = [
-  { id: 'company-registration', title: 'Cadastro da empresa', icon: 'bi-buildings', description: 'Dados cadastrais, endereço e conta bancária da pessoa jurídica.', statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'company-registration' },
-  { id: 'legal-contact', title: 'Representante legal', icon: 'bi-person-vcard', description: 'Informações do representante legal e do contato comercial.', statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'legal-contact' },
-  { id: 'fiscal', title: 'Regularidade fiscal', icon: 'bi-shield-check', description: 'Certidões e comprovantes de regularidade fiscal da empresa.', statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'fiscal' },
-  { id: 'attachments', title: 'Documentos obrigatórios', icon: 'bi-folder2-open', description: 'Anexos institucionais, comprovantes e modelos assinados.', statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'attachments' },
-  { id: 'declarations', title: 'Declarações', icon: 'bi-file-earmark-check', description: 'Termos obrigatórios e confirmações de ciência do edital.', statusColor: '#5C646B', startDate: '30/03/2026', endDate: '15/04/2026', navigateTo: 'declarations' },
+  { id: 'company-registration', title: 'Cadastro da empresa', icon: 'bi-buildings', description: 'Dados cadastrais, endereço e conta bancária da pessoa jurídica.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'company-registration' },
+  { id: 'legal-contact', title: 'Representante legal', icon: 'bi-person-vcard', description: 'Informações do representante legal e do contato comercial.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'legal-contact' },
+  { id: 'fiscal', title: 'Regularidade fiscal', icon: 'bi-shield-check', description: 'Certidões e comprovantes de regularidade fiscal da empresa.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'fiscal' },
+  { id: 'attachments', title: 'Documentos obrigatorios', icon: 'bi-folder2-open', description: 'Anexos institucionais, comprovantes, declaracoes e modelos assinados.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'attachments' },
 ]
 
 const dashboardStagesBottom = [
@@ -164,11 +163,7 @@ const adminMenu = [
   { label: 'Gerenciar usu\u00E1rios', icon: 'bi-person-gear', target: 'users' },
 ]
 
-const evaluatorMenu = [
-  { label: 'Início', icon: 'bi-house', target: 'eval-dashboard' },
-  { label: 'Projetos', icon: 'bi-kanban', target: 'eval-projects' },
-  { label: 'Documentos', icon: 'bi-folder-check', target: 'eval-documents' },
-]
+const evaluatorMenu = []
 
 const evaluatorProjects = [
   { id: 'eval-01', institution: 'Instituto Vida', project: 'Fortalecimento da atenção territorial', notice: 'Edital 03/2026', amount: 'R$ 45.000,00', status: 'Aguardando avaliação' },
@@ -176,13 +171,6 @@ const evaluatorProjects = [
   { id: 'eval-03', institution: 'Associação Soma', project: 'Implantação da rede saúde', notice: 'Edital 03/2026', amount: 'R$ 60.000,00', status: 'Avaliado' },
 ]
 
-const evaluationCriteria = [
-  { id: 1, description: 'Alinhamento com os objetivos do edital' },
-  { id: 2, description: 'Capacidade técnica da instituição' },
-  { id: 3, description: 'Viabilidade financeira do projeto' },
-  { id: 4, description: 'Impacto social esperado' },
-  { id: 5, description: 'Cobertura territorial' },
-]
 
 const evaluatorDocuments = [
   { id: 1, institution: 'Instituto Vida', document: 'Ato constitutivo', avaliacao: null, justificativa: '' },
@@ -415,6 +403,8 @@ function buildAdminContext(applicationData, progressItems, completedSteps, audit
     projectsRows: applicantsWithStatus.map((applicant, index) => ({
       id: applicant.id,
       institution: applicant.companyName,
+      email: index === applicantsWithStatus.length - 1 && applicationData.email ? applicationData.email : `contato${index + 1}@instituicao.org.br`,
+      phone: index === applicantsWithStatus.length - 1 && applicationData.phone ? applicationData.phone : `(85) 9${index + 1}${index + 2}${index + 3}${index + 4}-${index + 5}${index + 6}${index + 7}${index + 8}`,
       notice: index === applicantsWithStatus.length - 1 && applicationData.selectedNotice ? applicationData.selectedNotice : noticeOptions[index % noticeOptions.length],
       project: index === applicantsWithStatus.length - 1 && applicationData.projectTitle ? applicationData.projectTitle : `Projeto ${index + 1} de fortalecimento institucional`,
       amount: index === applicantsWithStatus.length - 1 && applicationData.projectAmount ? applicationData.projectAmount : `R$ ${(index + 2) * 15000},00`,
@@ -439,9 +429,7 @@ function buildAdminContext(applicationData, progressItems, completedSteps, audit
 function PortalSelector({ portalView, onSelectPortal }) {
   return (
     <div className="portal-selector" role="tablist" aria-label="Alternar entre visões">
-      <button type="button" className={`portal-selector__button${portalView === 'candidate' ? ' is-active' : ''}`} onClick={() => onSelectPortal('candidate')}>
-        Candidato
-      </button>
+      <button type="button" className={`portal-selector__button${portalView === 'candidate' ? ' is-active' : ''}`} onClick={() => onSelectPortal('candidate')}>Instituicao</button>
       <button type="button" className={`portal-selector__button${portalView === 'admin' ? ' is-active' : ''}`} onClick={() => onSelectPortal('admin')}>
         Admin
       </button>
@@ -628,34 +616,39 @@ function AppBrand({ footer = false }) {
 
 function AppFooter() {
   return (
-    <footer className="footer-painel">
-      <div className="footer-painel__stripe" aria-hidden="true">
-        <span className="footer-painel__stripe-part footer-painel__stripe-part--green" />
-        <span className="footer-painel__stripe-part footer-painel__stripe-part--blue" />
-        <span className="footer-painel__stripe-part footer-painel__stripe-part--red" />
-      </div>
-      <div className="footer-painel__content">
-        <div className="container-fluid px-4">
-          <div className="footer-painel__inner">
-            <div className="footer-painel__identity">
-              <AppBrand footer />
-              <div className="footer-info">
-                <strong>{institutionInfo.fullName}</strong>
-                <div><i className="bi bi-geo-alt-fill me-2" />{institutionInfo.address}</div>
-                <div><i className="bi bi-envelope-fill me-2" />{institutionInfo.email}</div>
+    <>
+      <footer className="footer-painel">
+        <div className="footer-painel__stripe" aria-hidden="true">
+          <span className="footer-painel__stripe-part footer-painel__stripe-part--green" />
+          <span className="footer-painel__stripe-part footer-painel__stripe-part--blue" />
+          <span className="footer-painel__stripe-part footer-painel__stripe-part--red" />
+        </div>
+        <div className="footer-painel__content">
+          <div className="container-fluid px-4">
+            <div className="footer-painel__inner">
+              <div className="footer-painel__identity">
+                <AppBrand footer />
+                <div className="footer-info">
+                  <strong>{institutionInfo.fullName}</strong>
+                  <div><i className="bi bi-geo-alt-fill me-2" />{institutionInfo.address}</div>
+                  <div><i className="bi bi-envelope-fill me-2" />{institutionInfo.email}</div>
+                </div>
               </div>
-            </div>
-            <div className="footer-rights">
-              <img src={logoEstadoCeara} alt={institutionInfo.government} className="footer-rights__logo" />
+              <div className="footer-rights">
+                <img src={logoEstadoCeara} alt={institutionInfo.government} className="footer-rights__logo" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+      <AdminChatWidget />
+    </>
   )
 }
 
 function DashboardCard({ title, icon, description, startDate, endDate, onCardClick }) {
+  const showDates = Boolean(startDate && endDate)
+
   return (
     <div className={`card-hover${onCardClick ? ' card-hover--clickable' : ''}`} onClick={onCardClick}>
       <a href="#" className="card-link card-link--stage" onClick={(event) => event.preventDefault()}>
@@ -665,12 +658,14 @@ function DashboardCard({ title, icon, description, startDate, endDate, onCardCli
         <p className="card-text mb-0">{title}</p>
         <small className="card-description">{description}</small>
       </a>
-      <div className="card-meta card-meta--hover">
-        <div className="card-periodo periodo-linha">
-          <div><strong>Inicio:</strong><br />{startDate}</div>
-          <div><strong>Fim:</strong><br />{endDate}</div>
+      {showDates && (
+        <div className="card-meta card-meta--hover">
+          <div className="card-periodo periodo-linha">
+            <div><strong>Inicio:</strong><br />{startDate}</div>
+            <div><strong>Fim:</strong><br />{endDate}</div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
@@ -855,186 +850,40 @@ function AdminCalendarCard() {
 }
 
 function AdminInsightsCard({ adminContext }) {
-  const [activeTab, setActiveTab] = useState('indicators')
-
   return (
     <section className="admin-panel-card admin-panel-card--side">
       <header className="admin-panel-card__header">
         <div className="admin-panel-card__title">
-          <i className="bi bi-app-indicator" />
-          <span>Indicadores</span>
+          <i className="bi bi-kanban" />
+          <span>Projetos em analise</span>
         </div>
-        <div className="admin-tabs">
-          <button type="button" className={`admin-tabs__button${activeTab === 'indicators' ? ' is-active' : ''}`} onClick={() => setActiveTab('indicators')}>
-            Indicadores
-          </button>
-          <button type="button" className={`admin-tabs__button${activeTab === 'attendance' ? ' is-active' : ''}`} onClick={() => setActiveTab('attendance')}>
-            Atendimentos
-          </button>
-        </div>
+        <span className="admin-table-card__badge">{adminContext.projectsRows.length} projetos</span>
       </header>
 
-      {activeTab === 'indicators' ? (
-        <div className="admin-insights">
-          <article className="admin-table-card">
-            <div className="admin-table-card__header">
-              <div><i className="bi bi-geo-alt" /> Instituições por cidade</div>
-              <span className="admin-table-card__badge">{adminContext.cityRows.length} cidades</span>
-            </div>
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Cidade</th>
-                  <th>Total</th>
+      <div className="admin-insights admin-insights--single">
+        <article className="admin-table-card">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Instituicao</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {adminContext.projectsRows.slice(0, 6).map((project) => (
+                <tr key={project.id}>
+                  <td>{project.institution}</td>
+                  <td>{project.email}</td>
+                  <td>{project.phone}</td>
+                  <td>{project.status}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {adminContext.cityRows.map((row) => (
-                  <tr key={row.city}>
-                    <td>{row.city}</td>
-                    <td>{row.total}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </article>
-
-          <article className="admin-table-card">
-            <div className="admin-table-card__header">
-              <div><i className="bi bi-kanban" /> Projetos em análise</div>
-              <span className="admin-table-card__badge">{adminContext.projectsRows.length} projetos</span>
-            </div>
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Instituicao</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {adminContext.projectsRows.slice(0, 5).map((project) => (
-                  <tr key={project.id}>
-                    <td>{project.institution}</td>
-                    <td>{project.status}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </article>
-        </div>
-      ) : (
-        <div className="admin-attendance">
-          {adminContext.attendanceGroups.map((group) => (
-            <article key={group.label} className={`admin-attendance-group admin-attendance-group--${group.tone}`}>
-              <header>
-                <strong>{group.label}</strong>
-                <span>{group.count}</span>
-              </header>
-              <div className="admin-attendance-group__list">
-                {group.items.map((item) => (
-                  <div key={item.title} className="admin-attendance-item">
-                    <div>
-                      <strong>{item.title}</strong>
-                      <small>{item.detail}</small>
-                    </div>
-                    <span>{item.status}</span>
-                  </div>
-                ))}
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
-    </section>
-  )
-}
-
-function AdminUserCreationCard({ onRegister }) {
-  const [formData, setFormData] = useState(initialAdminUserForm)
-  const [feedback, setFeedback] = useState('')
-
-  const updateField = (field) => (event) => {
-    const { type, checked, value } = event.target
-    setFormData((current) => ({
-      ...current,
-      [field]: type === 'checkbox' ? checked : value,
-    }))
-    setFeedback('')
-  }
-
-  const hasRoleSelected = formData.isAdmin || formData.isEvaluator
-  const isValid = Boolean(formData.fullName.trim() && formData.email.trim() && formData.cpf.trim() && hasRoleSelected)
-  const roleSummary = [
-    formData.isAdmin && 'admin',
-    formData.isEvaluator && 'avaliador',
-  ].filter(Boolean).join(' e ')
-
-  const handleSubmit = (event) => {
-    event.preventDefault()
-
-    if (!hasRoleSelected) {
-      setFeedback('Selecione pelo menos um perfil para o usuário.')
-      return
-    }
-
-    onRegister?.(formData, roleSummary)
-    setFeedback(`Convite preparado para ${formData.email} com perfil de ${roleSummary}.`)
-    setFormData(initialAdminUserForm)
-  }
-
-  return (
-    <section className="admin-panel-card admin-user-card">
-      <header className="admin-panel-card__header">
-        <div className="admin-panel-card__title">
-          <i className="bi bi-person-plus" />
-          <span>Criar usuário</span>
-        </div>
-      </header>
-
-      <Form className="admin-user-form" onSubmit={handleSubmit}>
-        <Row className="g-3">
-          <Col lg={6}>
-            <Form.Group>
-              <Form.Label>Nome completo *</Form.Label>
-              <Form.Control value={formData.fullName} onChange={updateField('fullName')} placeholder="Nome da pessoa usuária" />
-            </Form.Group>
-          </Col>
-          <Col lg={6}>
-            <Form.Group>
-              <Form.Label>E-mail *</Form.Label>
-              <Form.Control type="email" value={formData.email} onChange={updateField('email')} placeholder="email@instituicao.org.br" />
-            </Form.Group>
-          </Col>
-          <Col md={6} lg={4}>
-            <Form.Group>
-              <Form.Label>CPF *</Form.Label>
-              <Form.Control value={formData.cpf} onChange={updateField('cpf')} placeholder="000.000.000-00" />
-            </Form.Group>
-          </Col>
-          <Col md={6} lg={4}>
-            <Form.Group>
-              <Form.Label>Telefone</Form.Label>
-              <Form.Control value={formData.phone} onChange={updateField('phone')} placeholder="(85) 99999-9999" />
-            </Form.Group>
-          </Col>
-          <Col lg={4}>
-            <div className="admin-user-form__roles">
-              <span className="admin-user-form__roles-label">Perfis de acesso *</span>
-              <Form.Check type="checkbox" id="admin-role" label="Admin" checked={formData.isAdmin} onChange={updateField('isAdmin')} />
-              <Form.Check type="checkbox" id="evaluator-role" label="Avaliador" checked={formData.isEvaluator} onChange={updateField('isEvaluator')} />
-            </div>
-          </Col>
-        </Row>
-
-        <div className="admin-user-form__footer">
-          <p className="admin-user-form__helper">A senha inicial será enviada por e-mail para a pessoa cadastrada.</p>
-          <Button type="submit" variant="success" className="action-button action-button--success" disabled={!isValid}>
-            Enviar convite
-          </Button>
-        </div>
-
-        {feedback && <p className="admin-user-form__feedback">{feedback}</p>}
-      </Form>
+              ))}
+            </tbody>
+          </table>
+        </article>
+      </div>
     </section>
   )
 }
@@ -1048,7 +897,7 @@ function AdminSectionHeader({ title, subtitle, onBack }) {
           <span>Voltar ao painel</span>
         </button>
         <h2>{title}</h2>
-        <p>{subtitle}</p>
+        {subtitle && <p>{subtitle}</p>}
       </div>
     </div>
   )
@@ -1084,9 +933,7 @@ function AdminApplicantsTable({ title, subtitle, rows, onBack, portalView, onSel
                   <td>{row.currentStageLabel}</td>
                   <td>{row.status}</td>
                   <td>{row.documents}</td>
-                  <td>
-                    <button type="button" className="admin-inline-action">Gerenciar</button>
-                  </td>
+                  <td><div className="admin-users-actions"><button type="button" className="admin-inline-action">Documentos</button><button type="button" className="admin-inline-action">Gerenciar</button></div></td>
                 </tr>
               ))}
             </tbody>
@@ -1260,9 +1107,18 @@ function AdminAuditsScreen({ rows, onBack, portalView, onSelectPortal, adminScre
 
 function AdminChatWidget({ adminContext }) {
   const [isOpen, setIsOpen] = useState(false)
-  const pendingCount = adminContext.attendanceGroups
+  const attendanceGroups = adminContext?.attendanceGroups || [
+    {
+      label: 'Em andamento',
+      items: [
+        { title: 'Projeto aguardando avaliacao', detail: 'Fila principal do avaliador', status: 'Pendente' },
+        { title: 'Cadastro institucional incompleto', detail: 'Aguardando envio complementar', status: 'Em andamento' },
+      ],
+    },
+  ]
+  const pendingCount = attendanceGroups
     .filter((group) => group.label !== 'Concluidos')
-    .reduce((sum, group) => sum + group.count, 0)
+    .reduce((sum, group) => sum + (group.count ?? group.items.length), 0)
 
   return (
     <>
@@ -1285,7 +1141,7 @@ function AdminChatWidget({ adminContext }) {
             <p>Ola! Estes sao os atendimentos em aberto no momento.</p>
             <strong>{pendingCount} item(ns) aguardando acao</strong>
             <ul>
-              {adminContext.attendanceGroups
+              {attendanceGroups
                 .filter((group) => group.label !== 'Concluidos')
                 .flatMap((group) => group.items.slice(0, 2))
                 .map((item) => <li key={item.title}>{item.title}</li>)}
@@ -1306,9 +1162,7 @@ function AdminDashboardScreen({ portalView, onSelectPortal, adminContext, adminS
     { title: 'Instituições', value: adminContext.totals.inscritos, icon: 'bi-people-fill', detail: 'Instituições localizadas no contexto atual.', target: 'institutions' },
     { title: 'Projetos', value: adminContext.projectsRows.length, icon: 'bi-kanban', detail: 'Projetos vinculados aos editais ativos.', target: 'projects' },
     { title: 'Recursos', value: adminContext.totals.recursos, icon: 'bi-file-earmark-text', detail: 'Demandas em revisão ou acompanhamento.', target: 'resources' },
-    { title: 'Documentos', value: adminContext.totals.documentos, icon: 'bi-folder-check', detail: 'Arquivos enviados e prontos para análise.', disabled: true },
     { title: 'Auditorias', value: adminContext.auditRows.length, icon: 'bi-clipboard-check', detail: 'Histórico rastreável de operações do sistema.', target: 'audits' },
-    { title: 'Relatórios', value: '—', icon: 'bi-bar-chart-line', detail: 'Relatórios consolidados do processo seletivo.', target: 'reports' },
   ]
 
   return (
@@ -1332,7 +1186,6 @@ function AdminDashboardScreen({ portalView, onSelectPortal, adminContext, adminS
         </section>
       </main>
       <AppFooter />
-      <AdminChatWidget adminContext={adminContext} />
     </div>
   )
 }
@@ -1909,18 +1762,11 @@ export default App
 function AdminReportsScreen({ adminContext, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit }) {
   const reportSections = [
     {
-      title: 'Instituições por cidade',
-      icon: 'bi-geo-alt',
-      rows: adminContext.cityRows,
-      headers: ['Cidade', 'Total'],
-      cells: (row) => [row.city, row.total],
-    },
-    {
-      title: 'Situação dos projetos',
+      title: 'Projetos em análise',
       icon: 'bi-kanban',
       rows: adminContext.projectsRows,
-      headers: ['Instituição', 'Edital', 'Valor', 'Status'],
-      cells: (row) => [row.institution, row.notice.split(' - ')[0], row.amount, row.status],
+      headers: ['Instituição', 'E-mail', 'Telefone', 'Edital', 'Valor', 'Status'],
+      cells: (row) => [row.institution, row.email, row.phone, row.notice.split(' - ')[0], row.amount, row.status],
     },
     {
       title: 'Recursos e demandas',
@@ -2011,6 +1857,19 @@ function AdminUserRecordModal({ title, formData, onChange, onClose, onSubmit, su
                 <Form.Control type="email" value={formData.emailConfirm} onChange={onChange('emailConfirm')} placeholder="Repita o e-mail" />
               </Form.Group>
             </Col>
+            <Col md={4}>
+              <Form.Group>
+                <Form.Label>CPF *</Form.Label>
+                <Form.Control value={formData.cpf} onChange={onChange('cpf')} placeholder="000.000.000-00" />
+              </Form.Group>
+            </Col>
+            <Col md={8}>
+              <div className="admin-user-form__roles admin-user-form__roles--inline">
+                <span className="admin-user-form__roles-label">Perfis de acesso *</span>
+                <Form.Check type="checkbox" id="modal-admin-role" label="Admin" checked={formData.isAdmin} onChange={onChange('isAdmin')} />
+                <Form.Check type="checkbox" id="modal-evaluator-role" label="Avaliador" checked={formData.isEvaluator} onChange={onChange('isEvaluator')} />
+              </div>
+            </Col>
             <Col md={6}>
               <Form.Group>
                 <Form.Label>Telefone principal *</Form.Label>
@@ -2022,19 +1881,6 @@ function AdminUserRecordModal({ title, formData, onChange, onClose, onSubmit, su
                 <Form.Label>Telefone secundário</Form.Label>
                 <Form.Control value={formData.phoneSecondary} onChange={onChange('phoneSecondary')} placeholder="(85) 99999-9999" />
               </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group>
-                <Form.Label>CPF *</Form.Label>
-                <Form.Control value={formData.cpf} onChange={onChange('cpf')} placeholder="000.000.000-00" />
-              </Form.Group>
-            </Col>
-            <Col xs={12}>
-              <div className="admin-user-form__roles">
-                <span className="admin-user-form__roles-label">Perfis de acesso *</span>
-                <Form.Check type="checkbox" id="modal-admin-role" label="Admin" checked={formData.isAdmin} onChange={onChange('isAdmin')} />
-                <Form.Check type="checkbox" id="modal-evaluator-role" label="Avaliador" checked={formData.isEvaluator} onChange={onChange('isEvaluator')} />
-              </div>
             </Col>
           </Row>
           <p className="admin-user-form__helper">A senha inicial será enviada por e-mail para a pessoa cadastrada.</p>
@@ -2284,8 +2130,8 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
 
       {confirmState && (
         <AdminConfirmModal
-          title={confirmState.type === 'delete' ? 'Confirmar exclusão do registro' : 'Confirmar modificação do registro'}
-          message={confirmState.type === 'delete' ? 'Esse usuário será removido da listagem, deseja prosseguir?' : 'Os dados a seguir serão salvos, deseja prosseguir?'}
+          title={confirmState.type === 'delete' ? 'Confirmar exclusao do registro' : 'Confirmar modificacao do registro'}
+          message={confirmState.type === 'delete' ? 'Esse usuario sera removido da listagem, deseja prosseguir?' : 'Os dados a seguir serao salvos, deseja prosseguir?'}
           onCancel={() => setConfirmState(null)}
           onConfirm={handleConfirm}
         />
@@ -2297,360 +2143,158 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
 }
 
 function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelectPortal, onNavigate, onExit, selectedProjectId, onSelectProject }) {
+  const [searchTerm, setSearchTerm] = useState('')
+
   const statusBadge = (status) => {
     if (status === 'Avaliado') return 'success'
-    if (status === 'Em avaliação') return 'warning'
+    if (String(status).toLowerCase().includes('avali')) return 'warning'
     return 'neutral'
   }
 
-  const docBadge = (avaliacao) => {
-    if (avaliacao === 1) return { label: 'Aceito', tone: 'success' }
-    if (avaliacao === 0) return { label: 'Recusado', tone: 'danger' }
-    return { label: 'Pendente', tone: 'neutral' }
-  }
+  const filteredProjects = evaluatorProjects.filter((project) => {
+    const term = searchTerm.trim().toLowerCase()
+    if (!term) return true
 
-  const recentProjects = evaluatorProjects.slice(0, 3)
+    return [project.institution, project.project, project.notice, project.amount, project.status]
+      .some((value) => String(value || '').toLowerCase().includes(term))
+  })
 
   return (
     <div className="admin-page">
       <EvaluatorNavbar portalView={portalView} onSelectPortal={onSelectPortal} evaluatorScreen={evaluatorScreen} onNavigate={onNavigate} onExit={onExit} />
       <main className="admin-main">
-        {(!evaluatorScreen || evaluatorScreen === 'eval-dashboard') && (
-          <>
-            <div className="admin-detail-header">
-              <div>
-                <h2>Painel do avaliador</h2>
-                <p>Gerencie as avaliações de projetos e documentos atribuídas ao seu perfil.</p>
-              </div>
-            </div>
+        <div className="admin-detail-header">
+          <div>
+            <h2>Painel do avaliador</h2>
+            <p>Leitura e avaliacao dos projetos atribuidos ao seu perfil.</p>
+          </div>
+        </div>
 
-            <div className="reports-summary-grid" style={{ marginBottom: '1rem' }}>
-              <div className="reports-kpi-card">
-                <span className="reports-kpi-card__label">Projetos atribuídos</span>
-                <strong className="reports-kpi-card__value">{evaluatorProjects.length}</strong>
-              </div>
-              <div className="reports-kpi-card">
-                <span className="reports-kpi-card__label">Avaliados</span>
-                <strong className="reports-kpi-card__value">{evaluatorProjects.filter((p) => p.status === 'Avaliado').length}</strong>
-              </div>
-              <div className="reports-kpi-card">
-                <span className="reports-kpi-card__label">Pendentes</span>
-                <strong className="reports-kpi-card__value">{evaluatorProjects.filter((p) => p.status !== 'Avaliado').length}</strong>
-              </div>
-              <div className="reports-kpi-card">
-                <span className="reports-kpi-card__label">Critérios ativos</span>
-                <strong className="reports-kpi-card__value">{evaluationCriteria.length}</strong>
-              </div>
-            </div>
+        <div className="reports-summary-grid" style={{ marginBottom: '1rem' }}>
+          <div className="reports-kpi-card">
+            <span className="reports-kpi-card__label">Projetos atribuidos</span>
+            <strong className="reports-kpi-card__value">{evaluatorProjects.length}</strong>
+          </div>
+          <div className="reports-kpi-card">
+            <span className="reports-kpi-card__label">Avaliados</span>
+            <strong className="reports-kpi-card__value">{evaluatorProjects.filter((project) => project.status === 'Avaliado').length}</strong>
+          </div>
+          <div className="reports-kpi-card">
+            <span className="reports-kpi-card__label">Pendentes</span>
+            <strong className="reports-kpi-card__value">{evaluatorProjects.filter((project) => project.status !== 'Avaliado').length}</strong>
+          </div>
+        </div>
 
-            <section className="admin-management-card evaluator-recent-projects" style={{ marginBottom: '1rem' }}>
-              <div className="admin-management-card__topline">
-                <strong>Projetos para avaliação</strong>
-                <span>{recentProjects.length} projeto(s)</span>
-              </div>
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Instituição</th>
-                    <th>Projeto</th>
-                    <th>Edital</th>
-                    <th>Valor solicitado</th>
-                    <th>Status</th>
-                    <th>Ação</th>
+        <section className="admin-management-card admin-users-crud">
+          <div className="admin-users-crud__topbar">
+            <div className="admin-users-search">
+              <i className="bi bi-search" />
+              <input
+                type="search"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Pesquisar por instituicao, projeto, edital ou status"
+              />
+            </div>
+          </div>
+
+          <div className="admin-users-table-wrap">
+            <table className="admin-table admin-users-table">
+              <thead>
+                <tr>
+                  <th>Instituicao</th>
+                  <th>Projeto</th>
+                  <th>Edital</th>
+                  <th>Valor solicitado</th>
+                  <th>Status</th>
+                  <th>Acao</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredProjects.map((project) => (
+                  <tr key={project.id} className={selectedProjectId === project.id ? 'admin-table__row--highlight' : ''}>
+                    <td>{project.institution}</td>
+                    <td>
+                      <button type="button" className="admin-table-link" onClick={() => onSelectProject?.(project.id)}>
+                        {project.project}
+                      </button>
+                    </td>
+                    <td>{project.notice}</td>
+                    <td>{project.amount}</td>
+                    <td><Badge className={`status-chip status-chip--${statusBadge(project.status)}`}>{project.status}</Badge></td>
+                    <td><button type="button" className="admin-inline-action">Avaliar</button></td>
                   </tr>
-                </thead>
-                <tbody>
-                  {recentProjects.map((proj) => (
-                    <tr key={proj.id}>
-                      <td>{proj.institution}</td>
-                      <td>
-                        <button type="button" className="admin-table-link" onClick={() => { onSelectProject?.(proj.id); onNavigate('eval-projects') }}>
-                          {proj.project}
-                        </button>
-                      </td>
-                      <td>{proj.notice}</td>
-                      <td>{proj.amount}</td>
-                      <td><Badge className={`status-chip status-chip--${statusBadge(proj.status)}`}>{proj.status}</Badge></td>
-                      <td><button type="button" className="admin-inline-action">Avaliar</button></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </section>
-
-            <section className="admin-management-card">
-              <div className="admin-management-card__topline">
-                <strong>Critérios de avaliação</strong>
-                <span>{evaluationCriteria.length} critério(s)</span>
-              </div>
-              <table className="admin-table">
-                <thead>
-                  <tr><th>Nº</th><th>Descrição do critério</th></tr>
-                </thead>
-                <tbody>
-                  {evaluationCriteria.map((c) => (
-                    <tr key={c.id}>
-                      <td>{c.id}</td>
-                      <td>{c.description}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </section>
-          </>
-        )}
-
-        {evaluatorScreen === 'eval-projects' && (
-          <>
-            <div className="admin-detail-header">
-              <div>
-                <button type="button" className="admin-back-link" onClick={() => onNavigate('eval-dashboard')}>
-                  <i className="bi bi-arrow-left" /><span>Voltar ao painel</span>
-                </button>
-                <h2>Projetos atribuídos</h2>
-                <p>O projeto escolhido no painel fica destacado aqui, mas a lista completa continua disponível.</p>
-              </div>
-            </div>
-            <section className="admin-management-card">
-              <div className="admin-management-card__topline">
-                <strong>Fila completa de projetos</strong>
-                <span>{evaluatorProjects.length} projeto(s)</span>
-              </div>
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Instituição</th>
-                    <th>Projeto</th>
-                    <th>Edital</th>
-                    <th>Valor solicitado</th>
-                    <th>Status</th>
-                    <th>Ação</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {evaluatorProjects.map((proj) => (
-                    <tr key={proj.id} className={selectedProjectId === proj.id ? 'admin-table__row--highlight' : ''}>
-                      <td>{proj.institution}</td>
-                      <td>
-                        <button type="button" className="admin-table-link" onClick={() => onSelectProject?.(proj.id)}>
-                          {proj.project}
-                        </button>
-                      </td>
-                      <td>{proj.notice}</td>
-                      <td>{proj.amount}</td>
-                      <td><Badge className={`status-chip status-chip--${statusBadge(proj.status)}`}>{proj.status}</Badge></td>
-                      <td><button type="button" className="admin-inline-action">Abrir avaliação</button></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </section>
-          </>
-        )}
-
-        {evaluatorScreen === 'eval-documents' && (
-          <>
-            <div className="admin-detail-header">
-              <div>
-                <button type="button" className="admin-back-link" onClick={() => onNavigate('eval-dashboard')}>
-                  <i className="bi bi-arrow-left" /><span>Voltar ao painel</span>
-                </button>
-                <h2>Avaliação de documentos</h2>
-                <p>Documentos institucionais aguardando parecer do avaliador.</p>
-              </div>
-            </div>
-            <section className="admin-management-card">
-              <div className="admin-management-card__topline">
-                <strong>Documentos recebidos</strong>
-                <span>{evaluatorDocuments.length} documento(s)</span>
-              </div>
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Instituição</th>
-                    <th>Documento</th>
-                    <th>Status</th>
-                    <th>Justificativa</th>
-                    <th>Ação</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {evaluatorDocuments.map((doc) => {
-                    const badge = docBadge(doc.avaliacao)
-                    return (
-                      <tr key={doc.id}>
-                        <td>{doc.institution}</td>
-                        <td>{doc.document}</td>
-                        <td><Badge className={`status-chip status-chip--${badge.tone}`}>{badge.label}</Badge></td>
-                        <td>{doc.justificativa || '—'}</td>
-                        <td><button type="button" className="admin-inline-action">Analisar</button></td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </section>
-          </>
-        )}
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </main>
       <AppFooter />
     </div>
   )
 }
 
-function PlaceholderStage({ title, body, onBack }) {
-  return (
-    <FormSection title={title} subtitle="Tela preparada para a fase seguinte do processo.">
-      <div className="company-form-group company-form-group--last">
-        <p className="summary-empty">{body}</p>
-      </div>
-      <StageFooterActions onBack={onBack} saveDisabled />
-    </FormSection>
-  )
-}
-
-function LoggedOutScreen({ portalView, onSelectPortal }) {
-  return (
-    <div className="candidate-dashboard logout-screen">
-      <PainelNavbar onExit={() => {}} portalView={portalView} onSelectPortal={onSelectPortal} />
-      <main className="candidate-content">
-        <Container className="logout-screen__container">
-          <Card className="form-section-card logout-card">
-            <Card.Body className="logout-card__body">
-              <p className="eyebrow">Sessão encerrada</p>
-              <h1>Você saiu do sistema</h1>
-              <p>Feche esta aba ou faça um novo acesso para continuar utilizando a aplicação.</p>
-            </Card.Body>
-          </Card>
-        </Container>
-      </main>
-      <AppFooter />
-    </div>
-  )
-}
-
-function AuthScreen({ onLogin, onStartRegistration, onSkipToDashboard, authData, setAuthData }) {
-  const canLogin = Boolean(authData.email.trim() && authData.password.trim())
-
-  return (
-    <div className="candidate-dashboard auth-screen">
-      <main className="candidate-content auth-screen__content">
-        <Container>
-          <Row className="g-4 align-items-stretch justify-content-center">
-            <Col lg={5}>
-              <Card className="form-section-card auth-card">
-                <Card.Body className="auth-card__body">
-                  <p className="eyebrow">Acesso ao sistema</p>
-                  <h1>Entrar</h1>
-                  <p>Faça login para continuar.</p>
-                  <Form className="auth-form">
-                    <Form.Group>
-                      <Form.Label>CNPJ</Form.Label>
-                      <Form.Control type="text" value={authData.email} onChange={(event) => setAuthData((current) => ({ ...current, email: event.target.value }))} placeholder="00.000.000/0001-00" />
-                    </Form.Group>
-                    <Form.Group>
-                      <Form.Label>Senha</Form.Label>
-                      <Form.Control type="password" value={authData.password} onChange={(event) => setAuthData((current) => ({ ...current, password: event.target.value }))} placeholder="Digite sua senha" />
-                    </Form.Group>
-                    <div className="form-actions form-actions--footer auth-form__actions">
-                      <Button type="button" variant="success" className="action-button action-button--success" disabled={!canLogin} onClick={onLogin}>Entrar</Button>
-                    </div>
-                  </Form>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col lg={5}>
-              <Card className="form-section-card auth-side-card">
-                <Card.Body className="auth-card__body">
-                  <p className="eyebrow">Primeiro acesso</p>
-                  <h2>Cadastre sua empresa</h2>
-                  <p>O cadastro da empresa é o primeiro passo. Após a conclusão, você será direcionado ao painel principal.</p>
-                  <div className="auth-side-card__cta">
-                    <div className="auth-side-card__icon">
-                      <i className="bi bi-buildings" />
-                    </div>
-                    <Button type="button" variant="light" className="action-button action-button--secondary auth-side-card__button" onClick={onStartRegistration}>
-                      Iniciar cadastro
-                    </Button>
-                  </div>
-                  <button type="button" className="auth-side-card__skip" onClick={onSkipToDashboard}>
-                    Pular e ir para a tela do usuário
-                  </button>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </main>
-      <AppFooter />
-    </div>
-  )
-}
-
-function StageFormScreen({ currentStage, applicationData, setApplicationData, progressItems, completedSteps, activeStep, preferences, setPreferences, onBack, onSaveStage, onExit, onGoToSettings, portalView, onSelectPortal, registerAudit, isOnboarding = false }) {
-  const isEditing = false
-  const content = stageContent[currentStage]
-  const saveDisabled = !isStageValid(currentStage, applicationData, preferences)
+function StageFormScreen({ currentStage, applicationData, setApplicationData, progressItems, completedSteps, activeStep, onBack, onSaveStage, onExit, onGoToSettings, portalView, onSelectPortal, registerAudit, isOnboarding = false }) {
+  const content = stageContent[currentStage] || stageContent['company-registration']
+  const isEditing = !isOnboarding
 
   const updateField = (field) => (event) => {
-    const nextValue = event.target.value
-
-    setApplicationData((current) => {
-      const previousValue = current[field]
-      if (previousValue === nextValue) {
-        return current
-      }
-
-      if ((!previousValue && nextValue) || (field === 'city' && previousValue !== nextValue) || (field === 'companyName' && previousValue !== nextValue)) {
-        registerAudit(`${fieldLabels[field] || field} atualizado`, nextValue)
-      }
-
-      return { ...current, [field]: nextValue }
-    })
+    const value = event?.target?.value ?? event
+    setApplicationData((current) => ({
+      ...current,
+      [field]: value,
+    }))
   }
 
   const setUploadStatus = (field, fileName) => {
-    setApplicationData((current) => {
-      const previousValue = current.uploads[field] || ''
-      if (previousValue !== fileName) {
-        const item = uploadChecklist.find((entry) => entry.key === field)
-        registerAudit(fileName ? 'Documento anexado' : 'Documento removido', item?.label || field)
-      }
-
-      return { ...current, uploads: { ...current.uploads, [field]: fileName } }
-    })
+    setApplicationData((current) => ({
+      ...current,
+      uploads: {
+        ...current.uploads,
+        [field]: fileName,
+      },
+    }))
   }
 
   const setDeclarationValue = (field, value) => {
-    setApplicationData((current) => {
-      if (current.declarations[field] !== value) {
-        registerAudit(value ? 'Declaração marcada' : 'Declaração desmarcada', fieldLabels[field] || field)
-      }
+    setApplicationData((current) => ({
+      ...current,
+      declarations: {
+        ...current.declarations,
+        [field]: value,
+      },
+    }))
+  }
 
-      return { ...current, declarations: { ...current.declarations, [field]: value } }
-    })
+  const handleSave = () => {
+    registerAudit?.('Etapa salva', content.title)
+    onSaveStage?.()
   }
 
   const renderStage = () => {
     switch (currentStage) {
       case 'company-registration':
-        return <CompanyRegistrationForm applicationData={applicationData} updateField={updateField} onBack={onBack} onSave={onSaveStage} saveDisabled={saveDisabled} saveLabel={isOnboarding ? 'Concluir cadastro' : 'Salvar'} />
+        return <CompanyRegistrationForm applicationData={applicationData} updateField={updateField} onBack={onBack} onSave={handleSave} saveDisabled={false} saveLabel={isOnboarding ? 'Entrar no painel' : 'Salvar'} />
       case 'legal-contact':
-        return <LegalContactForm applicationData={applicationData} updateField={updateField} onBack={onBack} onSave={onSaveStage} saveDisabled={saveDisabled} />
+        return <LegalContactForm applicationData={applicationData} updateField={updateField} onBack={onBack} onSave={handleSave} saveDisabled={false} />
       case 'fiscal':
-        return <FiscalForm applicationData={applicationData} setUploadStatus={setUploadStatus} onBack={onBack} onSave={onSaveStage} saveDisabled={saveDisabled} />
+        return <FiscalForm applicationData={applicationData} setUploadStatus={setUploadStatus} onBack={onBack} onSave={handleSave} saveDisabled={false} />
       case 'attachments':
-        return <AttachmentsForm applicationData={applicationData} setUploadStatus={setUploadStatus} onBack={onBack} onSave={onSaveStage} saveDisabled={saveDisabled} />
-      case 'project':
-        return <ProjectForm applicationData={applicationData} updateField={updateField} setUploadStatus={setUploadStatus} onBack={onBack} onSave={onSaveStage} saveDisabled={saveDisabled} />
       case 'declarations':
-        return <DeclarationsForm applicationData={applicationData} setDeclarationValue={setDeclarationValue} onBack={onBack} onSave={onSaveStage} saveDisabled={saveDisabled} />
+        return <AttachmentsForm applicationData={applicationData} setUploadStatus={setUploadStatus} onBack={onBack} onSave={handleSave} saveDisabled={false} />
+      case 'project':
+        return <ProjectForm applicationData={applicationData} updateField={updateField} setUploadStatus={setUploadStatus} onBack={onBack} onSave={handleSave} saveDisabled={false} />
       case 'appeal':
-        return <PlaceholderStage title="Recurso do resultado" body="Quando o edital abrir fase de recurso, este card pode receber o formulário específico para fundamentação e anexos." onBack={onBack} />
-      // case 'evaluation':
-      //   return <PlaceholderStage title="Avaliação final" body="Esta área pode exibir resultado, critérios de desempate, parecer da comissão e histórico da proposta." onBack={onBack} />
-      case 'settings':
-        return <SettingsForm preferences={preferences} setPreferences={setPreferences} onBack={onBack} onSave={onSaveStage} saveDisabled={saveDisabled} />
+        return (
+          <FormSection title="Recurso do resultado">
+            <div className="company-form-group company-form-group--last">
+              <div className="company-form-group__title">Recurso</div>
+              <p className="summary-empty">Quando o edital abrir a fase recursal, esta tela podera receber a fundamentacao e os anexos do recurso.</p>
+            </div>
+            <StageFooterActions onBack={onBack} onSave={handleSave} saveDisabled saveLabel="Indisponivel" />
+          </FormSection>
+        )
       default:
         return null
     }
@@ -2685,6 +2329,85 @@ function StageFormScreen({ currentStage, applicationData, setApplicationData, pr
   )
 }
 
+function LoggedOutScreen({ portalView, onSelectPortal }) {
+  return (
+    <div className="candidate-dashboard logout-screen">
+      <PainelNavbar onExit={() => {}} portalView={portalView} onSelectPortal={onSelectPortal} />
+      <main className="candidate-content">
+        <Container className="logout-screen__container">
+          <Card className="form-section-card logout-card">
+            <Card.Body className="logout-card__body">
+              <p className="eyebrow">Sessao encerrada</p>
+              <h1>Voce saiu do sistema</h1>
+              <p>Feche esta aba ou faca um novo acesso para continuar utilizando a aplicacao.</p>
+            </Card.Body>
+          </Card>
+        </Container>
+      </main>
+      <AppFooter />
+    </div>
+  )
+}
+
+function AuthScreen({ onLogin, onStartRegistration, onSkipToDashboard, authData, setAuthData }) {
+  const canLogin = Boolean(authData.email.trim() && authData.password.trim())
+
+  return (
+    <div className="candidate-dashboard auth-screen">
+      <main className="candidate-content auth-screen__content">
+        <Container>
+          <Row className="g-4 align-items-stretch justify-content-center">
+            <Col lg={5}>
+              <Card className="form-section-card auth-card">
+                <Card.Body className="auth-card__body">
+                  <p className="eyebrow">Acesso ao sistema</p>
+                  <h1>Entrar</h1>
+                  <p>Faca login para continuar.</p>
+                  <Form className="auth-form">
+                    <Form.Group>
+                      <Form.Label>CNPJ</Form.Label>
+                      <Form.Control type="text" value={authData.email} onChange={(event) => setAuthData((current) => ({ ...current, email: event.target.value }))} placeholder="00.000.000/0001-00" />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Senha</Form.Label>
+                      <Form.Control type="password" value={authData.password} onChange={(event) => setAuthData((current) => ({ ...current, password: event.target.value }))} placeholder="Digite sua senha" />
+                    </Form.Group>
+                    <div className="form-actions form-actions--footer auth-form__actions">
+                      <Button type="button" variant="success" className="action-button action-button--success" disabled={!canLogin} onClick={onLogin}>Entrar</Button>
+                    </div>
+                  </Form>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col lg={5}>
+              <Card className="form-section-card auth-side-card">
+                <Card.Body className="auth-card__body">
+                  <p className="eyebrow">Primeiro acesso</p>
+                  <h2>Cadastre sua empresa</h2>
+                  <p>O cadastro da empresa e o primeiro passo. Apos a conclusao, voce sera direcionado ao painel principal.</p>
+                  <div className="auth-side-card__cta">
+                    <div className="auth-side-card__icon">
+                      <i className="bi bi-buildings" />
+                    </div>
+                    <Button type="button" variant="light" className="action-button action-button--secondary auth-side-card__button" onClick={onStartRegistration}>
+                      Iniciar cadastro
+                    </Button>
+                  </div>
+                  <button type="button" className="auth-side-card__skip" onClick={onSkipToDashboard}>
+                    Pular e ir para a tela do usuario
+                  </button>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </main>
+      <AppFooter />
+    </div>
+  )
+}
+
+
 function App() {
   const [screen, setScreen] = useState('auth')
   const [portalView, setPortalView] = useState('candidate')
@@ -2713,7 +2436,6 @@ function App() {
     { title: 'Representante legal', fields: ['legalRepresentative', 'legalRepresentativeCpf', 'legalRepresentativeRole', 'commercialContact', 'commercialContactCpf', 'commercialContactPhone'] },
     { title: 'Regularidade fiscal', fields: ['sponsorshipRequest', 'nationalTax', 'stateTax', 'municipalTax', 'fgts', 'cndt', 'correctionalCertificate', 'tcuCertificate'], source: 'uploads' },
     { title: 'Documentos obrigatórios', fields: ['constitutiveAct', 'legalRepresentativeDocument', 'representativeAddress'], source: 'uploads' },
-    { title: 'Declarações', fields: ['socialRegularity', 'articleSeven', 'noticeAgreement'], source: 'declarations' },
   ]
 
   const progressItems = sectionRules.map((section) => {
@@ -2824,3 +2546,12 @@ function App() {
 
   return <DashboardScreen onNavigate={setScreen} onExit={handleExit} portalView={portalView} onSelectPortal={setPortalView} applicationData={applicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} />
 }
+
+
+
+
+
+
+
+
+
