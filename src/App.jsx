@@ -96,9 +96,9 @@ const initialAdminUserForm = {
 }
 
 const initialAdminUsers = [
-  { id: 1, fullName: 'Maria Fernanda Alves', email: 'maria.alves@esp.ce.gov.br', emailConfirm: 'maria.alves@esp.ce.gov.br', cpf: '123.456.789-00', phone: '(85) 98888-1111', phoneSecondary: '(85) 3222-1111', isAdmin: true, isEvaluator: true, status: 'Convite enviado' },
-  { id: 2, fullName: 'Joao Pedro Lima', email: 'joao.lima@esp.ce.gov.br', emailConfirm: 'joao.lima@esp.ce.gov.br', cpf: '234.567.890-11', phone: '(85) 97777-2222', phoneSecondary: '', isAdmin: false, isEvaluator: true, status: 'Ativo' },
-  { id: 3, fullName: 'Ana Carolina Sousa', email: 'ana.sousa@esp.ce.gov.br', emailConfirm: 'ana.sousa@esp.ce.gov.br', cpf: '345.678.901-22', phone: '(85) 96666-3333', phoneSecondary: '(85) 3111-0000', isAdmin: true, isEvaluator: false, status: 'Convite pendente' },
+  { id: 1, fullName: 'Maria Fernanda Alves', email: 'maria.alves@esp.ce.gov.br', emailConfirm: 'maria.alves@esp.ce.gov.br', cpf: '123.456.789-00', phone: '(85) 98888-1111', phoneSecondary: '(85) 3222-1111', isAdmin: true, isEvaluator: true, status: 'Convite enviado', assignedNotices: ['Edital 03/2026 - Implantacao e implementacao da rede saude'] },
+  { id: 2, fullName: 'Joao Pedro Lima', email: 'joao.lima@esp.ce.gov.br', emailConfirm: 'joao.lima@esp.ce.gov.br', cpf: '234.567.890-11', phone: '(85) 97777-2222', phoneSecondary: '', isAdmin: false, isEvaluator: true, status: 'Ativo', assignedNotices: ['Edital 03/2026 - Implantacao e implementacao da rede saude', 'Edital 04/2026 - Fortalecimento da atencao territorial'] },
+  { id: 3, fullName: 'Ana Carolina Sousa', email: 'ana.sousa@esp.ce.gov.br', emailConfirm: 'ana.sousa@esp.ce.gov.br', cpf: '345.678.901-22', phone: '(85) 96666-3333', phoneSecondary: '(85) 3111-0000', isAdmin: true, isEvaluator: false, status: 'Convite pendente', assignedNotices: [] },
 ]
 
 function getAdminUserRoles(user) {
@@ -1248,12 +1248,33 @@ function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminS
   )
 }
 
-function AdminProjectsScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdminProjectsScreen({ rows, onBack, evaluatorUsers, projectEvaluatorAssignments, onAssignEvaluator, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
+  const [selectedProject, setSelectedProject] = useState(null)
+  const [selectedEvaluatorId, setSelectedEvaluatorId] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
   const filteredRows = rows.filter((row) =>
     [row.institution, row.notice, row.project, row.amount, row.status]
       .some((value) => String(value || '').toLowerCase().includes(searchTerm.trim().toLowerCase())),
   )
+
+  const getEligibleEvaluators = (project) => evaluatorUsers.filter((user) =>
+    user.isEvaluator && (user.assignedNotices || []).includes(project.notice),
+  )
+
+  const openAssignEvaluatorModal = (project) => {
+    setSelectedProject(project)
+    const currentAssignment = projectEvaluatorAssignments[project.id]
+    setSelectedEvaluatorId(currentAssignment ? String(currentAssignment) : '')
+  }
+
+  const handleAssignEvaluator = () => {
+    if (!selectedProject || !selectedEvaluatorId) return
+    onAssignEvaluator(selectedProject.id, Number(selectedEvaluatorId))
+    setSelectedProject(null)
+    setSelectedEvaluatorId('')
+    setSuccessMessage('Avaliador atribuido com sucesso.')
+  }
 
   return (
     <div className="admin-page">
@@ -1279,6 +1300,7 @@ function AdminProjectsScreen({ rows, onBack, portalView, onSelectPortal, adminSc
                 <th>Projeto</th>
                 <th>Valor</th>
                 <th>Status</th>
+                <th>Acoes</th>
               </tr>
             </thead>
             <tbody>
@@ -1289,6 +1311,9 @@ function AdminProjectsScreen({ rows, onBack, portalView, onSelectPortal, adminSc
                   <td data-label="Projeto">{row.project}</td>
                   <td data-label="Valor">{row.amount}</td>
                   <td data-label="Status">{row.status}</td>
+                  <td data-label="Acoes">
+                    <button type="button" className="admin-inline-action" onClick={() => openAssignEvaluatorModal(row)}>Atribuir avaliador</button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -1297,6 +1322,19 @@ function AdminProjectsScreen({ rows, onBack, portalView, onSelectPortal, adminSc
         </section>
       </main>
       <AppFooter />
+
+      {selectedProject && (
+        <AdminAssignEvaluatorModal
+          project={selectedProject}
+          evaluatorOptions={getEligibleEvaluators(selectedProject)}
+          selectedEvaluatorId={selectedEvaluatorId}
+          onChange={setSelectedEvaluatorId}
+          onClose={() => { setSelectedProject(null); setSelectedEvaluatorId('') }}
+          onSubmit={handleAssignEvaluator}
+        />
+      )}
+
+      {successMessage && <AdminSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
     </div>
   )
 }
@@ -2255,11 +2293,95 @@ function AdminSuccessModal({ message, onClose }) {
   )
 }
 
-function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUser, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdminAssignNoticeModal({ user, selectedNotice, onChange, onClose, onSubmit }) {
+  return (
+    <div className="admin-modal-backdrop">
+      <section className="admin-modal-card admin-modal-card--form">
+        <header className="admin-modal-card__header">
+          <h3>Atribuir edital</h3>
+          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+            <i className="bi bi-x-lg" />
+          </button>
+        </header>
+        <div className="admin-modal-card__body">
+          <Row className="g-3">
+            <Col xs={12}>
+              <Form.Group>
+                <Form.Label>Usuário</Form.Label>
+                <Form.Control value={user?.fullName || ''} readOnly />
+              </Form.Group>
+            </Col>
+            <Col xs={12}>
+              <Form.Group>
+                <Form.Label>Edital *</Form.Label>
+                <Form.Select value={selectedNotice} onChange={(event) => onChange(event.target.value)}>
+                  <option value="">Selecione um edital</option>
+                  {noticeOptions.map((option) => <option key={option} value={option}>{option}</option>)}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+          </Row>
+        </div>
+        <footer className="admin-modal-card__footer">
+          <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>Cancelar</Button>
+          <Button type="button" variant="primary" className="action-button" onClick={onSubmit}>Salvar</Button>
+        </footer>
+      </section>
+    </div>
+  )
+}
+
+function AdminAssignEvaluatorModal({ project, evaluatorOptions, selectedEvaluatorId, onChange, onClose, onSubmit }) {
+  return (
+    <div className="admin-modal-backdrop">
+      <section className="admin-modal-card admin-modal-card--form">
+        <header className="admin-modal-card__header">
+          <h3>Atribuir avaliador</h3>
+          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+            <i className="bi bi-x-lg" />
+          </button>
+        </header>
+        <div className="admin-modal-card__body">
+          <Row className="g-3">
+            <Col xs={12}>
+              <Form.Group>
+                <Form.Label>Projeto</Form.Label>
+                <Form.Control value={project?.project || ''} readOnly />
+              </Form.Group>
+            </Col>
+            <Col xs={12}>
+              <Form.Group>
+                <Form.Label>Edital</Form.Label>
+                <Form.Control value={project?.notice || ''} readOnly />
+              </Form.Group>
+            </Col>
+            <Col xs={12}>
+              <Form.Group>
+                <Form.Label>Avaliador *</Form.Label>
+                <Form.Select value={selectedEvaluatorId} onChange={(event) => onChange(event.target.value)}>
+                  <option value="">Selecione um avaliador</option>
+                  {evaluatorOptions.map((user) => <option key={user.id} value={String(user.id)}>{user.fullName}</option>)}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+          </Row>
+        </div>
+        <footer className="admin-modal-card__footer">
+          <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>Cancelar</Button>
+          <Button type="button" variant="primary" className="action-button" onClick={onSubmit}>Salvar</Button>
+        </footer>
+      </section>
+    </div>
+  )
+}
+
+function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUser, onAssignNotice, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingUser, setEditingUser] = useState(null)
   const [draftUser, setDraftUser] = useState(initialAdminUserForm)
+  const [assignNoticeUser, setAssignNoticeUser] = useState(null)
+  const [selectedNotice, setSelectedNotice] = useState('')
   const [confirmState, setConfirmState] = useState(null)
   const [successMessage, setSuccessMessage] = useState('')
 
@@ -2350,6 +2472,14 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
     setDraftUser(initialAdminUserForm)
   }
 
+  const handleAssignNotice = () => {
+    if (!assignNoticeUser || !selectedNotice) return
+    onAssignNotice(assignNoticeUser.id, selectedNotice)
+    setAssignNoticeUser(null)
+    setSelectedNotice('')
+    setSuccessMessage('Edital atribuido com sucesso.')
+  }
+
   return (
     <div className="admin-page">
       <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
@@ -2397,6 +2527,7 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
                     <td data-label="Status">{row.status}</td>
                     <td data-label="Acoes">
                       <div className="admin-users-actions">
+                        <button type="button" className="admin-inline-action" onClick={() => { setAssignNoticeUser(row); setSelectedNotice('') }}>Atribuir edital</button>
                         <button type="button" className="admin-inline-action" onClick={() => openEditModal(row)}>Editar</button>
                         <button
                           type="button"
@@ -2438,6 +2569,16 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
           onClose={() => { setIsFormOpen(false); setEditingUser(null); setDraftUser(initialAdminUserForm) }}
           onSubmit={handlePersistRequest}
           submitLabel={editingUser ? 'Salvar alterações' : 'Salvar'}
+        />
+      )}
+
+      {assignNoticeUser && (
+        <AdminAssignNoticeModal
+          user={assignNoticeUser}
+          selectedNotice={selectedNotice}
+          onChange={setSelectedNotice}
+          onClose={() => { setAssignNoticeUser(null); setSelectedNotice('') }}
+          onSubmit={handleAssignNotice}
         />
       )}
 
@@ -3281,6 +3422,7 @@ function App() {
   const [authData, setAuthData] = useState({ email: '', password: '' })
   const [applicationData, setApplicationData] = useState(initialApplicationData)
   const [adminUsers, setAdminUsers] = useState(initialAdminUsers)
+  const [projectEvaluatorAssignments, setProjectEvaluatorAssignments] = useState({})
   const [auditTrail, setAuditTrail] = useState([
     { title: 'Painel administrativo carregado', time: '01/04/2026 08:00', detail: 'Visao inicial pronta para acompanhamento.' },
   ])
@@ -3339,7 +3481,7 @@ function App() {
 
   const createAdminUser = (userData) => {
     const nextId = Math.max(0, ...adminUsers.map((user) => user.id)) + 1
-    setAdminUsers((current) => [...current, { ...userData, id: nextId, status: 'Convite enviado' }])
+    setAdminUsers((current) => [...current, { ...userData, id: nextId, status: 'Convite enviado', assignedNotices: [] }])
     registerAudit('Convite de usuario preparado', `${userData.fullName} (${getAdminUserRoles(userData)}) - ${userData.email}`)
   }
 
@@ -3353,6 +3495,27 @@ function App() {
     setAdminUsers((current) => current.filter((user) => user.id !== userId))
     if (targetUser) {
       registerAudit('Usuario removido', `${targetUser.fullName} - ${targetUser.email}`)
+    }
+  }
+
+  const assignUserNotice = (userId, notice) => {
+    let assignedUserName = ''
+    setAdminUsers((current) => current.map((user) => {
+      if (user.id !== userId) return user
+      assignedUserName = user.fullName
+      return { ...user, assignedNotices: Array.from(new Set([...(user.assignedNotices || []), notice])) }
+    }))
+    if (assignedUserName) {
+      registerAudit('Edital atribuido ao usuario', `${assignedUserName} - ${notice}`)
+    }
+  }
+
+  const assignProjectEvaluator = (projectId, evaluatorId) => {
+    const project = adminContext.projectsRows.find((row) => row.id === projectId)
+    const evaluator = adminUsers.find((user) => user.id === evaluatorId)
+    setProjectEvaluatorAssignments((current) => ({ ...current, [projectId]: evaluatorId }))
+    if (project && evaluator) {
+      registerAudit('Avaliador atribuido ao projeto', `${evaluator.fullName} - ${project.project}`)
     }
   }
 
@@ -3402,7 +3565,7 @@ function App() {
     }
 
     if (adminScreen === 'projects') {
-      return renderWithPreview(<AdminProjectsScreen rows={adminContext.projectsRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+      return renderWithPreview(<AdminProjectsScreen rows={adminContext.projectsRows} onBack={() => setAdminScreen('dashboard')} evaluatorUsers={adminUsers} projectEvaluatorAssignments={projectEvaluatorAssignments} onAssignEvaluator={assignProjectEvaluator} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
     if (adminScreen === 'resources') {
@@ -3418,7 +3581,7 @@ function App() {
     }
 
     if (adminScreen === 'users') {
-      return renderWithPreview(<AdminUsersScreen rows={adminUsers} onBack={() => setAdminScreen('dashboard')} onCreateUser={createAdminUser} onUpdateUser={updateAdminUser} onDeleteUser={deleteAdminUser} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+      return renderWithPreview(<AdminUsersScreen rows={adminUsers} onBack={() => setAdminScreen('dashboard')} onCreateUser={createAdminUser} onUpdateUser={updateAdminUser} onDeleteUser={deleteAdminUser} onAssignNotice={assignUserNotice} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
     if (adminScreen === 'basic-registrations') {

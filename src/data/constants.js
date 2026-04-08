@@ -249,7 +249,6 @@ export const initialProjectEvaluators = [
 ]
 
 export const basicRegistrationCards = [
-  { key: 'avaliadoresProjetos', title: 'Avaliadores dos projetos', icon: 'bi-person-badge', description: 'Vinculo entre editais e usuarios avaliadores habilitados para analise.' },
   { key: 'cnaes', title: 'CNAE', icon: 'bi-buildings', description: 'Códigos CNAE utilizados no cadastro das instituições proponentes.' },
   { key: 'tiposInstituicao', title: 'Tipos de instituição', icon: 'bi-diagram-3', description: 'Tipos de entidade disponíveis para cadastro e seleção no sistema.' },
   { key: 'bancos', title: 'Bancos', icon: 'bi-bank', description: 'Instituições bancárias disponíveis para informação de conta.' },
@@ -260,7 +259,6 @@ export const basicRegistrationCards = [
 ]
 
 export const basicRegistrationTitleMap = {
-  avaliadoresProjetos: { title: 'Gerenciar avaliadores dos projetos', subtitle: 'Defina quais avaliadores podem atuar em cada edital cadastrado.' },
   cnaes: { title: 'Gerenciar CNAE', subtitle: 'Cadastro dos códigos CNAE utilizados pelas instituições proponentes.' },
   tiposInstituicao: { title: 'Gerenciar tipos de instituição', subtitle: 'Tipos de entidade disponíveis para cadastro e seleção no sistema.' },
   bancos: { title: 'Gerenciar bancos', subtitle: 'Instituições bancárias disponíveis para informação de conta da empresa.' },
