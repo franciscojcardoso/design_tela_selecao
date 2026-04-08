@@ -3,11 +3,14 @@ import { Button, Col, Form, Row } from 'react-bootstrap'
 import {
   basicRegistrationCards,
   basicRegistrationTitleMap,
+  initialAdminUsers,
   initialBancos,
   initialCnaes,
   initialCriteriosAvaliacao,
   initialEditalForm,
   initialEditais,
+  initialProjectEvaluatorForm,
+  initialProjectEvaluators,
   initialSetores,
   initialTiposDocumentos,
   initialTiposInstituicao,
@@ -338,7 +341,194 @@ function AdminEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteReco
 
 // ─── Tela de cards — Cadastros Básicos ────────────────────────────────────────
 
-export function AdminBasicRegistrationsScreen({ portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdminProjectEvaluatorModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar', editalOptions, evaluatorOptions }) {
+  return (
+    <div className="admin-modal-backdrop">
+      <section className="admin-modal-card admin-modal-card--form">
+        <header className="admin-modal-card__header">
+          <h3>{title}</h3>
+          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+            <i className="bi bi-x-lg" />
+          </button>
+        </header>
+        <div className="admin-modal-card__body">
+          <Row className="g-3">
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Edital *</Form.Label>
+                <Form.Select value={formData.id_edital} onChange={onChange('id_edital')}>
+                  <option value="">Selecione um edital</option>
+                  {editalOptions.map((edital) => (
+                    <option key={edital.id} value={edital.id}>{edital.descricao}</option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Avaliador *</Form.Label>
+                <Form.Select value={formData.id_avaliador} onChange={onChange('id_avaliador')}>
+                  <option value="">Selecione um avaliador</option>
+                  {evaluatorOptions.map((user) => (
+                    <option key={user.id} value={user.id}>{user.fullName}</option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col xs={12}>
+              <Form.Check type="checkbox" id="modal-project-evaluator-situacao" label="Ativo" checked={formData.situacao} onChange={onChange('situacao')} />
+            </Col>
+          </Row>
+        </div>
+        <footer className="admin-modal-card__footer">
+          <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>Cancelar</Button>
+          <Button type="button" variant="primary" className="action-button" onClick={onSubmit}>{submitLabel}</Button>
+        </footer>
+      </section>
+    </div>
+  )
+}
+
+function AdminProjectEvaluatorsScreen({ rows, editais, users, onCreateRecord, onUpdateRecord, onDeleteRecord, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editingRecord, setEditingRecord] = useState(null)
+  const [draftRecord, setDraftRecord] = useState(initialProjectEvaluatorForm)
+  const [confirmState, setConfirmState] = useState(null)
+  const [successMessage, setSuccessMessage] = useState('')
+
+  const evaluatorOptions = users.filter((user) => user.isEvaluator)
+  const editalMap = new Map(editais.map((edital) => [String(edital.id), edital.descricao]))
+  const evaluatorMap = new Map(evaluatorOptions.map((user) => [String(user.id), user.fullName]))
+
+  const filteredRows = rows
+    .map((row) => ({
+      ...row,
+      editalNome: editalMap.get(String(row.id_edital)) || `Edital ${row.id_edital}`,
+      avaliadorNome: evaluatorMap.get(String(row.id_avaliador)) || `Usuário ${row.id_avaliador}`,
+    }))
+    .filter((row) => {
+      const term = searchTerm.trim().toLowerCase()
+      if (!term) return true
+      return [String(row.id), row.editalNome, row.avaliadorNome, row.situacao ? 'ativo' : 'inativo']
+        .some((value) => String(value || '').toLowerCase().includes(term))
+    })
+
+  const updateDraftField = (field) => (event) => {
+    const { type, checked, value } = event.target
+    setDraftRecord((current) => ({ ...current, [field]: type === 'checkbox' ? checked : value }))
+  }
+
+  const openCreateModal = () => { setEditingRecord(null); setDraftRecord(initialProjectEvaluatorForm); setIsFormOpen(true) }
+
+  const openEditModal = (record) => {
+    setEditingRecord(record)
+    setDraftRecord({ id_edital: String(record.id_edital), id_avaliador: String(record.id_avaliador), situacao: record.situacao })
+    setIsFormOpen(true)
+  }
+
+  const handlePersistRequest = () => {
+    if (!draftRecord.id_edital || !draftRecord.id_avaliador) return
+    const hasDuplicate = rows.some((row) => (
+      String(row.id_edital) === String(draftRecord.id_edital)
+      && String(row.id_avaliador) === String(draftRecord.id_avaliador)
+      && row.id !== editingRecord?.id
+    ))
+    if (hasDuplicate) return
+    const payload = { ...draftRecord, id_edital: Number(draftRecord.id_edital), id_avaliador: Number(draftRecord.id_avaliador) }
+    setConfirmState({ type: editingRecord ? 'edit' : 'create', payload: editingRecord ? { ...editingRecord, ...payload } : payload })
+  }
+
+  const handleConfirm = () => {
+    if (!confirmState) return
+    if (confirmState.type === 'create') { onCreateRecord(confirmState.payload); setSuccessMessage('Vinculo salvo com sucesso.') }
+    if (confirmState.type === 'edit') { onUpdateRecord(confirmState.payload); setSuccessMessage('Vinculo atualizado com sucesso.') }
+    if (confirmState.type === 'delete') { onDeleteRecord(confirmState.payload.id); setSuccessMessage('Vinculo removido com sucesso.') }
+    setConfirmState(null); setIsFormOpen(false); setEditingRecord(null); setDraftRecord(initialProjectEvaluatorForm)
+  }
+
+  return (
+    <div className="admin-page">
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="admin-main">
+        <AdminSectionHeader title={basicRegistrationTitleMap.avaliadoresProjetos?.title || 'Gerenciar avaliadores dos projetos'} subtitle={basicRegistrationTitleMap.avaliadoresProjetos?.subtitle || 'Defina quais avaliadores podem atuar em cada edital cadastrado.'} onBack={onBack} />
+        <section className="admin-management-card admin-users-crud">
+          <div className="admin-users-crud__topbar">
+            <div className="admin-users-search">
+              <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Insira uma palavra para pesquisar" />
+              <button type="button" aria-label="Pesquisar"><i className="bi bi-search" /></button>
+            </div>
+            <Button type="button" className="admin-users-add-button" onClick={openCreateModal}>
+              <i className="bi bi-plus-square" />
+              <span>Adicionar vínculo</span>
+            </Button>
+          </div>
+          <div className="admin-users-table-wrap">
+            <table className="admin-table admin-users-table admin-table--cards">
+              <thead>
+                <tr><th>ID</th><th>Edital</th><th>Avaliador</th><th>Situação</th><th>Ações</th></tr>
+              </thead>
+              <tbody>
+                {filteredRows.map((row) => (
+                  <tr key={row.id}>
+                    <td data-label="ID">{row.id}</td>
+                    <td data-label="Edital">{row.editalNome}</td>
+                    <td data-label="Avaliador">{row.avaliadorNome}</td>
+                    <td data-label="Situação">{row.situacao ? 'Ativo' : 'Inativo'}</td>
+                    <td data-label="Ações">
+                      <div className="admin-users-actions">
+                        <button type="button" className="admin-inline-action" onClick={() => openEditModal(row)}>Editar</button>
+                        <button type="button" className="admin-inline-action admin-inline-action--danger" onClick={() => setConfirmState({ type: 'delete', payload: row })}>Excluir</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="admin-users-crud__footer">
+            <div className="admin-users-pagination">
+              <button type="button" disabled>Anterior</button>
+              <button type="button" className="is-active">1</button>
+              <button type="button" disabled>Próximo</button>
+            </div>
+            <span>Mostrando de 1 até {filteredRows.length} de {rows.length} registros</span>
+            <div className="admin-users-per-page">
+              <strong>Exibir</strong>
+              <div className="admin-users-per-page__value">50</div>
+              <strong>resultados por página</strong>
+            </div>
+          </div>
+        </section>
+      </main>
+      <AppFooter />
+
+      {isFormOpen && (
+        <AdminProjectEvaluatorModal
+          title={editingRecord ? 'Editar vínculo' : 'Adicionar vínculo'}
+          formData={draftRecord}
+          onChange={updateDraftField}
+          onClose={() => { setIsFormOpen(false); setEditingRecord(null); setDraftRecord(initialProjectEvaluatorForm) }}
+          onSubmit={handlePersistRequest}
+          submitLabel={editingRecord ? 'Salvar alterações' : 'Salvar'}
+          editalOptions={editais}
+          evaluatorOptions={evaluatorOptions}
+        />
+      )}
+      {confirmState && (
+        <AdminConfirmModal
+          title={confirmState.type === 'delete' ? 'Confirmar exclusão do vínculo' : 'Confirmar modificação do vínculo'}
+          message={confirmState.type === 'delete' ? 'Esse vínculo será removido da listagem, deseja prosseguir?' : 'Os dados a seguir serão salvos, deseja prosseguir?'}
+          onCancel={() => setConfirmState(null)}
+          onConfirm={handleConfirm}
+        />
+      )}
+      {successMessage && <AdminSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
+    </div>
+  )
+}
+
+export function AdminBasicRegistrationsScreen({ portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar, users = initialAdminUsers }) {
   const [activeSubScreen, setActiveSubScreen] = useState(null)
   const [cnaes, setCnaes] = useState(initialCnaes)
   const [tiposInstituicao, setTiposInstituicao] = useState(initialTiposInstituicao)
@@ -347,6 +537,7 @@ export function AdminBasicRegistrationsScreen({ portalView, onSelectPortal, admi
   const [tiposDocumentos, setTiposDocumentos] = useState(initialTiposDocumentos)
   const [criteriosAvaliacao, setCriteriosAvaliacao] = useState(initialCriteriosAvaliacao)
   const [editais, setEditais] = useState(initialEditais)
+  const [avaliadoresProjetos, setAvaliadoresProjetos] = useState(initialProjectEvaluators)
 
   const makeCrud = (setter) => ({
     onCreate: (data) => setter((current) => [...current, { ...data, id: Math.max(0, ...current.map((r) => r.id)) + 1 }]),
@@ -362,6 +553,7 @@ export function AdminBasicRegistrationsScreen({ portalView, onSelectPortal, admi
     tiposDocumentos: { rows: tiposDocumentos, ...makeCrud(setTiposDocumentos) },
     criteriosAvaliacao: { rows: criteriosAvaliacao, ...makeCrud(setCriteriosAvaliacao) },
     editais: { rows: editais, ...makeCrud(setEditais) },
+    avaliadoresProjetos: { rows: avaliadoresProjetos, ...makeCrud(setAvaliadoresProjetos) },
   }
 
   const navProps = { portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }
@@ -369,6 +561,11 @@ export function AdminBasicRegistrationsScreen({ portalView, onSelectPortal, admi
   if (activeSubScreen === 'editais') {
     const { rows, onCreate, onUpdate, onDelete } = crudMap.editais
     return <AdminEditaisScreen rows={rows} onCreateRecord={onCreate} onUpdateRecord={onUpdate} onDeleteRecord={onDelete} onBack={() => setActiveSubScreen(null)} {...navProps} />
+  }
+
+  if (activeSubScreen === 'avaliadoresProjetos') {
+    const { rows, onCreate, onUpdate, onDelete } = crudMap.avaliadoresProjetos
+    return <AdminProjectEvaluatorsScreen rows={rows} editais={editais} users={users} onCreateRecord={onCreate} onUpdateRecord={onUpdate} onDeleteRecord={onDelete} onBack={() => setActiveSubScreen(null)} {...navProps} />
   }
 
   if (activeSubScreen && basicRegistrationTitleMap[activeSubScreen]) {

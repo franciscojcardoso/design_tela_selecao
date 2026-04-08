@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Badge, Button, Card, Col, Container, Form, ProgressBar, Row } from 'react-bootstrap'
 import logoJangada from './assets/logo-jangada.svg'
 import logoEstadoCeara from './assets/logo-estado-ceara.svg'
+import { AdminBasicRegistrationsScreen as AdminBasicRegistrationsScreenModule } from './components/admin/AdminBasicRegistrationsScreen'
 import './App.css'
 
 const selection = {
@@ -3421,7 +3422,7 @@ function App() {
     }
 
     if (adminScreen === 'basic-registrations') {
-      return renderWithPreview(<AdminBasicRegistrationsScreen portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+      return renderWithPreview(<AdminBasicRegistrationsScreenModule portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} users={adminUsers} />)
     }
 
     return renderWithPreview(<AdminDashboardScreen portalView={portalView} onSelectPortal={setPortalView} adminContext={adminContext} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
