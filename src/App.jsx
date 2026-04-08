@@ -161,7 +161,95 @@ const adminMenu = [
   { label: 'Auditorias', icon: 'bi-clipboard-check', target: 'audits' },
   { label: 'Relatórios', icon: 'bi-bar-chart-line', target: 'reports' },
   { label: 'Gerenciar usu\u00E1rios', icon: 'bi-person-gear', target: 'users' },
+  { label: 'Cadastros b\u00E1sicos', icon: 'bi-database', target: 'basic-registrations' },
 ]
+
+const initialCnaes = [
+  { id: 1, descricao: '6201-5/01 - Desenvolvimento de programas de computador sob encomenda', situacao: true },
+  { id: 2, descricao: '6311-9/00 - Tratamento de dados e hospedagem na internet', situacao: true },
+  { id: 3, descricao: '7020-4/00 - Consultoria em gestão empresarial', situacao: true },
+  { id: 4, descricao: '8599-6/04 - Treinamento em desenvolvimento profissional', situacao: false },
+]
+
+const initialTiposInstituicao = [
+  { id: 1, descricao: 'Fundação', situacao: true },
+  { id: 2, descricao: 'Associação', situacao: true },
+  { id: 3, descricao: 'Organização Social', situacao: true },
+  { id: 4, descricao: 'OSCIP', situacao: true },
+  { id: 5, descricao: 'Cooperativa', situacao: false },
+]
+
+const initialBancos = [
+  { id: 1, descricao: 'Banco do Brasil', situacao: true },
+  { id: 2, descricao: 'Caixa Econômica Federal', situacao: true },
+  { id: 3, descricao: 'Bradesco', situacao: true },
+  { id: 4, descricao: 'Itaú', situacao: true },
+  { id: 5, descricao: 'Santander', situacao: true },
+  { id: 6, descricao: 'Banco do Nordeste', situacao: true },
+]
+
+const initialSetores = [
+  { id: 1, descricao: 'Saúde Pública', situacao: true },
+  { id: 2, descricao: 'Educação Permanente', situacao: true },
+  { id: 3, descricao: 'Vigilância Sanitária', situacao: true },
+  { id: 4, descricao: 'Atenção Primária', situacao: false },
+]
+
+const initialTiposDocumentos = [
+  { id: 1, descricao: 'Ato constitutivo ou contrato social', situacao: true },
+  { id: 2, descricao: 'Certidão negativa de débitos federais', situacao: true },
+  { id: 3, descricao: 'Comprovante de endereço', situacao: true },
+  { id: 4, descricao: 'Documento do representante legal', situacao: true },
+  { id: 5, descricao: 'Certidão negativa trabalhista', situacao: true },
+]
+
+const initialCriteriosAvaliacao = [
+  { id: 1, descricao: 'Alinhamento com os objetivos do edital', situacao: true },
+  { id: 2, descricao: 'Capacidade técnica da equipe proponente', situacao: true },
+  { id: 3, descricao: 'Viabilidade financeira do projeto', situacao: true },
+  { id: 4, descricao: 'Impacto social esperado', situacao: true },
+  { id: 5, descricao: 'Sustentabilidade e continuidade', situacao: false },
+]
+
+const initialEditalForm = {
+  id_setor: '',
+  descricao: '',
+  data_inicio_inscricoes: '',
+  hora_inicio_inscricoes: '',
+  data_final_inscricoes: '',
+  hora_final_inscricoes: '',
+  data_resultado_preliminar: '',
+  data_inicio_recurso: '',
+  hora_inicio_recurso: '',
+  data_final_recurso: '',
+  hora_final_recurso: '',
+  data_resultado_final: '',
+  situacao: true,
+}
+
+const initialEditais = [
+  { id: 1, id_setor: 1, descricao: 'Edital 03/2026 - Implantação e implementação da rede saúde', data_inicio_inscricoes: '2026-03-18', hora_inicio_inscricoes: '08:00', data_final_inscricoes: '2026-04-15', hora_final_inscricoes: '23:59', data_resultado_preliminar: '2026-04-22', data_inicio_recurso: '2026-04-23', hora_inicio_recurso: '08:00', data_final_recurso: '2026-04-25', hora_final_recurso: '23:59', data_resultado_final: '2026-04-30', situacao: true },
+  { id: 2, id_setor: 2, descricao: 'Edital 04/2026 - Fortalecimento da atenção territorial', data_inicio_inscricoes: '2026-05-01', hora_inicio_inscricoes: '08:00', data_final_inscricoes: '2026-05-30', hora_final_inscricoes: '23:59', data_resultado_preliminar: '2026-06-07', data_inicio_recurso: '2026-06-08', hora_inicio_recurso: '08:00', data_final_recurso: '2026-06-10', hora_final_recurso: '23:59', data_resultado_final: '2026-06-15', situacao: true },
+]
+
+const basicRegistrationCards = [
+  { key: 'cnaes', title: 'CNAE', icon: 'bi-buildings', description: 'Códigos CNAE utilizados no cadastro das instituições proponentes.' },
+  { key: 'tiposInstituicao', title: 'Tipos de instituição', icon: 'bi-diagram-3', description: 'Tipos de entidade disponíveis para cadastro e seleção no sistema.' },
+  { key: 'bancos', title: 'Bancos', icon: 'bi-bank', description: 'Instituições bancárias disponíveis para informação de conta.' },
+  { key: 'setores', title: 'Setores', icon: 'bi-grid-3x3', description: 'Setores organizacionais vinculados às áreas de atuação dos editais.' },
+  { key: 'tiposDocumentos', title: 'Tipos de documentos', icon: 'bi-file-earmark-text', description: 'Categorias de documentos exigidos nos processos seletivos.' },
+  { key: 'criteriosAvaliacao', title: 'Critérios de avaliação', icon: 'bi-clipboard-check', description: 'Critérios utilizados pelos avaliadores na análise dos projetos.' },
+  { key: 'editais', title: 'Editais', icon: 'bi-journal-text', description: 'Editais de chamamento público abertos e encerrados.' },
+]
+
+const basicRegistrationTitleMap = {
+  cnaes: { title: 'Gerenciar CNAE', subtitle: 'Cadastro dos códigos CNAE utilizados pelas instituições proponentes.' },
+  tiposInstituicao: { title: 'Gerenciar tipos de instituição', subtitle: 'Tipos de entidade disponíveis para cadastro e seleção no sistema.' },
+  bancos: { title: 'Gerenciar bancos', subtitle: 'Instituições bancárias disponíveis para informação de conta da empresa.' },
+  setores: { title: 'Gerenciar setores', subtitle: 'Setores organizacionais disponíveis para vinculação nos editais.' },
+  tiposDocumentos: { title: 'Gerenciar tipos de documentos', subtitle: 'Categorias de documentos exigidos nos processos seletivos.' },
+  criteriosAvaliacao: { title: 'Gerenciar critérios de avaliação', subtitle: 'Critérios utilizados pelos avaliadores na análise dos projetos.' },
+}
 
 const evaluatorMenu = []
 
@@ -2366,6 +2454,552 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
   )
 }
 
+// ─── Cadastros Básicos ────────────────────────────────────────────────────────
+
+const initialSimpleRecordForm = { descricao: '', situacao: true }
+
+function AdminSimpleRecordModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar' }) {
+  return (
+    <div className="admin-modal-backdrop">
+      <section className="admin-modal-card admin-modal-card--form">
+        <header className="admin-modal-card__header">
+          <h3>{title}</h3>
+          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+            <i className="bi bi-x-lg" />
+          </button>
+        </header>
+        <div className="admin-modal-card__body">
+          <Row className="g-3">
+            <Col xs={12}>
+              <Form.Group>
+                <Form.Label>Descrição *</Form.Label>
+                <Form.Control value={formData.descricao} onChange={onChange('descricao')} placeholder="Insira a descrição" />
+              </Form.Group>
+            </Col>
+            <Col xs={12}>
+              <Form.Check
+                type="checkbox"
+                id="modal-simple-situacao"
+                label="Ativo"
+                checked={formData.situacao}
+                onChange={onChange('situacao')}
+              />
+            </Col>
+          </Row>
+        </div>
+        <footer className="admin-modal-card__footer">
+          <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>Cancelar</Button>
+          <Button type="button" variant="primary" className="action-button" onClick={onSubmit}>{submitLabel}</Button>
+        </footer>
+      </section>
+    </div>
+  )
+}
+
+function AdminSimpleCrudScreen({ title, subtitle, rows, onCreateRecord, onUpdateRecord, onDeleteRecord, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editingRecord, setEditingRecord] = useState(null)
+  const [draftRecord, setDraftRecord] = useState(initialSimpleRecordForm)
+  const [confirmState, setConfirmState] = useState(null)
+  const [successMessage, setSuccessMessage] = useState('')
+
+  const filteredRows = rows.filter((row) => {
+    const term = searchTerm.trim().toLowerCase()
+    if (!term) return true
+    return [String(row.id), row.descricao, row.situacao ? 'ativo' : 'inativo'].some((v) => String(v || '').toLowerCase().includes(term))
+  })
+
+  const updateDraftField = (field) => (event) => {
+    const { type, checked, value } = event.target
+    setDraftRecord((current) => ({ ...current, [field]: type === 'checkbox' ? checked : value }))
+  }
+
+  const openCreateModal = () => {
+    setEditingRecord(null)
+    setDraftRecord(initialSimpleRecordForm)
+    setIsFormOpen(true)
+  }
+
+  const openEditModal = (record) => {
+    setEditingRecord(record)
+    setDraftRecord({ descricao: record.descricao, situacao: record.situacao })
+    setIsFormOpen(true)
+  }
+
+  const handlePersistRequest = () => {
+    if (!draftRecord.descricao.trim()) return
+    setConfirmState({
+      type: editingRecord ? 'edit' : 'create',
+      payload: editingRecord ? { ...editingRecord, ...draftRecord } : draftRecord,
+    })
+  }
+
+  const handleConfirm = () => {
+    if (!confirmState) return
+    if (confirmState.type === 'create') {
+      onCreateRecord(confirmState.payload)
+      setSuccessMessage('Registro salvo com sucesso.')
+    }
+    if (confirmState.type === 'edit') {
+      onUpdateRecord(confirmState.payload)
+      setSuccessMessage('Registro atualizado com sucesso.')
+    }
+    if (confirmState.type === 'delete') {
+      onDeleteRecord(confirmState.payload.id)
+      setSuccessMessage('Registro removido com sucesso.')
+    }
+    setConfirmState(null)
+    setIsFormOpen(false)
+    setEditingRecord(null)
+    setDraftRecord(initialSimpleRecordForm)
+  }
+
+  return (
+    <div className="admin-page">
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="admin-main">
+        <AdminSectionHeader title={title} subtitle={subtitle} onBack={onBack} />
+
+        <section className="admin-management-card admin-users-crud">
+          <div className="admin-users-crud__topbar">
+            <div className="admin-users-search">
+              <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Insira uma palavra para pesquisar" />
+              <button type="button" aria-label="Pesquisar">
+                <i className="bi bi-search" />
+              </button>
+            </div>
+            <Button type="button" className="admin-users-add-button" onClick={openCreateModal}>
+              <i className="bi bi-plus-square" />
+              <span>Adicionar registro</span>
+            </Button>
+          </div>
+
+          <div className="admin-users-table-wrap">
+            <table className="admin-table admin-users-table admin-table--cards">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Descrição</th>
+                  <th>Situação</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredRows.map((row) => (
+                  <tr key={row.id}>
+                    <td data-label="ID">{row.id}</td>
+                    <td data-label="Descrição">{row.descricao}</td>
+                    <td data-label="Situação">{row.situacao ? 'Ativo' : 'Inativo'}</td>
+                    <td data-label="Ações">
+                      <div className="admin-users-actions">
+                        <button type="button" className="admin-inline-action" onClick={() => openEditModal(row)}>Editar</button>
+                        <button type="button" className="admin-inline-action admin-inline-action--danger" onClick={() => setConfirmState({ type: 'delete', payload: row })}>Excluir</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="admin-users-crud__footer">
+            <div className="admin-users-pagination">
+              <button type="button" disabled>Anterior</button>
+              <button type="button" className="is-active">1</button>
+              <button type="button" disabled>Próximo</button>
+            </div>
+            <span>Mostrando de 1 até {filteredRows.length} de {rows.length} registros</span>
+            <div className="admin-users-per-page">
+              <strong>Exibir</strong>
+              <div className="admin-users-per-page__value">50</div>
+              <strong>resultados por página</strong>
+            </div>
+          </div>
+        </section>
+      </main>
+      <AppFooter />
+
+      {isFormOpen && (
+        <AdminSimpleRecordModal
+          title={editingRecord ? 'Editar registro' : 'Adicionar registro'}
+          formData={draftRecord}
+          onChange={updateDraftField}
+          onClose={() => { setIsFormOpen(false); setEditingRecord(null); setDraftRecord(initialSimpleRecordForm) }}
+          onSubmit={handlePersistRequest}
+          submitLabel={editingRecord ? 'Salvar alterações' : 'Salvar'}
+        />
+      )}
+
+      {confirmState && (
+        <AdminConfirmModal
+          title={confirmState.type === 'delete' ? 'Confirmar exclusão do registro' : 'Confirmar modificação do registro'}
+          message={confirmState.type === 'delete' ? 'Esse registro será removido da listagem, deseja prosseguir?' : 'Os dados a seguir serão salvos, deseja prosseguir?'}
+          onCancel={() => setConfirmState(null)}
+          onConfirm={handleConfirm}
+        />
+      )}
+
+      {successMessage && <AdminSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
+    </div>
+  )
+}
+
+function AdminEditalRecordModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar' }) {
+  return (
+    <div className="admin-modal-backdrop">
+      <section className="admin-modal-card admin-modal-card--form">
+        <header className="admin-modal-card__header">
+          <h3>{title}</h3>
+          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+            <i className="bi bi-x-lg" />
+          </button>
+        </header>
+        <div className="admin-modal-card__body">
+          <Row className="g-3">
+            <Col xs={12}>
+              <Form.Group>
+                <Form.Label>Descrição *</Form.Label>
+                <Form.Control value={formData.descricao} onChange={onChange('descricao')} placeholder="Insira a descrição do edital" />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Data início inscrições *</Form.Label>
+                <Form.Control type="date" value={formData.data_inicio_inscricoes} onChange={onChange('data_inicio_inscricoes')} />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Hora início inscrições</Form.Label>
+                <Form.Control type="time" value={formData.hora_inicio_inscricoes} onChange={onChange('hora_inicio_inscricoes')} />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Data final inscrições *</Form.Label>
+                <Form.Control type="date" value={formData.data_final_inscricoes} onChange={onChange('data_final_inscricoes')} />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Hora final inscrições</Form.Label>
+                <Form.Control type="time" value={formData.hora_final_inscricoes} onChange={onChange('hora_final_inscricoes')} />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Data resultado preliminar</Form.Label>
+                <Form.Control type="date" value={formData.data_resultado_preliminar} onChange={onChange('data_resultado_preliminar')} />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Data início recurso</Form.Label>
+                <Form.Control type="date" value={formData.data_inicio_recurso} onChange={onChange('data_inicio_recurso')} />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Hora início recurso</Form.Label>
+                <Form.Control type="time" value={formData.hora_inicio_recurso} onChange={onChange('hora_inicio_recurso')} />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Data final recurso</Form.Label>
+                <Form.Control type="date" value={formData.data_final_recurso} onChange={onChange('data_final_recurso')} />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Hora final recurso</Form.Label>
+                <Form.Control type="time" value={formData.hora_final_recurso} onChange={onChange('hora_final_recurso')} />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>Data resultado final</Form.Label>
+                <Form.Control type="date" value={formData.data_resultado_final} onChange={onChange('data_resultado_final')} />
+              </Form.Group>
+            </Col>
+            <Col xs={12}>
+              <Form.Check
+                type="checkbox"
+                id="modal-edital-situacao"
+                label="Ativo"
+                checked={formData.situacao}
+                onChange={onChange('situacao')}
+              />
+            </Col>
+          </Row>
+        </div>
+        <footer className="admin-modal-card__footer">
+          <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>Cancelar</Button>
+          <Button type="button" variant="primary" className="action-button" onClick={onSubmit}>{submitLabel}</Button>
+        </footer>
+      </section>
+    </div>
+  )
+}
+
+function AdminEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteRecord, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editingRecord, setEditingRecord] = useState(null)
+  const [draftRecord, setDraftRecord] = useState(initialEditalForm)
+  const [confirmState, setConfirmState] = useState(null)
+  const [successMessage, setSuccessMessage] = useState('')
+
+  const filteredRows = rows.filter((row) => {
+    const term = searchTerm.trim().toLowerCase()
+    if (!term) return true
+    return [String(row.id), row.descricao, row.situacao ? 'ativo' : 'inativo'].some((v) => String(v || '').toLowerCase().includes(term))
+  })
+
+  const updateDraftField = (field) => (event) => {
+    const { type, checked, value } = event.target
+    setDraftRecord((current) => ({ ...current, [field]: type === 'checkbox' ? checked : value }))
+  }
+
+  const openCreateModal = () => {
+    setEditingRecord(null)
+    setDraftRecord(initialEditalForm)
+    setIsFormOpen(true)
+  }
+
+  const openEditModal = (record) => {
+    setEditingRecord(record)
+    setDraftRecord({
+      id_setor: record.id_setor,
+      descricao: record.descricao,
+      data_inicio_inscricoes: record.data_inicio_inscricoes,
+      hora_inicio_inscricoes: record.hora_inicio_inscricoes,
+      data_final_inscricoes: record.data_final_inscricoes,
+      hora_final_inscricoes: record.hora_final_inscricoes,
+      data_resultado_preliminar: record.data_resultado_preliminar,
+      data_inicio_recurso: record.data_inicio_recurso,
+      hora_inicio_recurso: record.hora_inicio_recurso,
+      data_final_recurso: record.data_final_recurso,
+      hora_final_recurso: record.hora_final_recurso,
+      data_resultado_final: record.data_resultado_final,
+      situacao: record.situacao,
+    })
+    setIsFormOpen(true)
+  }
+
+  const handlePersistRequest = () => {
+    if (!draftRecord.descricao.trim() || !draftRecord.data_inicio_inscricoes || !draftRecord.data_final_inscricoes) return
+    setConfirmState({
+      type: editingRecord ? 'edit' : 'create',
+      payload: editingRecord ? { ...editingRecord, ...draftRecord } : draftRecord,
+    })
+  }
+
+  const handleConfirm = () => {
+    if (!confirmState) return
+    if (confirmState.type === 'create') {
+      onCreateRecord(confirmState.payload)
+      setSuccessMessage('Registro salvo com sucesso.')
+    }
+    if (confirmState.type === 'edit') {
+      onUpdateRecord(confirmState.payload)
+      setSuccessMessage('Registro atualizado com sucesso.')
+    }
+    if (confirmState.type === 'delete') {
+      onDeleteRecord(confirmState.payload.id)
+      setSuccessMessage('Registro removido com sucesso.')
+    }
+    setConfirmState(null)
+    setIsFormOpen(false)
+    setEditingRecord(null)
+    setDraftRecord(initialEditalForm)
+  }
+
+  return (
+    <div className="admin-page">
+      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="admin-main">
+        <AdminSectionHeader title="Gerenciar editais" subtitle="Cadastro e gerenciamento dos editais de chamamento público." onBack={onBack} />
+
+        <section className="admin-management-card admin-users-crud">
+          <div className="admin-users-crud__topbar">
+            <div className="admin-users-search">
+              <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Insira uma palavra para pesquisar" />
+              <button type="button" aria-label="Pesquisar">
+                <i className="bi bi-search" />
+              </button>
+            </div>
+            <Button type="button" className="admin-users-add-button" onClick={openCreateModal}>
+              <i className="bi bi-plus-square" />
+              <span>Adicionar registro</span>
+            </Button>
+          </div>
+
+          <div className="admin-users-table-wrap">
+            <table className="admin-table admin-users-table admin-table--cards">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Descrição</th>
+                  <th>Início inscrições</th>
+                  <th>Final inscrições</th>
+                  <th>Resultado final</th>
+                  <th>Situação</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredRows.map((row) => (
+                  <tr key={row.id}>
+                    <td data-label="ID">{row.id}</td>
+                    <td data-label="Descrição">{row.descricao}</td>
+                    <td data-label="Início inscrições">{row.data_inicio_inscricoes}</td>
+                    <td data-label="Final inscrições">{row.data_final_inscricoes}</td>
+                    <td data-label="Resultado final">{row.data_resultado_final}</td>
+                    <td data-label="Situação">{row.situacao ? 'Ativo' : 'Inativo'}</td>
+                    <td data-label="Ações">
+                      <div className="admin-users-actions">
+                        <button type="button" className="admin-inline-action" onClick={() => openEditModal(row)}>Editar</button>
+                        <button type="button" className="admin-inline-action admin-inline-action--danger" onClick={() => setConfirmState({ type: 'delete', payload: row })}>Excluir</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="admin-users-crud__footer">
+            <div className="admin-users-pagination">
+              <button type="button" disabled>Anterior</button>
+              <button type="button" className="is-active">1</button>
+              <button type="button" disabled>Próximo</button>
+            </div>
+            <span>Mostrando de 1 até {filteredRows.length} de {rows.length} registros</span>
+            <div className="admin-users-per-page">
+              <strong>Exibir</strong>
+              <div className="admin-users-per-page__value">50</div>
+              <strong>resultados por página</strong>
+            </div>
+          </div>
+        </section>
+      </main>
+      <AppFooter />
+
+      {isFormOpen && (
+        <AdminEditalRecordModal
+          title={editingRecord ? 'Editar edital' : 'Adicionar edital'}
+          formData={draftRecord}
+          onChange={updateDraftField}
+          onClose={() => { setIsFormOpen(false); setEditingRecord(null); setDraftRecord(initialEditalForm) }}
+          onSubmit={handlePersistRequest}
+          submitLabel={editingRecord ? 'Salvar alterações' : 'Salvar'}
+        />
+      )}
+
+      {confirmState && (
+        <AdminConfirmModal
+          title={confirmState.type === 'delete' ? 'Confirmar exclusão do registro' : 'Confirmar modificação do registro'}
+          message={confirmState.type === 'delete' ? 'Esse registro será removido da listagem, deseja prosseguir?' : 'Os dados a seguir serão salvos, deseja prosseguir?'}
+          onCancel={() => setConfirmState(null)}
+          onConfirm={handleConfirm}
+        />
+      )}
+
+      {successMessage && <AdminSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
+    </div>
+  )
+}
+
+function AdminBasicRegistrationsScreen({ portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+  const [activeSubScreen, setActiveSubScreen] = useState(null)
+  const [cnaes, setCnaes] = useState(initialCnaes)
+  const [tiposInstituicao, setTiposInstituicao] = useState(initialTiposInstituicao)
+  const [bancos, setBancos] = useState(initialBancos)
+  const [setores, setSetores] = useState(initialSetores)
+  const [tiposDocumentos, setTiposDocumentos] = useState(initialTiposDocumentos)
+  const [criteriosAvaliacao, setCriteriosAvaliacao] = useState(initialCriteriosAvaliacao)
+  const [editais, setEditais] = useState(initialEditais)
+
+  const makeCrud = (setter) => ({
+    onCreate: (data) => setter((current) => [...current, { ...data, id: Math.max(0, ...current.map((r) => r.id)) + 1 }]),
+    onUpdate: (data) => setter((current) => current.map((r) => (r.id === data.id ? { ...r, ...data } : r))),
+    onDelete: (id) => setter((current) => current.filter((r) => r.id !== id)),
+  })
+
+  const crudMap = {
+    cnaes: { rows: cnaes, ...makeCrud(setCnaes) },
+    tiposInstituicao: { rows: tiposInstituicao, ...makeCrud(setTiposInstituicao) },
+    bancos: { rows: bancos, ...makeCrud(setBancos) },
+    setores: { rows: setores, ...makeCrud(setSetores) },
+    tiposDocumentos: { rows: tiposDocumentos, ...makeCrud(setTiposDocumentos) },
+    criteriosAvaliacao: { rows: criteriosAvaliacao, ...makeCrud(setCriteriosAvaliacao) },
+    editais: { rows: editais, ...makeCrud(setEditais) },
+  }
+
+  const navProps = { portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }
+
+  if (activeSubScreen === 'editais') {
+    const { rows, onCreate, onUpdate, onDelete } = crudMap.editais
+    return (
+      <AdminEditaisScreen
+        rows={rows}
+        onCreateRecord={onCreate}
+        onUpdateRecord={onUpdate}
+        onDeleteRecord={onDelete}
+        onBack={() => setActiveSubScreen(null)}
+        {...navProps}
+      />
+    )
+  }
+
+  if (activeSubScreen && basicRegistrationTitleMap[activeSubScreen]) {
+    const { title, subtitle } = basicRegistrationTitleMap[activeSubScreen]
+    const { rows, onCreate, onUpdate, onDelete } = crudMap[activeSubScreen]
+    return (
+      <AdminSimpleCrudScreen
+        title={title}
+        subtitle={subtitle}
+        rows={rows}
+        onCreateRecord={onCreate}
+        onUpdateRecord={onUpdate}
+        onDeleteRecord={onDelete}
+        onBack={() => setActiveSubScreen(null)}
+        {...navProps}
+      />
+    )
+  }
+
+  return (
+    <div className="admin-page">
+      <AdminNavbar {...navProps} />
+      <main className="admin-main">
+        <AdminSectionHeader
+          title="Cadastros básicos"
+          subtitle="Gerencie as tabelas de referência utilizadas em todo o sistema."
+          onBack={() => onNavigate('dashboard')}
+        />
+        <div className="dashboard-shell">
+          <div className="dashboard-cards-grid dashboard-cards-grid--top">
+            {basicRegistrationCards.map((card) => (
+              <div key={card.key} className="card-col">
+                <DashboardCard
+                  title={card.title}
+                  icon={card.icon}
+                  description={card.description}
+                  onCardClick={() => setActiveSubScreen(card.key)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+      <AppFooter />
+    </div>
+  )
+}
+
 function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelectPortal, onNavigate, onExit, selectedProjectId, onSelectProject, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -2784,6 +3418,10 @@ function App() {
 
     if (adminScreen === 'users') {
       return renderWithPreview(<AdminUsersScreen rows={adminUsers} onBack={() => setAdminScreen('dashboard')} onCreateUser={createAdminUser} onUpdateUser={updateAdminUser} onDeleteUser={deleteAdminUser} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+    }
+
+    if (adminScreen === 'basic-registrations') {
+      return renderWithPreview(<AdminBasicRegistrationsScreen portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
     return renderWithPreview(<AdminDashboardScreen portalView={portalView} onSelectPortal={setPortalView} adminContext={adminContext} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
