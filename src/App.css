@@ -653,16 +653,52 @@
   font-weight: var(--weight-medium);
 }
 
-.upload-item__head span {
-  padding: 0.2rem 0.6rem;
+.upload-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.7rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-warning) 14%, var(--color-surface));
-  border: 1px solid color-mix(in srgb, var(--color-warning) 35%, var(--color-border));
-  color: var(--color-warning);
+  border: 1px solid var(--color-border);
   font-size: var(--type-label-small-size);
   line-height: var(--type-label-small-line);
   font-weight: var(--weight-bold);
   white-space: nowrap;
+}
+
+.upload-status-chip i {
+  font-size: 0.82rem;
+  line-height: 1;
+}
+
+.upload-status-chip--neutral {
+  background: color-mix(in srgb, var(--color-dark) 6%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-dark) 20%, var(--color-border));
+  color: var(--color-dark);
+}
+
+.upload-status-chip--warning {
+  background: color-mix(in srgb, #b7791f 10%, var(--color-surface));
+  border-color: color-mix(in srgb, #b7791f 28%, var(--color-border));
+  color: #8a5a14;
+}
+
+.upload-status-chip--danger {
+  background: color-mix(in srgb, var(--color-danger) 8%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-danger) 25%, var(--color-border));
+  color: var(--color-danger);
+}
+
+.upload-status-chip--success {
+  background: color-mix(in srgb, #1f7a4f 10%, var(--color-surface));
+  border-color: color-mix(in srgb, #1f7a4f 24%, var(--color-border));
+  color: #1f7a4f;
+}
+
+.upload-status-chip--muted {
+  background: color-mix(in srgb, #6b7280 10%, var(--color-surface));
+  border-color: color-mix(in srgb, #6b7280 26%, var(--color-border));
+  color: #586171;
 }
 
 .declaration-list {
@@ -3474,5 +3510,303 @@
 .navbar-dropdown {
   border-color: rgba(0, 0, 0, 0.2) !important;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODAL DE DOCUMENTOS — Análise de documentos das instituições
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Backdrop do modal de documentos — alinha ao topo da área de conteúdo */
+.docs-modal-backdrop {
+  align-items: flex-start;
+  padding-top: 5.25rem; /* navbar (4.25rem) + margem de respiro */
+  padding-bottom: 1.5rem;
+}
+
+/* Tamanho do modal de documentos */
+.admin-modal-card--docs {
+  width: min(100%, 76rem);
+  max-height: calc(100vh - 7rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.docs-modal-subtitle {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-weight: var(--weight-normal);
+  margin-top: 0.15rem;
+}
+
+/* Barra de resumo de status */
+.docs-modal-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.75rem 2rem;
+  background: color-mix(in srgb, var(--color-bg) 60%, var(--color-surface));
+  border-bottom: 1px solid var(--color-border);
+}
+
+.docs-modal-status-bar__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+}
+
+.docs-modal-status-bar__item i {
+  font-size: 0.9rem;
+}
+
+.docs-modal-status-bar__item--approved {
+  color: var(--color-success);
+}
+
+.docs-modal-status-bar__item--rejected {
+  color: var(--color-danger);
+}
+
+/* Body com scroll */
+.docs-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 2rem !important;
+}
+
+/* Alinhamento central nas colunas Exibir e Análise */
+.docs-table .docs-table__th-center,
+.docs-table td.doc-table__col-view,
+.docs-table td.doc-table__col-analysis {
+  text-align: right;
+}
+
+/* Tipo do documento — pill sutil */
+.doc-type-badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  color: var(--color-primary);
+  font-size: 0.78rem;
+  font-weight: var(--weight-medium);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, var(--color-border));
+  white-space: nowrap;
+}
+
+/* Botão de olho para visualizar */
+.doc-view-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.doc-view-button:hover {
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+}
+
+/* Ações de análise — par de botões */
+.doc-analysis-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.doc-action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 1.9rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: var(--weight-medium);
+  border: 1px solid transparent;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.doc-action-button--approve {
+  background: color-mix(in srgb, var(--color-success) 10%, var(--color-surface));
+  color: var(--color-success);
+  border-color: color-mix(in srgb, var(--color-success) 25%, var(--color-border));
+}
+
+.doc-action-button--approve:hover {
+  background: var(--color-success);
+  color: #fff;
+  border-color: var(--color-success);
+}
+
+.doc-action-button--reject {
+  background: color-mix(in srgb, var(--color-danger) 8%, var(--color-surface));
+  color: var(--color-danger);
+  border-color: color-mix(in srgb, var(--color-danger) 25%, var(--color-border));
+}
+
+.doc-action-button--reject:hover {
+  background: var(--color-danger);
+  color: #fff;
+  border-color: var(--color-danger);
+}
+
+/* Badge de status pós-análise */
+.doc-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: var(--weight-medium);
+}
+
+.doc-status-badge--approved {
+  background: color-mix(in srgb, var(--color-success) 12%, var(--color-surface));
+  color: var(--color-success);
+  border: 1px solid color-mix(in srgb, var(--color-success) 25%, var(--color-border));
+}
+
+.doc-status-badge--rejected {
+  background: color-mix(in srgb, var(--color-danger) 8%, var(--color-surface));
+  color: var(--color-danger);
+  border: 1px solid color-mix(in srgb, var(--color-danger) 22%, var(--color-border));
+}
+
+/* Botão de info dentro do badge de rejeitado */
+.doc-status-badge__reason-trigger {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  margin-left: 0.1rem;
+  font-size: 0.85rem;
+  opacity: 0.75;
+  cursor: help;
+}
+
+.doc-status-badge__reason-trigger:hover {
+  opacity: 1;
+}
+
+/* Feedback visual nas linhas após análise */
+.doc-row--approved td {
+  background: color-mix(in srgb, var(--color-success) 4%, var(--color-surface)) !important;
+}
+
+.doc-row--rejected td {
+  background: color-mix(in srgb, var(--color-danger) 3%, var(--color-surface)) !important;
+}
+
+/* ── Modal de visualização do documento ─────────────────────────────────────── */
+
+.doc-viewer-backdrop {
+  z-index: 50;
+}
+
+.doc-viewer-card {
+  width: min(100%, 68rem);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.doc-viewer-card__type {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin-top: 0.1rem;
+}
+
+.doc-viewer-card__body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 2rem;
+  background: color-mix(in srgb, var(--color-bg) 70%, var(--color-surface));
+  min-height: 22rem;
+}
+
+.doc-viewer-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  text-align: center;
+}
+
+.doc-viewer-placeholder__icon {
+  font-size: 4rem;
+  color: color-mix(in srgb, var(--color-primary) 55%, var(--color-text-muted));
+}
+
+.doc-viewer-placeholder__label {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.doc-viewer-placeholder__name {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+.doc-viewer-placeholder__type {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* ── Modal de rejeição ───────────────────────────────────────────────────────── */
+
+.rejection-modal__doc-name {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--color-bg) 60%, var(--color-surface));
+  border: 1px solid var(--color-border);
+  font-size: 0.92rem;
+  color: var(--color-text);
+  font-weight: var(--weight-medium);
+  margin: 0 !important;
+}
+
+/* Responsividade mobile para a tabela de documentos */
+@media (max-width: 680px) {
+  .doc-analysis-actions {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .docs-modal-status-bar {
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    padding: 0.65rem 1rem;
+  }
+
+  .docs-modal-body {
+    padding: 1rem !important;
+  }
 }
 

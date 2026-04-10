@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
-import { bankOptions, cnaeOptions, noticeOptions, stageContent, uploadChecklist } from '../../data/constants'
+import { bankOptions, cnaeOptions, documentReviewStatusMap, noticeOptions, stageContent, uploadChecklist } from '../../data/constants'
 import { AppFooter } from '../shared/AppBrand'
 import { PainelNavbar } from './PainelNavbar'
 import { SidebarStatus } from './SidebarStatus'
@@ -19,7 +19,7 @@ function FormSection({ title, children }) {
 
 function UploadItemCard({ item, uploadedFileName, onChange }) {
   const [showInfo, setShowInfo] = useState(false)
-  const isUploaded = Boolean(uploadedFileName)
+  const statusMeta = documentReviewStatusMap[item.reviewStatus] || documentReviewStatusMap['not-sent']
 
   return (
     <div className="upload-item">
@@ -35,13 +35,16 @@ function UploadItemCard({ item, uploadedFileName, onChange }) {
             <i className="bi bi-info-circle" />
           </button>
         </div>
-        <span>{isUploaded ? 'Anexado' : 'Pendente'}</span>
+        <span className={`upload-status-chip upload-status-chip--${statusMeta.tone}`}>
+          <i className={`bi ${statusMeta.icon}`} />
+          <span>{statusMeta.label}</span>
+        </span>
       </div>
 
       {showInfo && <div className="upload-item__info">{item.info}</div>}
 
       <Form.Control key={uploadedFileName || `${item.key}-empty`} type="file" onChange={(event) => onChange(event.target.files?.[0]?.name || '')} />
-      {isUploaded && (
+      {uploadedFileName && (
         <div className="upload-item__footer">
           <small>{uploadedFileName}</small>
           <button type="button" className="upload-remove-button" onClick={() => onChange('')}>
@@ -172,7 +175,7 @@ function FiscalForm({ applicationData, setUploadStatus, onBack, onSave, saveDisa
 
 function AttachmentsForm({ applicationData, setUploadStatus, onBack, onSave, saveDisabled }) {
   const attachmentUploads = uploadChecklist.slice(8)
-  const declaracaoItem = { key: 'declaracaoAssinada', label: 'Declarações assinadas', info: 'Arquivo PDF contendo as declarações obrigatórias assinadas pelo representante legal da empresa.' }
+  const declaracaoItem = { key: 'declaracaoAssinada', label: 'Declarações assinadas', info: 'Arquivo PDF contendo as declarações obrigatórias assinadas pelo representante legal da empresa.', reviewStatus: 'under-review' }
 
   return (
     <FormSection title="Documentos institucionais e anexos" subtitle="Uploads complementares, modelos assinados e comprovantes da empresa.">

@@ -3,6 +3,7 @@ import { Badge, Button, Card, Col, Container, Form, ProgressBar, Row } from 'rea
 import logoJangada from './assets/logo-jangada.svg'
 import logoEstadoCeara from './assets/logo-estado-ceara.svg'
 import { AdminBasicRegistrationsScreen as AdminBasicRegistrationsScreenModule } from './components/admin/AdminBasicRegistrationsScreen'
+import { AdminApplicantsTable } from './components/admin/AdminApplicantsTable'
 import './App.css'
 
 const selection = {
@@ -57,18 +58,26 @@ const cnaeOptions = [
 ]
 
 const uploadChecklist = [
-  { key: 'sponsorshipRequest', label: 'Oficio de solicitacao de patrocinio', info: 'Documento formal de solicitacao de patrocinio para o evento ou projeto, com assinatura eletronica GOV.BR.' },
-  { key: 'nationalTax', label: 'Regularidade com Fazenda Nacional', info: 'Certidao conjunta expedida pela Receita Federal do Brasil e pela Procuradoria-Geral da Fazenda Nacional, comprovando regularidade fiscal federal.' },
-  { key: 'stateTax', label: 'Regularidade com Fazenda Estadual', info: 'Certidao emitida pela Secretaria da Fazenda do Estado do domicilio ou sede da proponente.' },
-  { key: 'municipalTax', label: 'Regularidade com Fazenda Municipal', info: 'Certidao de regularidade fiscal municipal do domicilio ou sede da empresa.' },
-  { key: 'fgts', label: 'FGTS', info: 'Certificado de regularidade relativa ao Fundo de Garantia por Tempo de Servico.' },
-  { key: 'cndt', label: 'CNDT', info: 'Certidao Negativa de Debitos Trabalhistas, usada para demonstrar regularidade em obrigacoes trabalhistas.' },
-  { key: 'correctionalCertificate', label: 'Certidao negativa correcional', info: 'Consulta negativa de entes privados em bases como ePAD, CGU-PJ, CEIS, CNEP e CEPIM.' },
-  { key: 'tcuCertificate', label: 'Certidao negativa de licitantes inidoneos', info: 'Certidao emitida no ambito do TCU para comprovar ausencia de impedimentos relacionados a licitacoes.' },
-  { key: 'constitutiveAct', label: 'Ato constitutivo ou contrato social', info: 'Documento societario que comprova a constituicao formal da empresa e seus representantes.' },
-  { key: 'legalRepresentativeDocument', label: 'Documento do representante legal', info: 'Documento de identificacao do representante legal, como RG, CPF ou CNH.' },
-  { key: 'representativeAddress', label: 'Comprovante de endereco do representante', info: 'Comprovante atualizado de residencia do representante legal da empresa.' },
+  { key: 'sponsorshipRequest', label: 'Oficio de solicitacao de patrocinio', info: 'Documento formal de solicitacao de patrocinio para o evento ou projeto, com assinatura eletronica GOV.BR.', reviewStatus: 'approved' },
+  { key: 'nationalTax', label: 'Regularidade com Fazenda Nacional', info: 'Certidao conjunta expedida pela Receita Federal do Brasil e pela Procuradoria-Geral da Fazenda Nacional, comprovando regularidade fiscal federal.', reviewStatus: 'under-review' },
+  { key: 'stateTax', label: 'Regularidade com Fazenda Estadual', info: 'Certidao emitida pela Secretaria da Fazenda do Estado do domicilio ou sede da proponente.', reviewStatus: 'rejected' },
+  { key: 'municipalTax', label: 'Regularidade com Fazenda Municipal', info: 'Certidao de regularidade fiscal municipal do domicilio ou sede da empresa.', reviewStatus: 'not-sent' },
+  { key: 'fgts', label: 'FGTS', info: 'Certificado de regularidade relativa ao Fundo de Garantia por Tempo de Servico.', reviewStatus: 'expired' },
+  { key: 'cndt', label: 'CNDT', info: 'Certidao Negativa de Debitos Trabalhistas, usada para demonstrar regularidade em obrigacoes trabalhistas.', reviewStatus: 'approved' },
+  { key: 'correctionalCertificate', label: 'Certidao negativa correcional', info: 'Consulta negativa de entes privados em bases como ePAD, CGU-PJ, CEIS, CNEP e CEPIM.', reviewStatus: 'under-review' },
+  { key: 'tcuCertificate', label: 'Certidao negativa de licitantes inidoneos', info: 'Certidao emitida no ambito do TCU para comprovar ausencia de impedimentos relacionados a licitacoes.', reviewStatus: 'not-sent' },
+  { key: 'constitutiveAct', label: 'Ato constitutivo ou contrato social', info: 'Documento societario que comprova a constituicao formal da empresa e seus representantes.', reviewStatus: 'approved' },
+  { key: 'legalRepresentativeDocument', label: 'Documento do representante legal', info: 'Documento de identificacao do representante legal, como RG, CPF ou CNH.', reviewStatus: 'rejected' },
+  { key: 'representativeAddress', label: 'Comprovante de endereco do representante', info: 'Comprovante atualizado de residencia do representante legal da empresa.', reviewStatus: 'expired' },
 ]
+
+const documentReviewStatusMap = {
+  'not-sent': { label: 'Não enviado', icon: 'bi-dash-circle', tone: 'neutral' },
+  'under-review': { label: 'Aguardando análise', icon: 'bi-clock', tone: 'warning' },
+  rejected: { label: 'Rejeitado', icon: 'bi-x-lg', tone: 'danger' },
+  approved: { label: 'Aprovado', icon: 'bi-check-lg', tone: 'success' },
+  expired: { label: 'Expirado', icon: 'bi-calendar2-x', tone: 'muted' },
+}
 
 const initialApplicationData = {
   companyType: '', cnpj: '', companyName: '', tradeName: '', email: '', emailConfirm: '', phone: '', website: '',
@@ -1138,61 +1147,6 @@ function AdminSectionHeader({ title, subtitle, onBack }) {
   )
 }
 
-function AdminApplicantsTable({ title, subtitle, rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
-  const [searchTerm, setSearchTerm] = useState('')
-  const filteredRows = rows.filter((row) =>
-    [row.companyName, row.city, row.currentStageLabel, row.status, row.documents]
-      .some((value) => String(value || '').toLowerCase().includes(searchTerm.trim().toLowerCase())),
-  )
-
-  return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <AdminSectionHeader title={title}  onBack={onBack} />
-        <section className="admin-management-card admin-users-crud">
-          <div className="admin-management-card__topline">
-            <strong>{filteredRows.length} instituicao(oes)</strong>
-          </div>
-          <TableSearchBar
-            value={searchTerm}
-            onChange={setSearchTerm}
-            placeholder="Pesquisar por instituicao, cidade, etapa ou status"
-            searchLabel="Pesquisar instituicoes"
-          />
-          <div className="admin-users-table-wrap">
-          <table className="admin-table admin-table--cards">
-            <thead>
-              <tr>
-                <th>Instituicao</th>
-                <th>Cidade</th>
-                <th>Etapa atual</th>
-                <th>Status</th>
-                <th>Documentos</th>
-                <th>Acao</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredRows.map((row) => (
-                <tr key={row.id}>
-                  <td data-label="Instituicao">{row.companyName}</td>
-                  <td data-label="Cidade">{row.city}</td>
-                  <td data-label="Etapa atual">{row.currentStageLabel}</td>
-                  <td data-label="Status">{row.status}</td>
-                  <td data-label="Documentos">{row.documents}</td>
-                  <td data-label="Acoes"><div className="admin-users-actions"><button type="button" className="admin-inline-action">Documentos</button><button type="button" className="admin-inline-action">Gerenciar</button></div></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          </div>
-        </section>
-      </main>
-      <AppFooter />
-    </div>
-  )
-}
-
 function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const filteredRows = rows.filter((row) =>
@@ -1565,7 +1519,7 @@ function SidebarStatus({ applicationData, progressItems, completedSteps, activeS
 
 function UploadItemCard({ item, uploadedFileName, onChange }) {
   const [showInfo, setShowInfo] = useState(false)
-  const isUploaded = Boolean(uploadedFileName)
+  const statusMeta = documentReviewStatusMap[item.reviewStatus] || documentReviewStatusMap['not-sent']
 
   return (
     <div className="upload-item">
@@ -1581,13 +1535,16 @@ function UploadItemCard({ item, uploadedFileName, onChange }) {
             <i className="bi bi-info-circle" />
           </button>
         </div>
-        <span>{isUploaded ? 'Anexado' : 'Pendente'}</span>
+        <span className={`upload-status-chip upload-status-chip--${statusMeta.tone}`}>
+          <i className={`bi ${statusMeta.icon}`} />
+          <span>{statusMeta.label}</span>
+        </span>
       </div>
 
       {showInfo && <div className="upload-item__info">{item.info}</div>}
 
       <Form.Control key={uploadedFileName || `${item.key}-empty`} type="file" onChange={(event) => onChange(event.target.files?.[0]?.name || '')} />
-      {isUploaded && (
+      {uploadedFileName && (
         <div className="upload-item__footer">
           <small>{uploadedFileName}</small>
           <button type="button" className="upload-remove-button" onClick={() => onChange('')}>
@@ -1718,7 +1675,7 @@ function FiscalForm({ applicationData, setUploadStatus, onBack, onSave, saveDisa
 
 function AttachmentsForm({ applicationData, setUploadStatus, onBack, onSave, saveDisabled }) {
   const attachmentUploads = uploadChecklist.slice(8)
-  const declaracaoItem = { key: 'declaracaoAssinada', label: 'Declarações assinadas', info: 'Arquivo PDF contendo as declarações obrigatórias assinadas pelo representante legal da empresa.' }
+  const declaracaoItem = { key: 'declaracaoAssinada', label: 'Declarações assinadas', info: 'Arquivo PDF contendo as declarações obrigatórias assinadas pelo representante legal da empresa.', reviewStatus: 'under-review' }
 
   return (
     <FormSection title="Documentos institucionais e anexos" subtitle="Uploads complementares, modelos assinados e comprovantes da empresa.">
