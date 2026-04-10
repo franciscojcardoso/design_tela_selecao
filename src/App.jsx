@@ -3518,7 +3518,7 @@ function App() {
 
   if (portalView === 'admin') {
     if (adminScreen === 'institutions') {
-      return renderWithPreview(<AdminApplicantsTable title="Instituições" subtitle="Tabela principal com as instituições e acesso rápido para acompanhamento e gestão." rows={adminContext.applicants} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+      return renderWithPreview(<AdminApplicantsTable title="Instituições" subtitle="Tabela principal com as instituições e acesso rápido para acompanhamento e gestão." rows={adminContext.applicants} onBack={() => setAdminScreen('dashboard')} onAudit={registerAudit} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
     if (adminScreen === 'projects') {

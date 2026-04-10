@@ -70,7 +70,7 @@ function DocumentViewerModal({ doc, onClose }) {
 
 // ─── Modal de rejeição ─────────────────────────────────────────────────────────
 
-function RejectionModal({ doc, onClose, onConfirm }) {
+function RejectionModal({ doc, onClose, onConfirm, isEdit = false }) {
   const [reason, setReason] = useState('')
   const [touched, setTouched] = useState(false)
   const isValid = reason.trim().length > 0
@@ -92,13 +92,19 @@ function RejectionModal({ doc, onClose, onConfirm }) {
         <header className="admin-modal-card__header">
           <div className="admin-modal-card__headline">
             <i className="bi bi-x-circle-fill" style={{ color: 'var(--color-danger)' }} />
-            <h3>Rejeitar documento</h3>
+            <h3>{isEdit ? 'Alterar para rejeitado' : 'Rejeitar documento'}</h3>
           </div>
           <button type="button" className="admin-modal-card__close" onClick={onClose} aria-label="Cancelar rejeição">
             <i className="bi bi-x-lg" />
           </button>
         </header>
         <div className="admin-modal-card__body">
+          {isEdit && (
+            <div className="rejection-modal__edit-notice">
+              <i className="bi bi-info-circle me-2" />
+              Esta alteração substituirá a decisão anterior e será registrada na auditoria.
+            </div>
+          )}
           <p className="rejection-modal__doc-name">
             <i className="bi bi-file-earmark-text me-2" />
             {doc.title}
@@ -136,12 +142,30 @@ function RejectionModal({ doc, onClose, onConfirm }) {
 
 // ─── Linha de documento na tabela ─────────────────────────────────────────────
 
-function DocumentTableRow({ doc, statusInfo, onView, onApprove, onReject }) {
+function DocumentTableRow({ doc, statusInfo, isEditing, onView, onApprove, onReject, onEdit, onCancelEdit }) {
   const { status, rejectionReason } = statusInfo
+  const isDecided = status !== 'pending'
+
+  // Quando em modo de edição, mostra os botões de ação independente do status
+  const showActionButtons = !isDecided || isEditing
+
+  const rowClass = [
+    !isEditing && status === 'approved' ? 'doc-row--approved' : '',
+    !isEditing && status === 'rejected' ? 'doc-row--rejected' : '',
+    isEditing ? 'doc-row--editing' : '',
+  ].filter(Boolean).join(' ')
 
   return (
-    <tr className={status === 'approved' ? 'doc-row--approved' : status === 'rejected' ? 'doc-row--rejected' : ''}>
-      <td data-label="Título">{doc.title}</td>
+    <tr className={rowClass}>
+      <td data-label="Título">
+        <span className={isEditing ? 'doc-title--editing' : ''}>{doc.title}</span>
+        {isEditing && (
+          <span className="doc-editing-label">
+            <i className="bi bi-pencil-fill" />
+            Editando decisão
+          </span>
+        )}
+      </td>
       <td data-label="Tipo">
         <span className="doc-type-badge">{doc.type}</span>
       </td>
@@ -157,11 +181,11 @@ function DocumentTableRow({ doc, statusInfo, onView, onApprove, onReject }) {
         </button>
       </td>
       <td data-label="Análise" className="doc-table__col-analysis">
-        {status === 'pending' && (
+        {showActionButtons ? (
           <div className="doc-analysis-actions">
             <button
               type="button"
-              className="doc-action-button doc-action-button--approve"
+              className={`doc-action-button doc-action-button--approve${status === 'approved' && isEditing ? ' is-current' : ''}`}
               onClick={() => onApprove(doc.id)}
               title="Aprovar documento"
               aria-label={`Aprovar: ${doc.title}`}
@@ -171,7 +195,7 @@ function DocumentTableRow({ doc, statusInfo, onView, onApprove, onReject }) {
             </button>
             <button
               type="button"
-              className="doc-action-button doc-action-button--reject"
+              className={`doc-action-button doc-action-button--reject${status === 'rejected' && isEditing ? ' is-current' : ''}`}
               onClick={() => onReject(doc)}
               title="Rejeitar documento"
               aria-label={`Rejeitar: ${doc.title}`}
@@ -179,33 +203,57 @@ function DocumentTableRow({ doc, statusInfo, onView, onApprove, onReject }) {
               <i className="bi bi-x-lg" />
               <span>Rejeitar</span>
             </button>
-          </div>
-        )}
-        {status === 'approved' && (
-          <span className="doc-status-badge doc-status-badge--approved" role="status">
-            <i className="bi bi-check-circle-fill" />
-            Aprovado
-          </span>
-        )}
-        {status === 'rejected' && (
-          <span
-            className="doc-status-badge doc-status-badge--rejected"
-            title={rejectionReason ? `Motivo: ${rejectionReason}` : undefined}
-            role="status"
-          >
-            <i className="bi bi-x-circle-fill" />
-            Rejeitado
-            {rejectionReason && (
+            {isEditing && (
               <button
                 type="button"
-                className="doc-status-badge__reason-trigger"
-                title={rejectionReason}
-                aria-label={`Ver motivo da rejeição: ${rejectionReason}`}
+                className="doc-action-button doc-action-button--cancel"
+                onClick={onCancelEdit}
+                title="Cancelar edição"
+                aria-label="Cancelar edição da decisão"
               >
-                <i className="bi bi-info-circle" />
+                <i className="bi bi-x" />
+                <span>Cancelar</span>
               </button>
             )}
-          </span>
+          </div>
+        ) : (
+          <div className="doc-analysis-actions doc-analysis-actions--decided">
+            {status === 'approved' && (
+              <span className="doc-status-badge doc-status-badge--approved" role="status">
+                <i className="bi bi-check-circle-fill" />
+                Aprovado
+              </span>
+            )}
+            {status === 'rejected' && (
+              <span
+                className="doc-status-badge doc-status-badge--rejected"
+                role="status"
+              >
+                <i className="bi bi-x-circle-fill" />
+                Rejeitado
+                {rejectionReason && (
+                  <button
+                    type="button"
+                    className="doc-status-badge__reason-trigger"
+                    title={`Motivo: ${rejectionReason}`}
+                    aria-label={`Ver motivo da rejeição: ${rejectionReason}`}
+                  >
+                    <i className="bi bi-info-circle" />
+                  </button>
+                )}
+              </span>
+            )}
+            <button
+              type="button"
+              className="doc-action-button doc-action-button--edit"
+              onClick={onEdit}
+              title="Editar decisão"
+              aria-label={`Editar decisão do documento: ${doc.title}`}
+            >
+              <i className="bi bi-pencil" />
+              <span>Editar</span>
+            </button>
+          </div>
         )}
       </td>
     </tr>
@@ -214,30 +262,67 @@ function DocumentTableRow({ doc, statusInfo, onView, onApprove, onReject }) {
 
 // ─── Modal de documentos da instituição ───────────────────────────────────────
 
-function DocumentsModal({ institution, onClose }) {
+function DocumentsModal({ institution, onClose, onAudit }) {
   const [docStatuses, setDocStatuses] = useState(buildInitialDocStatuses)
   const [viewingDoc, setViewingDoc] = useState(null)
   const [rejectingDoc, setRejectingDoc] = useState(null)
+  const [editingDocId, setEditingDocId] = useState(null)
 
   const handleApprove = (docId) => {
+    const prev = docStatuses[docId]
+    const isEdit = prev.status !== 'pending'
+
     setDocStatuses((current) => ({
       ...current,
       [docId]: { status: 'approved', rejectionReason: '' },
     }))
+    setEditingDocId(null)
+
+    const doc = BASE_DOCUMENTS.find((d) => d.id === docId)
+    if (isEdit) {
+      onAudit?.('Decisão alterada para Aprovado', `${doc?.title} — ${institution.companyName}`)
+    } else {
+      onAudit?.('Documento aprovado', `${doc?.title} — ${institution.companyName}`)
+    }
+  }
+
+  const handleStartReject = (doc) => {
+    setRejectingDoc(doc)
   }
 
   const handleConfirmRejection = (reason) => {
     if (!rejectingDoc) return
+    const prev = docStatuses[rejectingDoc.id]
+    const isEdit = prev.status !== 'pending'
+
     setDocStatuses((current) => ({
       ...current,
       [rejectingDoc.id]: { status: 'rejected', rejectionReason: reason },
     }))
+    setEditingDocId(null)
     setRejectingDoc(null)
+
+    if (isEdit) {
+      onAudit?.('Decisão alterada para Rejeitado', `${rejectingDoc.title} — ${institution.companyName} — Motivo: ${reason}`)
+    } else {
+      onAudit?.('Documento rejeitado', `${rejectingDoc.title} — ${institution.companyName} — Motivo: ${reason}`)
+    }
+  }
+
+  const handleEdit = (docId) => {
+    const doc = BASE_DOCUMENTS.find((d) => d.id === docId)
+    setEditingDocId(docId)
+    onAudit?.('Decisão aberta para revisão', `${doc?.title} — ${institution.companyName}`)
+  }
+
+  const handleCancelEdit = () => {
+    setEditingDocId(null)
   }
 
   const approvedCount = Object.values(docStatuses).filter((s) => s.status === 'approved').length
   const rejectedCount = Object.values(docStatuses).filter((s) => s.status === 'rejected').length
   const pendingCount = Object.values(docStatuses).filter((s) => s.status === 'pending').length
+  const isRejectionEdit = rejectingDoc && docStatuses[rejectingDoc.id]?.status !== 'pending'
 
   return (
     <>
@@ -293,9 +378,12 @@ function DocumentsModal({ institution, onClose }) {
                       key={doc.id}
                       doc={doc}
                       statusInfo={docStatuses[doc.id]}
+                      isEditing={editingDocId === doc.id}
                       onView={setViewingDoc}
                       onApprove={handleApprove}
-                      onReject={setRejectingDoc}
+                      onReject={handleStartReject}
+                      onEdit={() => handleEdit(doc.id)}
+                      onCancelEdit={handleCancelEdit}
                     />
                   ))}
                 </tbody>
@@ -318,6 +406,7 @@ function DocumentsModal({ institution, onClose }) {
       {rejectingDoc && (
         <RejectionModal
           doc={rejectingDoc}
+          isEdit={isRejectionEdit}
           onClose={() => setRejectingDoc(null)}
           onConfirm={handleConfirmRejection}
         />
@@ -328,7 +417,7 @@ function DocumentsModal({ institution, onClose }) {
 
 // ─── Tabela principal de instituições ─────────────────────────────────────────
 
-export function AdminApplicantsTable({ title, subtitle, rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+export function AdminApplicantsTable({ title, subtitle, rows, onBack, onAudit, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [docsInstitution, setDocsInstitution] = useState(null)
 
@@ -397,6 +486,7 @@ export function AdminApplicantsTable({ title, subtitle, rows, onBack, portalView
         <DocumentsModal
           institution={docsInstitution}
           onClose={() => setDocsInstitution(null)}
+          onAudit={onAudit}
         />
       )}
     </div>

@@ -3663,6 +3663,90 @@
   border-color: var(--color-danger);
 }
 
+/* Botão Editar — discreto ao lado do badge de decisão */
+.doc-action-button--edit {
+  background: transparent;
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+  font-size: 0.78rem;
+  padding: 0.18rem 0.6rem;
+}
+
+.doc-action-button--edit:hover {
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+}
+
+/* Botão Cancelar no modo de edição */
+.doc-action-button--cancel {
+  background: transparent;
+  color: var(--color-text-muted);
+  border-color: transparent;
+  font-size: 0.78rem;
+  padding: 0.18rem 0.5rem;
+}
+
+.doc-action-button--cancel:hover {
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+/* Estado atual destacado no modo de edição */
+.doc-action-button--approve.is-current {
+  background: color-mix(in srgb, var(--color-success) 18%, var(--color-surface));
+  border-color: var(--color-success);
+  color: var(--color-success);
+  font-weight: var(--weight-bold);
+}
+
+.doc-action-button--reject.is-current {
+  background: color-mix(in srgb, var(--color-danger) 14%, var(--color-surface));
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+  font-weight: var(--weight-bold);
+}
+
+/* Linha em modo de edição — destaque sutil */
+.doc-row--editing td {
+  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface)) !important;
+}
+
+/* Label "Editando decisão" inline no título */
+.doc-editing-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: 0.6rem;
+  font-size: 0.72rem;
+  font-weight: var(--weight-medium);
+  color: var(--color-primary);
+  opacity: 0.85;
+}
+
+.doc-editing-label i {
+  font-size: 0.7rem;
+}
+
+/* Aviso de edição no modal de rejeição */
+.rejection-modal__edit-notice {
+  display: flex;
+  align-items: flex-start;
+  padding: 0.65rem 0.9rem;
+  margin-bottom: 1rem;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, var(--color-border));
+  font-size: 0.85rem;
+  color: var(--color-primary);
+}
+
+/* Alinhamento decidido (badge + botão editar lado a lado) */
+.doc-analysis-actions--decided {
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+}
+
 /* Badge de status pós-análise */
 .doc-status-badge {
   display: inline-flex;
