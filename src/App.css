@@ -411,10 +411,6 @@
   margin-top: 1.25rem;
 }
 
-.dashboard-stage-section--certame {
-  background: linear-gradient(180deg, rgba(0, 95, 201, 0.05) 0%, rgba(0, 95, 201, 0.015) 100%);
-}
-
 .dashboard-stage-section__header {
   display: flex;
   flex-direction: column;
