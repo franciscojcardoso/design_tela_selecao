@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+﻿import { useRef, useState } from 'react'
 import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
 import { bankOptions, cnaeOptions, documentReviewStatusMap, noticeOptions, stageContent, uploadChecklist } from '../../data/constants'
 import { AppFooter } from '../shared/AppBrand'
@@ -67,19 +67,19 @@ function StageFooterActions({ onBack, onSave, saveDisabled, backLabel = 'Cancela
 
 function CompanyRegistrationForm({ applicationData, updateField, onBack, onSave, saveDisabled, saveLabel = 'Salvar' }) {
   return (
-    <FormSection title="Identificação da empresa" subtitle="Campos básicos pedidos no edital para cadastro da pessoa jurídica.">
+    <FormSection title="Cadastrar proponente">
       <div className="company-form-group">
         <div className="company-form-group__title">Dados cadastrais</div>
         <Row className="g-3">
-          <Col md={6}><Form.Group><Form.Label>Tipo de empresa *</Form.Label><Form.Select value={applicationData.companyType} onChange={updateField('companyType')}><option value="" disabled>Selecionar</option><option>LTDA</option><option>SLU</option><option>S/A</option><option>EIRELI</option><option>OSCIP</option><option>Outro</option></Form.Select></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Tipo de proponente *</Form.Label><Form.Select value={applicationData.companyType} onChange={updateField('companyType')}><option value="" disabled>Selecionar</option><option>LTDA</option><option>SLU</option><option>S/A</option><option>EIRELI</option><option>OSCIP</option><option>Outro</option></Form.Select></Form.Group></Col>
           <Col md={6}><Form.Group><Form.Label>CNPJ *</Form.Label><Form.Control placeholder="00.000.000/0001-00" value={applicationData.cnpj} onChange={updateField('cnpj')} /></Form.Group></Col>
-          <Col xs={12}><Form.Group><Form.Label>Razão social *</Form.Label><Form.Control placeholder="Nome completo da empresa" value={applicationData.companyName} onChange={updateField('companyName')} /></Form.Group></Col>
+          <Col xs={12}><Form.Group><Form.Label>Razão social *</Form.Label><Form.Control placeholder="Nome completo do proponente" value={applicationData.companyName} onChange={updateField('companyName')} /></Form.Group></Col>
           <Col xs={12}><Form.Group><Form.Label>Nome fantasia</Form.Label><Form.Control placeholder="Nome de uso comercial" value={applicationData.tradeName} onChange={updateField('tradeName')} /></Form.Group></Col>
-          <Col md={6}><Form.Group><Form.Label>E-mail institucional *</Form.Label><Form.Control type="email" placeholder="email@empresa.com.br" value={applicationData.email} onChange={updateField('email')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>E-mail institucional *</Form.Label><Form.Control type="email" placeholder="email@proponente.org.br" value={applicationData.email} onChange={updateField('email')} /></Form.Group></Col>
           <Col md={6}><Form.Group><Form.Label>Confirmação de e-mail *</Form.Label><Form.Control type="email" placeholder="Repita o e-mail" value={applicationData.emailConfirm} onChange={updateField('emailConfirm')} /></Form.Group></Col>
           <Col md={6}><Form.Group><Form.Label>Telefone principal *</Form.Label><Form.Control placeholder="(DDD) 0 0000-0000" value={applicationData.phone} onChange={updateField('phone')} /></Form.Group></Col>
           <Col md={6}><Form.Group><Form.Label>Telefone secundário</Form.Label><Form.Control placeholder="(DDD) 0 0000-0000" value={applicationData.phoneSecondary} onChange={updateField('phoneSecondary')} /></Form.Group></Col>
-          <Col lg={4}><Form.Group><Form.Label>Website</Form.Label><Form.Control placeholder="https://www.empresa.com.br" value={applicationData.website} onChange={updateField('website')} /></Form.Group></Col>
+          <Col lg={4}><Form.Group><Form.Label>Website</Form.Label><Form.Control placeholder="https://www.proponente.org.br" value={applicationData.website} onChange={updateField('website')} /></Form.Group></Col>
           <Col lg={4}><Form.Group><Form.Label>Data de criação</Form.Label><Form.Control type="date" value={applicationData.foundationDate} onChange={updateField('foundationDate')} /></Form.Group></Col>
           <Col lg={4}><Form.Group><Form.Label>Capital declarado</Form.Label><Form.Control placeholder="R$ 0,00" value={applicationData.shareCapital} onChange={updateField('shareCapital')} /></Form.Group></Col>
           <Col xs={12}><Form.Group><Form.Label>CNAE principal *</Form.Label><Form.Select value={applicationData.primaryCnae} onChange={updateField('primaryCnae')}><option value="" disabled>Selecionar CNAE principal</option>{cnaeOptions.map((option) => <option key={option}>{option}</option>)}</Form.Select></Form.Group></Col>
@@ -145,7 +145,7 @@ function LegalContactForm({ applicationData, updateField, onBack, onSave, saveDi
         </Row>
       </div>
 
-      <div className="info-banner mt-4"><i className="bi bi-info-circle" /><span>Esta etapa concentra apenas os dados dos responsáveis da empresa. O restante do cadastro continua nas outras opções da página inicial.</span></div>
+      <div className="info-banner mt-4"><i className="bi bi-info-circle" /><span>Esta etapa concentra apenas os dados dos responsáveis do proponente. O restante do cadastro continua nas outras opções da área do proponente.</span></div>
       <StageFooterActions onBack={onBack} onSave={onSave} saveDisabled={saveDisabled} />
     </FormSection>
   )
@@ -175,10 +175,10 @@ function FiscalForm({ applicationData, setUploadStatus, onBack, onSave, saveDisa
 
 function AttachmentsForm({ applicationData, setUploadStatus, onBack, onSave, saveDisabled }) {
   const attachmentUploads = uploadChecklist.slice(8)
-  const declaracaoItem = { key: 'declaracaoAssinada', label: 'Declarações assinadas', info: 'Arquivo PDF contendo as declarações obrigatórias assinadas pelo representante legal da empresa.', reviewStatus: 'under-review' }
+  const declaracaoItem = { key: 'declaracaoAssinada', label: 'Declarações assinadas', info: 'Arquivo PDF contendo as declarações obrigatórias assinadas pelo representante legal do proponente.', reviewStatus: 'under-review' }
 
   return (
-    <FormSection title="Documentos institucionais e anexos" subtitle="Uploads complementares, modelos assinados e comprovantes da empresa.">
+    <FormSection title="Documentos institucionais e anexos" subtitle="Uploads complementares, modelos assinados e comprovantes do proponente.">
       <div className="company-form-group">
         <div className="company-form-group__title">Documentos complementares</div>
         <div className="upload-grid">
@@ -411,13 +411,13 @@ function ProjectForm({ applicationData, updateField, setUploadStatus, onBack, on
 
 function DeclarationsForm({ applicationData, setDeclarationValue, onBack, onSave, saveDisabled }) {
   const companyName = applicationData.companyName || '[RAZÃO SOCIAL]'
-  const cnpj = applicationData.cnpj || '[●]'
+  const cnpj = applicationData.cnpj || '[?]'
   const representativeName = applicationData.legalRepresentative || '[NOME]'
-  const representativeCpf = applicationData.legalRepresentativeCpf || '[●]'
+  const representativeCpf = applicationData.legalRepresentativeCpf || '[?]'
   const declarationItems = []
 
   if (applicationData.declarations.socialRegularity) {
-    declarationItems.push('A empresa atende aos requisitos de regularidade trabalhista e social previstos no edital;')
+    declarationItems.push('O proponente atende aos requisitos de regularidade trabalhista e social previstos no edital;')
   }
 
   if (applicationData.declarations.articleSeven) {
@@ -435,7 +435,7 @@ function DeclarationsForm({ applicationData, setDeclarationValue, onBack, onSave
       <div className="company-form-group">
         <div className="company-form-group__title">Confirmações obrigatórias</div>
         <div className="declaration-list">
-          <Form.Check type="checkbox" id="social-regularity" checked={applicationData.declarations.socialRegularity} onChange={(event) => setDeclarationValue('socialRegularity', event.target.checked)} label="Declaro que a empresa atende aos requisitos de regularidade trabalhista e social previstos no edital." />
+          <Form.Check type="checkbox" id="social-regularity" checked={applicationData.declarations.socialRegularity} onChange={(event) => setDeclarationValue('socialRegularity', event.target.checked)} label="Declaro que o proponente atende aos requisitos de regularidade trabalhista e social previstos no edital." />
           <Form.Check type="checkbox" id="art-7" checked={applicationData.declarations.articleSeven} onChange={(event) => setDeclarationValue('articleSeven', event.target.checked)} label="Declaro cumprimento do inciso XXXIII do art. 7º da Constituição Federal." />
           <Form.Check type="checkbox" id="notice-agreement" checked={applicationData.declarations.noticeAgreement} onChange={(event) => setDeclarationValue('noticeAgreement', event.target.checked)} label="Declaro que li o edital, os anexos e concordo com as condições da seleção." />
         </div>
@@ -450,9 +450,9 @@ function DeclarationsForm({ applicationData, setDeclarationValue, onBack, onSave
               DECLARAÇÃO DE CUMPRIMENTO DO INCISO XXXIII DO ART. 7º DA CONSTITUIÇÃO FEDERAL
             </p>
             <p>
-              A empresa <strong>{companyName}</strong>, inscrita no CNPJ no <strong>{cnpj}</strong>, por
+              O proponente <strong>{companyName}</strong>, inscrita no CNPJ no <strong>{cnpj}</strong>, por
               intermedio de seu representante legal, Sr.(a) <strong>{representativeName}</strong>,
-              portador(a) da Carteira de Identidade no <strong>[●]</strong> e do CPF no{' '}
+              portador(a) da Carteira de Identidade no <strong>[?]</strong> e do CPF no{' '}
               <strong>{representativeCpf}</strong>, DECLARA, para fins de participacao no presente
               processo seletivo, que:
             </p>
@@ -465,7 +465,7 @@ function DeclarationsForm({ applicationData, setDeclarationValue, onBack, onSave
 
             <p>
               Declara, ainda, estar ciente de que a falsidade da presente declaração sujeitará
-              a empresa às sanções previstas em lei, inclusive quanto à inabilitação no processo
+              o proponente às sanções previstas em lei, inclusive quanto à inabilitação no processo
               seletivo e demais penalidades cabíveis.
             </p>
 
@@ -474,7 +474,7 @@ function DeclarationsForm({ applicationData, setDeclarationValue, onBack, onSave
         ) : (
           <p className="summary-empty">
             Marque as declarações obrigatórias para montar automaticamente o texto final com os
-            dados da empresa e do representante legal.
+            dados do proponente e do representante legal.
           </p>
         )}
       </div>

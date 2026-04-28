@@ -1,9 +1,9 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { AppFooter } from '../shared/AppBrand'
 import { TableSearchBar } from '../shared/TableSearchBar'
-import { AdminNavbar } from './AdminNavbar'
-import { AdminSectionHeader } from './AdminSectionHeader'
+import { AdministradorNavbar } from './AdminNavbar'
+import { AdministradorSectionHeader } from './AdminSectionHeader'
 
 // ─── Dados mock de documentos por instituição ──────────────────────────────────
 
@@ -26,23 +26,23 @@ function buildInitialDocStatuses() {
 
 function DocumentViewerModal({ doc, onClose }) {
   return (
-    <div className="admin-modal-backdrop doc-viewer-backdrop" onClick={onClose}>
+    <div className="Administrador-modal-backdrop doc-viewer-backdrop" onClick={onClose}>
       <section
-        className="admin-modal-card doc-viewer-card"
+        className="Administrador-modal-card doc-viewer-card"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-label={`Visualizando: ${doc.title}`}
       >
-        <header className="admin-modal-card__header">
-          <div className="admin-modal-card__headline">
+        <header className="Administrador-modal-card__header">
+          <div className="Administrador-modal-card__headline">
             <i className="bi bi-file-earmark-text" />
             <div>
               <h3>{doc.title}</h3>
               <span className="doc-viewer-card__type">{doc.type}</span>
             </div>
           </div>
-          <button type="button" className="admin-modal-card__close" onClick={onClose} aria-label="Fechar visualização">
+          <button type="button" className="Administrador-modal-card__close" onClick={onClose} aria-label="Fechar visualização">
             <i className="bi bi-x-lg" />
           </button>
         </header>
@@ -54,7 +54,7 @@ function DocumentViewerModal({ doc, onClose }) {
             <p className="doc-viewer-placeholder__type">{doc.type}</p>
           </div>
         </div>
-        <footer className="admin-modal-card__footer">
+        <footer className="Administrador-modal-card__footer">
           <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>
             Fechar
           </Button>
@@ -82,23 +82,23 @@ function RejectionModal({ doc, onClose, onConfirm, isEdit = false }) {
   }
 
   return (
-    <div className="admin-modal-backdrop">
+    <div className="Administrador-modal-backdrop">
       <section
-        className="admin-modal-card admin-modal-card--confirm"
+        className="Administrador-modal-card Administrador-modal-card--confirm"
         role="dialog"
         aria-modal="true"
         aria-label="Rejeitar documento"
       >
-        <header className="admin-modal-card__header">
-          <div className="admin-modal-card__headline">
+        <header className="Administrador-modal-card__header">
+          <div className="Administrador-modal-card__headline">
             <i className="bi bi-x-circle-fill" style={{ color: 'var(--color-danger)' }} />
             <h3>{isEdit ? 'Alterar para rejeitado' : 'Rejeitar documento'}</h3>
           </div>
-          <button type="button" className="admin-modal-card__close" onClick={onClose} aria-label="Cancelar rejeição">
+          <button type="button" className="Administrador-modal-card__close" onClick={onClose} aria-label="Cancelar rejeição">
             <i className="bi bi-x-lg" />
           </button>
         </header>
-        <div className="admin-modal-card__body">
+        <div className="Administrador-modal-card__body">
           {isEdit && (
             <div className="rejection-modal__edit-notice">
               <i className="bi bi-info-circle me-2" />
@@ -127,7 +127,7 @@ function RejectionModal({ doc, onClose, onConfirm, isEdit = false }) {
             </Form.Control.Feedback>
           </Form.Group>
         </div>
-        <footer className="admin-modal-card__footer">
+        <footer className="Administrador-modal-card__footer">
           <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>
             Cancelar
           </Button>
@@ -326,22 +326,22 @@ function DocumentsModal({ institution, onClose, onAudit }) {
 
   return (
     <>
-      <div className="admin-modal-backdrop docs-modal-backdrop">
+      <div className="Administrador-modal-backdrop docs-modal-backdrop">
         <section
-          className="admin-modal-card admin-modal-card--docs"
+          className="Administrador-modal-card Administrador-modal-card--docs"
           role="dialog"
           aria-modal="true"
           aria-label={`Documentos de ${institution.companyName}`}
         >
-          <header className="admin-modal-card__header">
-            <div className="admin-modal-card__headline">
+          <header className="Administrador-modal-card__header">
+            <div className="Administrador-modal-card__headline">
               <i className="bi bi-folder2-open" />
               <div>
                 <h3>Documentos — {institution.companyName}</h3>
                 <span className="docs-modal-subtitle">{institution.city}</span>
               </div>
             </div>
-            <button type="button" className="admin-modal-card__close" onClick={onClose} aria-label="Fechar documentos">
+            <button type="button" className="Administrador-modal-card__close" onClick={onClose} aria-label="Fechar documentos">
               <i className="bi bi-x-lg" />
             </button>
           </header>
@@ -361,9 +361,9 @@ function DocumentsModal({ institution, onClose, onAudit }) {
             </span>
           </div>
 
-          <div className="admin-modal-card__body docs-modal-body">
-            <div className="admin-users-table-wrap">
-              <table className="admin-table admin-table--cards docs-table">
+          <div className="Administrador-modal-card__body docs-modal-body">
+            <div className="Administrador-users-table-wrap">
+              <table className="Administrador-table Administrador-table--cards docs-table">
                 <thead>
                   <tr>
                     <th>Título do documento</th>
@@ -391,7 +391,7 @@ function DocumentsModal({ institution, onClose, onAudit }) {
             </div>
           </div>
 
-          <footer className="admin-modal-card__footer">
+          <footer className="Administrador-modal-card__footer">
             <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>
               Fechar
             </Button>
@@ -417,7 +417,7 @@ function DocumentsModal({ institution, onClose, onAudit }) {
 
 // ─── Tabela principal de instituições ─────────────────────────────────────────
 
-export function AdminApplicantsTable({ title, subtitle, rows, onBack, onAudit, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+export function AdministradorApplicantsTable({ title, subtitle, rows, onBack, onAudit, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [docsInstitution, setDocsInstitution] = useState(null)
 
@@ -427,12 +427,12 @@ export function AdminApplicantsTable({ title, subtitle, rows, onBack, onAudit, p
   )
 
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <AdminSectionHeader title={title} subtitle={subtitle} onBack={onBack} />
-        <section className="admin-management-card admin-users-crud">
-          <div className="admin-management-card__topline">
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader title={title} subtitle={subtitle} onBack={onBack} />
+        <section className="Administrador-management-card Administrador-users-crud">
+          <div className="Administrador-management-card__topline">
             <strong>{filteredRows.length} instituição(ões)</strong>
           </div>
           <TableSearchBar
@@ -441,8 +441,8 @@ export function AdminApplicantsTable({ title, subtitle, rows, onBack, onAudit, p
             placeholder="Pesquisar por instituição, cidade, etapa ou status"
             searchLabel="Pesquisar instituições"
           />
-          <div className="admin-users-table-wrap">
-            <table className="admin-table admin-table--cards">
+          <div className="Administrador-users-table-wrap">
+            <table className="Administrador-table Administrador-table--cards">
               <thead>
                 <tr>
                   <th>Instituição</th>
@@ -462,15 +462,15 @@ export function AdminApplicantsTable({ title, subtitle, rows, onBack, onAudit, p
                     <td data-label="Status">{row.status}</td>
                     <td data-label="Documentos">{row.documents}</td>
                     <td data-label="Ações">
-                      <div className="admin-users-actions">
+                      <div className="Administrador-users-actions">
                         <button
                           type="button"
-                          className="admin-inline-action"
+                          className="Administrador-inline-action"
                           onClick={() => setDocsInstitution(row)}
                         >
                           Documentos
                         </button>
-                        <button type="button" className="admin-inline-action">Gerenciar</button>
+                        <button type="button" className="Administrador-inline-action">Gerenciar</button>
                       </div>
                     </td>
                   </tr>

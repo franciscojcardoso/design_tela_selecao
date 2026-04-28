@@ -1,51 +1,51 @@
-import { useState } from 'react'
-import { adminSchedule, adminGraphSeries, fixedToday, parseIsoDate } from '../../data/constants'
+﻿import { useState } from 'react'
+import { AdministradorSchedule, AdministradorGraphSeries, fixedToday, parseIsoDate } from '../../data/constants'
 import { AppFooter } from '../shared/AppBrand'
 import { TableSearchBar } from '../shared/TableSearchBar'
-import { AdminNavbar } from './AdminNavbar'
+import { AdministradorNavbar } from './AdminNavbar'
 
-function AdminKpiCard({ title, value, icon, detail, onClick, disabled = false }) {
+function AdministradorKpiCard({ title, value, icon, detail, onClick, disabled = false }) {
   return (
-    <button type="button" className={`admin-kpi-card${disabled ? ' is-disabled' : ' is-clickable'}`} onClick={onClick} disabled={disabled}>
-      <div className="admin-kpi-card__icon">
+    <button type="button" className={`Administrador-kpi-card${disabled ? ' is-disabled' : ' is-clickable'}`} onClick={onClick} disabled={disabled}>
+      <div className="Administrador-kpi-card__icon">
         <i className={`bi ${icon}`} />
       </div>
-      <div className="admin-kpi-card__content">
-        <span className="admin-kpi-card__title">{title}</span>
-        <strong className="admin-kpi-card__value">{value}</strong>
-        <small className="admin-kpi-card__detail">{detail}</small>
+      <div className="Administrador-kpi-card__content">
+        <span className="Administrador-kpi-card__title">{title}</span>
+        <strong className="Administrador-kpi-card__value">{value}</strong>
+        <small className="Administrador-kpi-card__detail">{detail}</small>
       </div>
     </button>
   )
 }
 
-function AdminInsightsCard({ adminContext }) {
+function AdministradorInsightsCard({ AdministradorContext }) {
   const [searchTerm, setSearchTerm] = useState('')
-  const filteredProjects = adminContext.projectsRows.filter((project) =>
+  const filteredProjects = AdministradorContext.projectsRows.filter((project) =>
     [project.institution, project.email, project.phone, project.notice, project.amount, project.status]
       .some((value) => String(value || '').toLowerCase().includes(searchTerm.trim().toLowerCase())),
   )
 
   return (
-    <section className="admin-panel-card admin-panel-card--side">
-      <header className="admin-panel-card__header">
-        <div className="admin-panel-card__title">
+    <section className="Administrador-panel-card Administrador-panel-card--side">
+      <header className="Administrador-panel-card__header">
+        <div className="Administrador-panel-card__title">
           <i className="bi bi-kanban" />
           <span>Projetos em analise</span>
         </div>
-        <span className="admin-table-card__badge">{adminContext.projectsRows.length} projetos</span>
+        <span className="Administrador-table-card__badge">{AdministradorContext.projectsRows.length} projetos</span>
       </header>
 
-      <div className="admin-insights admin-insights--single">
-        <article className="admin-table-card">
+      <div className="Administrador-insights Administrador-insights--single">
+        <article className="Administrador-table-card">
           <TableSearchBar
             value={searchTerm}
             onChange={setSearchTerm}
             placeholder="Pesquisar por instituicao, e-mail, telefone ou status"
             searchLabel="Pesquisar projetos em analise"
           />
-          <div className="admin-users-table-wrap">
-            <table className="admin-table admin-table--cards">
+          <div className="Administrador-users-table-wrap">
+            <table className="Administrador-table Administrador-table--cards">
               <thead>
                 <tr>
                   <th>Instituicao</th>
@@ -72,9 +72,9 @@ function AdminInsightsCard({ adminContext }) {
   )
 }
 
-function AdminChatWidget({ adminContext }) {
+function AdministradorChatWidget({ AdministradorContext }) {
   const [isOpen, setIsOpen] = useState(false)
-  const attendanceGroups = adminContext?.attendanceGroups || [
+  const attendanceGroups = AdministradorContext?.attendanceGroups || [
     {
       label: 'Em andamento',
       items: [
@@ -89,20 +89,20 @@ function AdminChatWidget({ adminContext }) {
 
   return (
     <>
-      <button type="button" className="admin-chat-toggle" onClick={() => setIsOpen((current) => !current)} aria-label="Abrir assistente">
+      <button type="button" className="Administrador-chat-toggle" onClick={() => setIsOpen((current) => !current)} aria-label="Abrir assistente">
         <i className="bi bi-chat-dots" />
       </button>
 
       {isOpen && (
-        <section className="admin-chat-window">
-          <header className="admin-chat-window__header">
+        <section className="Administrador-chat-window">
+          <header className="Administrador-chat-window__header">
             <span>SeleBot</span>
             <button type="button" onClick={() => setIsOpen(false)}>
               <i className="bi bi-x-lg" />
             </button>
           </header>
-          <div className="admin-chat-window__body">
-            <div className="admin-chat-window__avatar">
+          <div className="Administrador-chat-window__body">
+            <div className="Administrador-chat-window__avatar">
               <i className="bi bi-robot" />
             </div>
             <p>Ola! Estes sao os atendimentos em aberto no momento.</p>
@@ -114,7 +114,7 @@ function AdminChatWidget({ adminContext }) {
                 .map((item) => <li key={item.title}>{item.title}</li>)}
             </ul>
           </div>
-          <footer className="admin-chat-window__footer">
+          <footer className="Administrador-chat-window__footer">
             <input type="text" placeholder="Digite sua mensagem" />
             <button type="button">Enviar</button>
           </footer>
@@ -124,21 +124,21 @@ function AdminChatWidget({ adminContext }) {
   )
 }
 
-export function AdminDashboardScreen({ portalView, onSelectPortal, adminContext, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+export function AdministradorDashboardScreen({ portalView, onSelectPortal, AdministradorContext, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const kpis = [
-    { title: 'Instituições', value: adminContext.totals.inscritos, icon: 'bi-people-fill', detail: 'Instituições localizadas no contexto atual.', target: 'institutions' },
-    { title: 'Projetos', value: adminContext.projectsRows.length, icon: 'bi-kanban', detail: 'Projetos vinculados aos editais ativos.', target: 'projects' },
-    { title: 'Recursos', value: adminContext.totals.recursos, icon: 'bi-file-earmark-text', detail: 'Demandas em revisão ou acompanhamento.', target: 'resources' },
-    { title: 'Auditorias', value: adminContext.auditRows.length, icon: 'bi-clipboard-check', detail: 'Histórico rastreável de operações do sistema.', target: 'audits' },
+    { title: 'Instituições', value: AdministradorContext.totals.inscritos, icon: 'bi-people-fill', detail: 'Instituições localizadas no contexto atual.', target: 'institutions' },
+    { title: 'Projetos', value: AdministradorContext.projectsRows.length, icon: 'bi-kanban', detail: 'Projetos vinculados aos editais ativos.', target: 'projects' },
+    { title: 'Recursos', value: AdministradorContext.totals.recursos, icon: 'bi-file-earmark-text', detail: 'Demandas em revisão ou acompanhamento.', target: 'resources' },
+    { title: 'Auditorias', value: AdministradorContext.auditRows.length, icon: 'bi-clipboard-check', detail: 'Histórico rastreável de operações do sistema.', target: 'audits' },
   ]
 
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <section className="admin-kpi-grid">
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <section className="Administrador-kpi-grid">
           {kpis.map((kpi) => (
-            <AdminKpiCard
+            <AdministradorKpiCard
               key={kpi.title}
               {...kpi}
               onClick={kpi.target ? () => onNavigate(kpi.target) : undefined}
@@ -146,12 +146,12 @@ export function AdminDashboardScreen({ portalView, onSelectPortal, adminContext,
           ))}
         </section>
 
-        <section className="admin-content-grid">
-          <AdminInsightsCard adminContext={adminContext} />
+        <section className="Administrador-content-grid">
+          <AdministradorInsightsCard AdministradorContext={AdministradorContext} />
         </section>
       </main>
       <AppFooter />
-      <AdminChatWidget adminContext={adminContext} />
+      <AdministradorChatWidget AdministradorContext={AdministradorContext} />
     </div>
   )
 }

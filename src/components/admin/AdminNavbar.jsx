@@ -1,9 +1,9 @@
-import { useState } from 'react'
-import { adminMenu } from '../../data/constants'
+﻿import { useState } from 'react'
+import { AdministradorMenu } from '../../data/constants'
 import { AppBrand } from '../shared/AppBrand'
 import { PortalSelector } from '../shared/PortalSelector'
 
-export function AdminNavbar({ portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+export function AdministradorNavbar({ portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [showDropdown, setShowDropdown] = useState(false)
 
   return (
@@ -14,14 +14,14 @@ export function AdminNavbar({ portalView, onSelectPortal, adminScreen, onNavigat
             <i className="bi bi-list" />
           </button>
           <AppBrand />
-          <div className="mb-0 navbar-titulo">Painel do admin</div>
+          <div className="mb-0 navbar-titulo">Painel do Administrador</div>
         </div>
         <div className="d-flex align-items-center gap-2 navbar-painel__menu">
-          {adminMenu.map((item) => (
+          {AdministradorMenu.map((item) => (
             <button
               key={item.label}
               type="button"
-              className={`navbar-menu-item${adminScreen === item.target ? ' is-active' : ''}`}
+              className={`navbar-menu-item${AdministradorScreen === item.target ? ' is-active' : ''}`}
               onClick={() => onNavigate(item.target)}
             >
               {item.icon && <i className={`bi ${item.icon}`} />}
@@ -39,7 +39,7 @@ export function AdminNavbar({ portalView, onSelectPortal, adminScreen, onNavigat
               aria-expanded={showDropdown}
             >
               <div className="navbar-avatar"><i className="bi bi-person-gear" /></div>
-              <span>Admin</span>
+              <span>Administrador</span>
               <i className="bi bi-chevron-down navbar-user__chevron" />
             </button>
             {showDropdown && (

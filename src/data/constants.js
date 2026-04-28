@@ -1,4 +1,4 @@
-// ─── Dados gerais ─────────────────────────────────────────────────────────────
+﻿// --- Dados gerais -------------------------------------------------------------
 
 export const selection = {
   title: 'EDITAL PJ',
@@ -12,12 +12,12 @@ export const institutionInfo = {
   government: 'Governo do Estado do Ceara',
 }
 
-// ─── Etapas do painel candidato ───────────────────────────────────────────────
+// --- Etapas do painel candidato -----------------------------------------------
 
 export const dashboardStagesTop = [
-  { id: 'company-registration', title: 'Cadastro da empresa', icon: 'bi-buildings', description: 'Dados cadastrais, endereço e conta bancária da pessoa jurídica.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'company-registration' },
+  { id: 'company-registration', title: 'Cadastrar', icon: 'bi-buildings', description: 'Dados cadastrais, endereço e conta bancária do proponente.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'company-registration' },
   { id: 'legal-contact', title: 'Representante legal', icon: 'bi-person-vcard', description: 'Informações do representante legal e do contato comercial.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'legal-contact' },
-  { id: 'fiscal', title: 'Regularidade fiscal', icon: 'bi-shield-check', description: 'Certidões e comprovantes de regularidade fiscal da empresa.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'fiscal' },
+  { id: 'fiscal', title: 'Regularidade fiscal', icon: 'bi-shield-check', description: 'Certidões e comprovantes de regularidade fiscal do proponente.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'fiscal' },
   { id: 'attachments', title: 'Documentos obrigatorios', icon: 'bi-folder2-open', description: 'Anexos institucionais, comprovantes, declaracoes e modelos assinados.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'attachments' },
 ]
 
@@ -26,7 +26,7 @@ export const dashboardStagesBottom = [
   { id: 'appeal', title: 'Recurso do resultado', icon: 'bi-chat-left-text', description: 'Etapa futura: exibida somente se o edital abrir recurso.', statusColor: '#5C646B', startDate: '--', endDate: '--', navigateTo: 'appeal' },
 ]
 
-// ─── Opções de formulários ────────────────────────────────────────────────────
+// --- Opções de formulários ----------------------------------------------------
 
 export const documentosDisponiveis = ['Edital completo', 'Anexo III', 'Anexo IV', 'Anexo V', 'Anexo VI', 'Anexo VII', 'Modelo de declaracao trabalhista e social']
 
@@ -57,15 +57,15 @@ export const cnaeOptions = [
 export const uploadChecklist = [
   { key: 'sponsorshipRequest', label: 'Oficio de solicitacao de patrocinio', info: 'Documento formal de solicitacao de patrocinio para o evento ou projeto, com assinatura eletronica GOV.BR.', reviewStatus: 'approved' },
   { key: 'nationalTax', label: 'Regularidade com Fazenda Nacional', info: 'Certidao conjunta expedida pela Receita Federal do Brasil e pela Procuradoria-Geral da Fazenda Nacional, comprovando regularidade fiscal federal.', reviewStatus: 'under-review' },
-  { key: 'stateTax', label: 'Regularidade com Fazenda Estadual', info: 'Certidao emitida pela Secretaria da Fazenda do Estado do domicilio ou sede da proponente.', reviewStatus: 'rejected' },
-  { key: 'municipalTax', label: 'Regularidade com Fazenda Municipal', info: 'Certidao de regularidade fiscal municipal do domicilio ou sede da empresa.', reviewStatus: 'not-sent' },
+  { key: 'stateTax', label: 'Regularidade com Fazenda Estadual', info: 'Certidao emitida pela Secretaria da Fazenda do Estado do domicilio ou sede do proponente.', reviewStatus: 'rejected' },
+  { key: 'municipalTax', label: 'Regularidade com Fazenda Municipal', info: 'Certidao de regularidade fiscal municipal do domicilio ou sede do proponente.', reviewStatus: 'not-sent' },
   { key: 'fgts', label: 'FGTS', info: 'Certificado de regularidade relativa ao Fundo de Garantia por Tempo de Servico.', reviewStatus: 'expired' },
   { key: 'cndt', label: 'CNDT', info: 'Certidao Negativa de Debitos Trabalhistas, usada para demonstrar regularidade em obrigacoes trabalhistas.', reviewStatus: 'approved' },
   { key: 'correctionalCertificate', label: 'Certidao negativa correcional', info: 'Consulta negativa de entes privados em bases como ePAD, CGU-PJ, CEIS, CNEP e CEPIM.', reviewStatus: 'under-review' },
   { key: 'tcuCertificate', label: 'Certidao negativa de licitantes inidoneos', info: 'Certidao emitida no ambito do TCU para comprovar ausencia de impedimentos relacionados a licitacoes.', reviewStatus: 'not-sent' },
-  { key: 'constitutiveAct', label: 'Ato constitutivo ou contrato social', info: 'Documento societario que comprova a constituicao formal da empresa e seus representantes.', reviewStatus: 'approved' },
+  { key: 'constitutiveAct', label: 'Ato constitutivo ou contrato social', info: 'Documento societario que comprova a constituicao formal do proponente e seus representantes.', reviewStatus: 'approved' },
   { key: 'legalRepresentativeDocument', label: 'Documento do representante legal', info: 'Documento de identificacao do representante legal, como RG, CPF ou CNH.', reviewStatus: 'rejected' },
-  { key: 'representativeAddress', label: 'Comprovante de endereco do representante', info: 'Comprovante atualizado de residencia do representante legal da empresa.', reviewStatus: 'expired' },
+  { key: 'representativeAddress', label: 'Comprovante de endereco do representante', info: 'Comprovante atualizado de residencia do representante legal do proponente.', reviewStatus: 'expired' },
 ]
 
 export const documentReviewStatusMap = {
@@ -76,7 +76,7 @@ export const documentReviewStatusMap = {
   expired: { label: 'Expirado', icon: 'bi-calendar2-x', tone: 'muted' },
 }
 
-// ─── Dados iniciais da inscrição ──────────────────────────────────────────────
+// --- Dados iniciais da inscrição ----------------------------------------------
 
 export const initialApplicationData = {
   companyType: '', cnpj: '', companyName: '', tradeName: '', email: '', emailConfirm: '', phone: '', website: '',
@@ -93,9 +93,9 @@ export const initialApplicationData = {
 }
 
 export const stageContent = {
-  'company-registration': { eyebrow: 'Etapa 1', title: 'Identificação da empresa', description: 'Dados institucionais da pessoa jurídica, endereço e conta bancária do proponente.' },
+  'company-registration': { eyebrow: 'Etapa 1', title: 'Cadastrar proponente', description: 'Dados institucionais, endereço e conta bancária do proponente.' },
   'legal-contact': { eyebrow: 'Etapa 2', title: 'Representante legal e contato comercial', description: 'Dados do representante legal e do contato comercial responsável pela proposta.' },
-  fiscal: { eyebrow: 'Etapa 3', title: 'Regularidade fiscal e trabalhista', description: 'Certidões fiscais e trabalhistas usadas para comprovar regularidade da empresa.' },
+  fiscal: { eyebrow: 'Etapa 3', title: 'Regularidade fiscal e trabalhista', description: 'Certidões fiscais e trabalhistas usadas para comprovar regularidade do proponente.' },
   attachments: { eyebrow: 'Etapa 4', title: 'Documentos institucionais e anexos', description: 'Uploads institucionais e comprovantes formais exigidos pelo edital.' },
   project: { eyebrow: 'Etapa 5', title: 'Projeto, plano de trabalho e mídia', description: 'Projeto, valores, contrapartida, plano de trabalho e plano de mídia.' },
   declarations: { eyebrow: 'Etapa 6', title: 'Declarações', description: 'Confirmações obrigatórias antes do envio final da inscrição.' },
@@ -104,7 +104,7 @@ export const stageContent = {
 }
 
 export const fieldLabels = {
-  companyType: 'Tipo de empresa',
+  companyType: 'Tipo de proponente',
   cnpj: 'CNPJ',
   companyName: 'Razao social',
   tradeName: 'Nome fantasia',
@@ -137,9 +137,9 @@ export const fieldLabels = {
   noticeAgreement: 'Ciencia do edital',
 }
 
-// ─── Admin ────────────────────────────────────────────────────────────────────
+// --- Administrador --------------------------------------------------------------------
 
-export const adminMenu = [
+export const AdministradorMenu = [
   { label: 'Início', icon: 'bi-house', target: 'dashboard' },
   { label: 'Instituições', icon: 'bi-people-fill', target: 'institutions' },
   { label: 'Projetos', icon: 'bi-kanban', target: 'projects' },
@@ -150,31 +150,31 @@ export const adminMenu = [
   { label: 'Cadastros básicos', icon: 'bi-database', target: 'basic-registrations' },
 ]
 
-export const initialAdminUserForm = {
+export const initialAdministradorUserForm = {
   fullName: '',
   email: '',
   emailConfirm: '',
   cpf: '',
   phone: '',
   phoneSecondary: '',
-  isAdmin: false,
+  isAdministrador: false,
   isEvaluator: true,
 }
 
-export const initialAdminUsers = [
-  { id: 1, fullName: 'Maria Fernanda Alves', email: 'maria.alves@esp.ce.gov.br', emailConfirm: 'maria.alves@esp.ce.gov.br', cpf: '123.456.789-00', phone: '(85) 98888-1111', phoneSecondary: '(85) 3222-1111', isAdmin: true, isEvaluator: true, status: 'Convite enviado' },
-  { id: 2, fullName: 'Joao Pedro Lima', email: 'joao.lima@esp.ce.gov.br', emailConfirm: 'joao.lima@esp.ce.gov.br', cpf: '234.567.890-11', phone: '(85) 97777-2222', phoneSecondary: '', isAdmin: false, isEvaluator: true, status: 'Ativo' },
-  { id: 3, fullName: 'Ana Carolina Sousa', email: 'ana.sousa@esp.ce.gov.br', emailConfirm: 'ana.sousa@esp.ce.gov.br', cpf: '345.678.901-22', phone: '(85) 96666-3333', phoneSecondary: '(85) 3111-0000', isAdmin: true, isEvaluator: false, status: 'Convite pendente' },
+export const initialAdministradorUsers = [
+  { id: 1, fullName: 'Maria Fernanda Alves', email: 'maria.alves@esp.ce.gov.br', emailConfirm: 'maria.alves@esp.ce.gov.br', cpf: '123.456.789-00', phone: '(85) 98888-1111', phoneSecondary: '(85) 3222-1111', isAdministrador: true, isEvaluator: true, status: 'Convite enviado' },
+  { id: 2, fullName: 'Joao Pedro Lima', email: 'joao.lima@esp.ce.gov.br', emailConfirm: 'joao.lima@esp.ce.gov.br', cpf: '234.567.890-11', phone: '(85) 97777-2222', phoneSecondary: '', isAdministrador: false, isEvaluator: true, status: 'Ativo' },
+  { id: 3, fullName: 'Ana Carolina Sousa', email: 'ana.sousa@esp.ce.gov.br', emailConfirm: 'ana.sousa@esp.ce.gov.br', cpf: '345.678.901-22', phone: '(85) 96666-3333', phoneSecondary: '(85) 3111-0000', isAdministrador: true, isEvaluator: false, status: 'Convite pendente' },
 ]
 
-export function getAdminUserRoles(user) {
+export function getAdministradorUserRoles(user) {
   return [
-    user.isAdmin ? 'Admin' : null,
+    user.isAdministrador ? 'Administrador' : null,
     user.isEvaluator ? 'Avaliador' : null,
   ].filter(Boolean).join(' / ')
 }
 
-// ─── Admin — cadastros básicos ────────────────────────────────────────────────
+// --- Administrador - cadastros básicos ------------------------------------------------
 
 export const initialCnaes = [
   { id: 1, descricao: '6201-5/01 - Desenvolvimento de programas de computador sob encomenda', situacao: true },
@@ -269,13 +269,13 @@ export const basicRegistrationCards = [
 export const basicRegistrationTitleMap = {
   cnaes: { title: 'Gerenciar CNAE', subtitle: 'Cadastro dos códigos CNAE utilizados pelas instituições proponentes.' },
   tiposInstituicao: { title: 'Gerenciar tipos de instituição', subtitle: 'Tipos de entidade disponíveis para cadastro e seleção no sistema.' },
-  bancos: { title: 'Gerenciar bancos', subtitle: 'Instituições bancárias disponíveis para informação de conta da empresa.' },
+  bancos: { title: 'Gerenciar bancos', subtitle: 'Instituições bancárias disponíveis para informação de conta do proponente.' },
   setores: { title: 'Gerenciar setores', subtitle: 'Setores organizacionais disponíveis para vinculação nos editais.' },
   tiposDocumentos: { title: 'Gerenciar tipos de documentos', subtitle: 'Categorias de documentos exigidos nos processos seletivos.' },
   criteriosAvaliacao: { title: 'Gerenciar critérios de avaliação', subtitle: 'Critérios utilizados pelos avaliadores na análise dos projetos.' },
 }
 
-// ─── Avaliador ────────────────────────────────────────────────────────────────
+// --- Avaliador ----------------------------------------------------------------
 
 export const evaluatorMenu = []
 
@@ -291,9 +291,9 @@ export const evaluatorDocuments = [
   { id: 3, institution: 'Associação Soma', document: 'Documento do representante', avaliacao: 0, justificativa: 'Documento vencido' },
 ]
 
-// ─── Admin — dados de contexto ────────────────────────────────────────────────
+// --- Administrador - dados de contexto ------------------------------------------------
 
-export const adminBaseApplicants = [
+export const AdministradorBaseApplicants = [
   { id: 'esp-01', companyName: 'Instituto Vida', city: 'FORTALEZA', status: 'Concluido', documents: 8, progress: 5, resources: 2 },
   { id: 'esp-02', companyName: 'Clinica Horizonte', city: 'ARAPIRACA', status: 'Em analise', documents: 6, progress: 3, resources: 1 },
   { id: 'esp-03', companyName: 'Associacao Soma', city: 'PONTA GROSSA', status: 'Concluido', documents: 7, progress: 5, resources: 1 },
@@ -301,7 +301,7 @@ export const adminBaseApplicants = [
   { id: 'esp-05', companyName: 'Projeto Sanar', city: 'FORTALEZA', status: 'Pendente', documents: 2, progress: 1, resources: 0 },
 ]
 
-export const adminSchedule = [
+export const AdministradorSchedule = [
   { date: '2026-03-18', title: 'Inicio das inscricoes' },
   { date: '2026-03-23', title: 'Abertura dos recursos' },
   { date: '2026-03-27', title: 'Resultado preliminar' },
@@ -310,22 +310,22 @@ export const adminSchedule = [
   { date: '2026-04-15', title: 'Encerramento da fase documental' },
 ]
 
-export const adminGraphSeries = [
+export const AdministradorGraphSeries = [
   { label: 'Instituicoes', value: 6, color: 'var(--color-success)' },
   { label: 'Projetos', value: 4, color: 'var(--color-info)' },
   { label: 'Documentos', value: 5, color: 'var(--color-primary)' },
   { label: 'Recursos', value: 2, color: 'var(--color-info)' },
 ]
 
-export const adminAuditRows = [
-  { id: 1, location: 'public.pacientes', recordId: 215, action: 'Cadastro', datetime: '2025-08-07 09:02:11', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Cadastro de instituição ID 215 – inclusao de novo registro na tabela public.pacientes.' },
-  { id: 2, location: 'public.pacientes', recordId: 215, action: 'Atualizacao', datetime: '2025-08-07 09:07:34', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Atualizacao de instituição ID 215 – ajuste de dados cadastrais na tabela public.instituicoes.' },
-  { id: 3, location: 'public.profissionais', recordId: 312, action: 'Desativacao', datetime: '2025-08-07 10:15:27', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Desativacao de profissional ID 312 – alteracao de status para inativo.' },
+export const AdministradorAuditRows = [
+  { id: 1, location: 'public.pacientes', recordId: 215, action: 'Cadastro', datetime: '2025-08-07 09:02:11', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Cadastro de instituição ID 215 - inclusao de novo registro na tabela public.pacientes.' },
+  { id: 2, location: 'public.pacientes', recordId: 215, action: 'Atualizacao', datetime: '2025-08-07 09:07:34', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Atualizacao de instituição ID 215 - ajuste de dados cadastrais na tabela public.instituicoes.' },
+  { id: 3, location: 'public.profissionais', recordId: 312, action: 'Desativacao', datetime: '2025-08-07 10:15:27', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Desativacao de profissional ID 312 - alteração de status para inativo.' },
   { id: 4, location: 'public.usuarios', recordId: 315, action: 'Consulta', datetime: '2025-08-07 10:18:09', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Consulta de usuario ID 315 na tabela public.usuarios.' },
   { id: 5, location: 'public.login', recordId: 250, action: 'Login', datetime: '2025-08-07 08:58:41', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Login realizado com sucesso no sistema administrativo.' },
 ]
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// --- Helpers ------------------------------------------------------------------
 
 export const fixedToday = new Date('2026-04-01T12:00:00')
 
@@ -379,7 +379,7 @@ export function isStageValid(stage, applicationData, preferences) {
   })
 }
 
-export function buildAdminContext(applicationData, progressItems, completedSteps, auditTrail) {
+export function buildAdministradorContext(applicationData, progressItems, completedSteps, auditTrail) {
   const hasCurrentRegistration = Boolean(
     applicationData.companyName ||
     applicationData.cnpj ||
@@ -400,7 +400,7 @@ export function buildAdminContext(applicationData, progressItems, completedSteps
       }
     : null
 
-  const applicants = currentApplicant ? [...adminBaseApplicants, currentApplicant] : adminBaseApplicants
+  const applicants = currentApplicant ? [...AdministradorBaseApplicants, currentApplicant] : AdministradorBaseApplicants
   const applicantsWithStatus = applicants.map((applicant) => {
     const hasPending = applicant.status !== 'Concluido' || applicant.documents < 5 || applicant.progress < 4
     const currentStageLabel = applicant.progress >= 5
@@ -411,7 +411,7 @@ export function buildAdminContext(applicationData, progressItems, completedSteps
           ? 'Regularidade fiscal'
           : applicant.progress >= 2
             ? 'Representante legal'
-            : 'Cadastro da empresa'
+            : 'Cadastrar'
     return { ...applicant, currentStageLabel, hasPending }
   })
 
@@ -502,6 +502,6 @@ export function buildAdminContext(applicationData, progressItems, completedSteps
           ? 'Etapa ativa, recebendo atualizacoes do formulario.'
           : 'Etapa aguardando liberacao ou preenchimento.',
     })),
-    auditRows: adminAuditRows,
+    auditRows: AdministradorAuditRows,
   }
 }

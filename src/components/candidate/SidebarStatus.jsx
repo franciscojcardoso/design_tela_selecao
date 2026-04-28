@@ -1,4 +1,4 @@
-import { Badge, Card, ProgressBar } from 'react-bootstrap'
+﻿import { Badge, Card, ProgressBar } from 'react-bootstrap'
 
 export function SidebarStatus({ applicationData, progressItems, completedSteps, activeStep, isEditing }) {
   const summaryItems = [
@@ -25,7 +25,7 @@ export function SidebarStatus({ applicationData, progressItems, completedSteps, 
             <div className="summary-list">
               {summaryItems.map((item) => <div key={item.label} className="summary-list__item"><span>{item.label}</span><strong className={item.tone}>{item.value}</strong></div>)}
             </div>
-          ) : <p className="summary-empty">O resumo será preenchido conforme a empresa informar os dados principais do cadastro.</p>}
+          ) : <p className="summary-empty">O resumo será preenchido conforme o proponente informar os dados principais do cadastro.</p>}
         </div>
         <div className="sidebar-progress">
           <div className="sidebar-progress__header"><h4>Progresso das etapas</h4></div>

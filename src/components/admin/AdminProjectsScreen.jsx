@@ -1,10 +1,10 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { AppFooter } from '../shared/AppBrand'
 import { TableSearchBar } from '../shared/TableSearchBar'
-import { AdminNavbar } from './AdminNavbar'
-import { AdminSectionHeader } from './AdminSectionHeader'
+import { AdministradorNavbar } from './AdminNavbar'
+import { AdministradorSectionHeader } from './AdminSectionHeader'
 
-export function AdminProjectsScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+export function AdministradorProjectsScreen({ rows, onBack, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const filteredRows = rows.filter((row) =>
     [row.institution, row.notice, row.project, row.amount, row.status]
@@ -12,12 +12,12 @@ export function AdminProjectsScreen({ rows, onBack, portalView, onSelectPortal, 
   )
 
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <AdminSectionHeader title="Projetos" subtitle="Lista dos projetos vinculados as instituicoes cadastradas, com edital, valor e situacao atual." onBack={onBack} />
-        <section className="admin-management-card admin-users-crud">
-          <div className="admin-management-card__topline">
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader title="Projetos" subtitle="Lista dos projetos vinculados as instituicoes cadastradas, com edital, valor e situacao atual." onBack={onBack} />
+        <section className="Administrador-management-card Administrador-users-crud">
+          <div className="Administrador-management-card__topline">
             <strong>{filteredRows.length} projeto(s)</strong>
           </div>
           <TableSearchBar
@@ -26,8 +26,8 @@ export function AdminProjectsScreen({ rows, onBack, portalView, onSelectPortal, 
             placeholder="Pesquisar por instituicao, edital, projeto ou status"
             searchLabel="Pesquisar projetos"
           />
-          <div className="admin-users-table-wrap">
-            <table className="admin-table admin-table--cards">
+          <div className="Administrador-users-table-wrap">
+            <table className="Administrador-table Administrador-table--cards">
               <thead>
                 <tr>
                   <th>Instituicao</th>

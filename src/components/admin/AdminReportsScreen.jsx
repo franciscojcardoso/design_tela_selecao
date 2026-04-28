@@ -1,43 +1,43 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { AppFooter } from '../shared/AppBrand'
 import { TableSearchBar } from '../shared/TableSearchBar'
-import { AdminNavbar } from './AdminNavbar'
-import { AdminSectionHeader } from './AdminSectionHeader'
+import { AdministradorNavbar } from './AdminNavbar'
+import { AdministradorSectionHeader } from './AdminSectionHeader'
 
-export function AdminReportsScreen({ adminContext, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+export function AdministradorReportsScreen({ AdministradorContext, onBack, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerms, setSearchTerms] = useState({})
 
   const reportSections = [
     {
       title: 'Projetos em análise',
       icon: 'bi-kanban',
-      rows: adminContext.projectsRows,
+      rows: AdministradorContext.projectsRows,
       headers: ['Instituição', 'E-mail', 'Telefone', 'Edital', 'Valor', 'Status'],
       cells: (row) => [row.institution, row.email, row.phone, row.notice.split(' - ')[0], row.amount, row.status],
     },
     {
       title: 'Recursos e demandas',
       icon: 'bi-file-earmark-text',
-      rows: adminContext.resourcesRows,
+      rows: AdministradorContext.resourcesRows,
       headers: ['Inscrito', 'Cidade', 'Volume', 'Status'],
       cells: (row) => [row.companyName, row.city, row.volume, row.status],
     },
   ]
 
   const summaryKpis = [
-    { label: 'Total de instituições', value: adminContext.totals.inscritos },
-    { label: 'Total de projetos', value: adminContext.projectsRows.length },
-    { label: 'Total de recursos', value: adminContext.totals.recursos },
-    { label: 'Documentos recebidos', value: adminContext.totals.documentos },
-    { label: 'Etapas concluídas', value: adminContext.totals.concluidos },
-    { label: 'Pendências', value: adminContext.totals.pendencias },
+    { label: 'Total de instituições', value: AdministradorContext.totals.inscritos },
+    { label: 'Total de projetos', value: AdministradorContext.projectsRows.length },
+    { label: 'Total de recursos', value: AdministradorContext.totals.recursos },
+    { label: 'Documentos recebidos', value: AdministradorContext.totals.documentos },
+    { label: 'Etapas concluídas', value: AdministradorContext.totals.concluidos },
+    { label: 'Pendências', value: AdministradorContext.totals.pendencias },
   ]
 
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <AdminSectionHeader title="Relatórios" subtitle="Visão consolidada dos dados do processo seletivo para análise e acompanhamento." onBack={onBack} />
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader title="Relatórios" subtitle="Visão consolidada dos dados do processo seletivo para análise e acompanhamento." onBack={onBack} />
 
         <div className="reports-summary-grid">
           {summaryKpis.map((kpi) => (
@@ -49,8 +49,8 @@ export function AdminReportsScreen({ adminContext, onBack, portalView, onSelectP
         </div>
 
         {reportSections.map((section) => (
-          <section key={section.title} className="admin-management-card" style={{ marginBottom: '1rem' }}>
-            <div className="admin-management-card__topline">
+          <section key={section.title} className="Administrador-management-card" style={{ marginBottom: '1rem' }}>
+            <div className="Administrador-management-card__topline">
               <strong><i className={`bi ${section.icon} me-2`} />{section.title}</strong>
               <span>{section.rows.filter((row) =>
                 section.cells(row).some((cell) => String(cell || '').toLowerCase().includes((searchTerms[section.title] || '').trim().toLowerCase())),
@@ -62,8 +62,8 @@ export function AdminReportsScreen({ adminContext, onBack, portalView, onSelectP
               placeholder={`Pesquisar em ${section.title.toLowerCase()}`}
               searchLabel={`Pesquisar em ${section.title}`}
             />
-            <div className="admin-users-table-wrap">
-              <table className="admin-table admin-table--cards">
+            <div className="Administrador-users-table-wrap">
+              <table className="Administrador-table Administrador-table--cards">
                 <thead>
                   <tr>{section.headers.map((h) => <th key={h}>{h}</th>)}</tr>
                 </thead>

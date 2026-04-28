@@ -82,10 +82,10 @@ export function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelect
   })
 
   return (
-    <div className="admin-page">
+    <div className="Administrador-page">
       <EvaluatorNavbar portalView={portalView} onSelectPortal={onSelectPortal} evaluatorScreen={evaluatorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <div className="admin-detail-header">
+      <main className="Administrador-main">
+        <div className="Administrador-detail-header">
           <div>
             <h2>Painel do avaliador</h2>
             <p>Leitura e avaliacao dos projetos atribuidos ao seu perfil.</p>
@@ -107,9 +107,9 @@ export function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelect
           </div>
         </div>
 
-        <section className="admin-management-card admin-users-crud">
-          <div className="admin-users-crud__topbar">
-            <div className="admin-users-search">
+        <section className="Administrador-management-card Administrador-users-crud">
+          <div className="Administrador-users-crud__topbar">
+            <div className="Administrador-users-search">
               <input
                 type="search"
                 value={searchTerm}
@@ -122,8 +122,8 @@ export function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelect
             </div>
           </div>
 
-          <div className="admin-users-table-wrap">
-            <table className="admin-table admin-users-table admin-table--cards">
+          <div className="Administrador-users-table-wrap">
+            <table className="Administrador-table Administrador-users-table Administrador-table--cards">
               <thead>
                 <tr>
                   <th>Instituicao</th>
@@ -136,17 +136,17 @@ export function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelect
               </thead>
               <tbody>
                 {filteredProjects.map((project) => (
-                  <tr key={project.id} className={selectedProjectId === project.id ? 'admin-table__row--highlight' : ''}>
+                  <tr key={project.id} className={selectedProjectId === project.id ? 'Administrador-table__row--highlight' : ''}>
                     <td data-label="Instituicao">{project.institution}</td>
                     <td data-label="Projeto">
-                      <button type="button" className="admin-table-link" onClick={() => onSelectProject?.(project.id)}>
+                      <button type="button" className="Administrador-table-link" onClick={() => onSelectProject?.(project.id)}>
                         {project.project}
                       </button>
                     </td>
                     <td data-label="Edital">{project.notice}</td>
                     <td data-label="Valor solicitado">{project.amount}</td>
                     <td data-label="Status"><Badge className={`status-chip status-chip--${statusBadge(project.status)}`}>{project.status}</Badge></td>
-                    <td data-label="Acao"><button type="button" className="admin-inline-action">Avaliar</button></td>
+                    <td data-label="Acao"><button type="button" className="Administrador-inline-action">Avaliar</button></td>
                   </tr>
                 ))}
               </tbody>

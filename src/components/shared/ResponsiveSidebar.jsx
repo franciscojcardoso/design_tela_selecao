@@ -1,4 +1,4 @@
-import { adminMenu, dashboardStagesTop, dashboardStagesBottom } from '../../data/constants'
+import { AdministradorMenu, dashboardStagesTop, dashboardStagesBottom } from '../../data/constants'
 import { PortalSelector } from './PortalSelector'
 
 export function ResponsiveSidebar({
@@ -8,8 +8,8 @@ export function ResponsiveSidebar({
   onSelectPortal,
   screen,
   onNavigateCandidate,
-  adminScreen,
-  onNavigateAdmin,
+  AdministradorScreen,
+  onNavigateAdministrador,
   evaluatorScreen,
   onNavigateEvaluator,
   onGoToSettings,
@@ -24,8 +24,8 @@ export function ResponsiveSidebar({
     { key: 'settings', label: 'Minhas preferencias', action: () => onGoToSettings?.(), active: screen === 'settings' },
   ]
 
-  const sidebarItems = portalView === 'admin'
-    ? adminMenu.map((item) => ({ key: item.target, label: item.label, action: () => onNavigateAdmin?.(item.target), active: adminScreen === item.target }))
+  const sidebarItems = portalView === 'Administrador'
+    ? AdministradorMenu.map((item) => ({ key: item.target, label: item.label, action: () => onNavigateAdministrador?.(item.target), active: AdministradorScreen === item.target }))
     : portalView === 'evaluator'
       ? [{ key: 'eval-dashboard', label: 'Projetos para avaliacao', action: () => onNavigateEvaluator?.('eval-dashboard'), active: evaluatorScreen === 'eval-dashboard' }]
       : candidateItems

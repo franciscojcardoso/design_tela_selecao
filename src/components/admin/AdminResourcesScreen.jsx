@@ -1,10 +1,10 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { AppFooter } from '../shared/AppBrand'
 import { TableSearchBar } from '../shared/TableSearchBar'
-import { AdminNavbar } from './AdminNavbar'
-import { AdminSectionHeader } from './AdminSectionHeader'
+import { AdministradorNavbar } from './AdminNavbar'
+import { AdministradorSectionHeader } from './AdminSectionHeader'
 
-export function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+export function AdministradorResourcesScreen({ rows, onBack, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const filteredRows = rows.filter((row) =>
     [row.companyName, row.city, row.volume, row.status]
@@ -12,12 +12,12 @@ export function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal,
   )
 
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <AdminSectionHeader title="Gerenciar recursos" subtitle="Lista consolidada dos recursos vinculados aos inscritos e prontos para tratamento administrativo." onBack={onBack} />
-        <section className="admin-management-card admin-users-crud">
-          <div className="admin-management-card__topline">
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader title="Gerenciar recursos" subtitle="Lista consolidada dos recursos vinculados aos inscritos e prontos para tratamento administrativo." onBack={onBack} />
+        <section className="Administrador-management-card Administrador-users-crud">
+          <div className="Administrador-management-card__topline">
             <strong>{filteredRows.length} recurso(s)</strong>
           </div>
           <TableSearchBar
@@ -26,8 +26,8 @@ export function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal,
             placeholder="Pesquisar por inscrito, cidade, volume ou status"
             searchLabel="Pesquisar recursos"
           />
-          <div className="admin-users-table-wrap">
-            <table className="admin-table admin-table--cards">
+          <div className="Administrador-users-table-wrap">
+            <table className="Administrador-table Administrador-table--cards">
               <thead>
                 <tr>
                   <th>Inscrito</th>
@@ -45,7 +45,7 @@ export function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal,
                     <td data-label="Volume">{row.volume}</td>
                     <td data-label="Status">{row.status}</td>
                     <td data-label="Acoes">
-                      <button type="button" className="admin-inline-action">Abrir recurso</button>
+                      <button type="button" className="Administrador-inline-action">Abrir recurso</button>
                     </td>
                   </tr>
                 ))}

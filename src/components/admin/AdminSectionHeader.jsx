@@ -1,8 +1,8 @@
-export function AdminSectionHeader({ title, subtitle, onBack }) {
+﻿export function AdministradorSectionHeader({ title, subtitle, onBack }) {
   return (
-    <div className="admin-detail-header">
+    <div className="Administrador-detail-header">
       <div>
-        <button type="button" className="admin-back-link" onClick={onBack}>
+        <button type="button" className="Administrador-back-link" onClick={onBack}>
           <i className="bi bi-arrow-left" />
           <span>Voltar ao painel</span>
         </button>

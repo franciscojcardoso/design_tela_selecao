@@ -2,8 +2,8 @@ import { Button } from 'react-bootstrap'
 
 export function TableSearchBar({ value, onChange, placeholder, actionLabel, onAction, searchLabel = 'Pesquisar' }) {
   return (
-    <div className="admin-users-crud__topbar">
-      <div className="admin-users-search">
+    <div className="Administrador-users-crud__topbar">
+      <div className="Administrador-users-search">
         <input
           type="search"
           value={value}
@@ -15,7 +15,7 @@ export function TableSearchBar({ value, onChange, placeholder, actionLabel, onAc
         </button>
       </div>
       {actionLabel && onAction && (
-        <Button type="button" className="admin-users-add-button" onClick={onAction}>
+        <Button type="button" className="Administrador-users-add-button" onClick={onAction}>
           <span>{actionLabel}</span>
         </Button>
       )}

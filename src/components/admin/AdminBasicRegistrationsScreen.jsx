@@ -1,9 +1,9 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import {
   basicRegistrationCards,
   basicRegistrationTitleMap,
-  initialAdminUsers,
+  initialAdministradorUsers,
   initialBancos,
   initialCnaes,
   initialCriteriosAvaliacao,
@@ -17,25 +17,25 @@ import {
 } from '../../data/constants'
 import { AppFooter } from '../shared/AppBrand'
 import { DashboardCard } from '../shared/DashboardCard'
-import { AdminConfirmModal, AdminSuccessModal } from './AdminModals'
-import { AdminNavbar } from './AdminNavbar'
-import { AdminSectionHeader } from './AdminSectionHeader'
+import { AdministradorConfirmModal, AdministradorSuccessModal } from './AdminModals'
+import { AdministradorNavbar } from './AdminNavbar'
+import { AdministradorSectionHeader } from './AdminSectionHeader'
 
 // ─── Modal genérico para tabelas simples (id, descrição, situação) ─────────────
 
 const initialSimpleRecordForm = { descricao: '', situacao: true }
 
-function AdminSimpleRecordModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar' }) {
+function AdministradorSimpleRecordModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar' }) {
   return (
-    <div className="admin-modal-backdrop">
-      <section className="admin-modal-card admin-modal-card--form">
-        <header className="admin-modal-card__header">
+    <div className="Administrador-modal-backdrop">
+      <section className="Administrador-modal-card Administrador-modal-card--form">
+        <header className="Administrador-modal-card__header">
           <h3>{title}</h3>
-          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+          <button type="button" className="Administrador-modal-card__close" onClick={onClose}>
             <i className="bi bi-x-lg" />
           </button>
         </header>
-        <div className="admin-modal-card__body">
+        <div className="Administrador-modal-card__body">
           <Row className="g-3">
             <Col xs={12}>
               <Form.Group>
@@ -48,7 +48,7 @@ function AdminSimpleRecordModal({ title, formData, onChange, onClose, onSubmit, 
             </Col>
           </Row>
         </div>
-        <footer className="admin-modal-card__footer">
+        <footer className="Administrador-modal-card__footer">
           <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>Cancelar</Button>
           <Button type="button" variant="primary" className="action-button" onClick={onSubmit}>{submitLabel}</Button>
         </footer>
@@ -59,7 +59,7 @@ function AdminSimpleRecordModal({ title, formData, onChange, onClose, onSubmit, 
 
 // ─── Tela CRUD genérica para tabelas simples ───────────────────────────────────
 
-function AdminSimpleCrudScreen({ title, subtitle, rows, onCreateRecord, onUpdateRecord, onDeleteRecord, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdministradorSimpleCrudScreen({ title, subtitle, rows, onCreateRecord, onUpdateRecord, onDeleteRecord, onBack, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingRecord, setEditingRecord] = useState(null)
@@ -95,23 +95,23 @@ function AdminSimpleCrudScreen({ title, subtitle, rows, onCreateRecord, onUpdate
   }
 
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <AdminSectionHeader title={title} subtitle={subtitle} onBack={onBack} />
-        <section className="admin-management-card admin-users-crud">
-          <div className="admin-users-crud__topbar">
-            <div className="admin-users-search">
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader title={title} subtitle={subtitle} onBack={onBack} />
+        <section className="Administrador-management-card Administrador-users-crud">
+          <div className="Administrador-users-crud__topbar">
+            <div className="Administrador-users-search">
               <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Insira uma palavra para pesquisar" />
               <button type="button" aria-label="Pesquisar"><i className="bi bi-search" /></button>
             </div>
-            <Button type="button" className="admin-users-add-button" onClick={openCreateModal}>
+            <Button type="button" className="Administrador-users-add-button" onClick={openCreateModal}>
               <i className="bi bi-plus-square" />
               <span>Adicionar registro</span>
             </Button>
           </div>
-          <div className="admin-users-table-wrap">
-            <table className="admin-table admin-users-table admin-table--cards">
+          <div className="Administrador-users-table-wrap">
+            <table className="Administrador-table Administrador-users-table Administrador-table--cards">
               <thead>
                 <tr><th>ID</th><th>Descrição</th><th>Situação</th><th>Ações</th></tr>
               </thead>
@@ -122,9 +122,9 @@ function AdminSimpleCrudScreen({ title, subtitle, rows, onCreateRecord, onUpdate
                     <td data-label="Descrição">{row.descricao}</td>
                     <td data-label="Situação">{row.situacao ? 'Ativo' : 'Inativo'}</td>
                     <td data-label="Ações">
-                      <div className="admin-users-actions">
-                        <button type="button" className="admin-inline-action" onClick={() => openEditModal(row)}>Editar</button>
-                        <button type="button" className="admin-inline-action admin-inline-action--danger" onClick={() => setConfirmState({ type: 'delete', payload: row })}>Excluir</button>
+                      <div className="Administrador-users-actions">
+                        <button type="button" className="Administrador-inline-action" onClick={() => openEditModal(row)}>Editar</button>
+                        <button type="button" className="Administrador-inline-action Administrador-inline-action--danger" onClick={() => setConfirmState({ type: 'delete', payload: row })}>Excluir</button>
                       </div>
                     </td>
                   </tr>
@@ -132,16 +132,16 @@ function AdminSimpleCrudScreen({ title, subtitle, rows, onCreateRecord, onUpdate
               </tbody>
             </table>
           </div>
-          <div className="admin-users-crud__footer">
-            <div className="admin-users-pagination">
+          <div className="Administrador-users-crud__footer">
+            <div className="Administrador-users-pagination">
               <button type="button" disabled>Anterior</button>
               <button type="button" className="is-active">1</button>
               <button type="button" disabled>Próximo</button>
             </div>
             <span>Mostrando de 1 até {filteredRows.length} de {rows.length} registros</span>
-            <div className="admin-users-per-page">
+            <div className="Administrador-users-per-page">
               <strong>Exibir</strong>
-              <div className="admin-users-per-page__value">50</div>
+              <div className="Administrador-users-per-page__value">50</div>
               <strong>resultados por página</strong>
             </div>
           </div>
@@ -150,7 +150,7 @@ function AdminSimpleCrudScreen({ title, subtitle, rows, onCreateRecord, onUpdate
       <AppFooter />
 
       {isFormOpen && (
-        <AdminSimpleRecordModal
+        <AdministradorSimpleRecordModal
           title={editingRecord ? 'Editar registro' : 'Adicionar registro'}
           formData={draftRecord}
           onChange={updateDraftField}
@@ -160,31 +160,31 @@ function AdminSimpleCrudScreen({ title, subtitle, rows, onCreateRecord, onUpdate
         />
       )}
       {confirmState && (
-        <AdminConfirmModal
+        <AdministradorConfirmModal
           title={confirmState.type === 'delete' ? 'Confirmar exclusão do registro' : 'Confirmar modificação do registro'}
           message={confirmState.type === 'delete' ? 'Esse registro será removido da listagem, deseja prosseguir?' : 'Os dados a seguir serão salvos, deseja prosseguir?'}
           onCancel={() => setConfirmState(null)}
           onConfirm={handleConfirm}
         />
       )}
-      {successMessage && <AdminSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
+      {successMessage && <AdministradorSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
     </div>
   )
 }
 
 // ─── Modal de Editais ─────────────────────────────────────────────────────────
 
-function AdminEditalRecordModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar' }) {
+function AdministradorEditalRecordModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar' }) {
   return (
-    <div className="admin-modal-backdrop">
-      <section className="admin-modal-card admin-modal-card--form">
-        <header className="admin-modal-card__header">
+    <div className="Administrador-modal-backdrop">
+      <section className="Administrador-modal-card Administrador-modal-card--form">
+        <header className="Administrador-modal-card__header">
           <h3>{title}</h3>
-          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+          <button type="button" className="Administrador-modal-card__close" onClick={onClose}>
             <i className="bi bi-x-lg" />
           </button>
         </header>
-        <div className="admin-modal-card__body">
+        <div className="Administrador-modal-card__body">
           <Row className="g-3">
             <Col xs={12}>
               <Form.Group>
@@ -207,7 +207,7 @@ function AdminEditalRecordModal({ title, formData, onChange, onClose, onSubmit, 
             </Col>
           </Row>
         </div>
-        <footer className="admin-modal-card__footer">
+        <footer className="Administrador-modal-card__footer">
           <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>Cancelar</Button>
           <Button type="button" variant="primary" className="action-button" onClick={onSubmit}>{submitLabel}</Button>
         </footer>
@@ -218,7 +218,7 @@ function AdminEditalRecordModal({ title, formData, onChange, onClose, onSubmit, 
 
 // ─── Tela CRUD de Editais ─────────────────────────────────────────────────────
 
-function AdminEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteRecord, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdministradorEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteRecord, onBack, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingRecord, setEditingRecord] = useState(null)
@@ -259,23 +259,23 @@ function AdminEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteReco
   }
 
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <AdminSectionHeader title="Gerenciar editais" subtitle="Cadastro e gerenciamento dos editais de chamamento público." onBack={onBack} />
-        <section className="admin-management-card admin-users-crud">
-          <div className="admin-users-crud__topbar">
-            <div className="admin-users-search">
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader title="Gerenciar editais" subtitle="Cadastro e gerenciamento dos editais de chamamento público." onBack={onBack} />
+        <section className="Administrador-management-card Administrador-users-crud">
+          <div className="Administrador-users-crud__topbar">
+            <div className="Administrador-users-search">
               <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Insira uma palavra para pesquisar" />
               <button type="button" aria-label="Pesquisar"><i className="bi bi-search" /></button>
             </div>
-            <Button type="button" className="admin-users-add-button" onClick={openCreateModal}>
+            <Button type="button" className="Administrador-users-add-button" onClick={openCreateModal}>
               <i className="bi bi-plus-square" />
               <span>Adicionar registro</span>
             </Button>
           </div>
-          <div className="admin-users-table-wrap">
-            <table className="admin-table admin-users-table admin-table--cards">
+          <div className="Administrador-users-table-wrap">
+            <table className="Administrador-table Administrador-users-table Administrador-table--cards">
               <thead>
                 <tr><th>ID</th><th>Descrição</th><th>Início inscrições</th><th>Final inscrições</th><th>Resultado final</th><th>Situação</th><th>Ações</th></tr>
               </thead>
@@ -289,9 +289,9 @@ function AdminEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteReco
                     <td data-label="Resultado final">{row.data_resultado_final}</td>
                     <td data-label="Situação">{row.situacao ? 'Ativo' : 'Inativo'}</td>
                     <td data-label="Ações">
-                      <div className="admin-users-actions">
-                        <button type="button" className="admin-inline-action" onClick={() => openEditModal(row)}>Editar</button>
-                        <button type="button" className="admin-inline-action admin-inline-action--danger" onClick={() => setConfirmState({ type: 'delete', payload: row })}>Excluir</button>
+                      <div className="Administrador-users-actions">
+                        <button type="button" className="Administrador-inline-action" onClick={() => openEditModal(row)}>Editar</button>
+                        <button type="button" className="Administrador-inline-action Administrador-inline-action--danger" onClick={() => setConfirmState({ type: 'delete', payload: row })}>Excluir</button>
                       </div>
                     </td>
                   </tr>
@@ -299,16 +299,16 @@ function AdminEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteReco
               </tbody>
             </table>
           </div>
-          <div className="admin-users-crud__footer">
-            <div className="admin-users-pagination">
+          <div className="Administrador-users-crud__footer">
+            <div className="Administrador-users-pagination">
               <button type="button" disabled>Anterior</button>
               <button type="button" className="is-active">1</button>
               <button type="button" disabled>Próximo</button>
             </div>
             <span>Mostrando de 1 até {filteredRows.length} de {rows.length} registros</span>
-            <div className="admin-users-per-page">
+            <div className="Administrador-users-per-page">
               <strong>Exibir</strong>
-              <div className="admin-users-per-page__value">50</div>
+              <div className="Administrador-users-per-page__value">50</div>
               <strong>resultados por página</strong>
             </div>
           </div>
@@ -317,7 +317,7 @@ function AdminEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteReco
       <AppFooter />
 
       {isFormOpen && (
-        <AdminEditalRecordModal
+        <AdministradorEditalRecordModal
           title={editingRecord ? 'Editar edital' : 'Adicionar edital'}
           formData={draftRecord}
           onChange={updateDraftField}
@@ -327,31 +327,31 @@ function AdminEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteReco
         />
       )}
       {confirmState && (
-        <AdminConfirmModal
+        <AdministradorConfirmModal
           title={confirmState.type === 'delete' ? 'Confirmar exclusão do registro' : 'Confirmar modificação do registro'}
           message={confirmState.type === 'delete' ? 'Esse registro será removido da listagem, deseja prosseguir?' : 'Os dados a seguir serão salvos, deseja prosseguir?'}
           onCancel={() => setConfirmState(null)}
           onConfirm={handleConfirm}
         />
       )}
-      {successMessage && <AdminSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
+      {successMessage && <AdministradorSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
     </div>
   )
 }
 
 // ─── Tela de cards — Cadastros Básicos ────────────────────────────────────────
 
-function AdminProjectEvaluatorModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar', editalOptions, evaluatorOptions }) {
+function AdministradorProjectEvaluatorModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar', editalOptions, evaluatorOptions }) {
   return (
-    <div className="admin-modal-backdrop">
-      <section className="admin-modal-card admin-modal-card--form">
-        <header className="admin-modal-card__header">
+    <div className="Administrador-modal-backdrop">
+      <section className="Administrador-modal-card Administrador-modal-card--form">
+        <header className="Administrador-modal-card__header">
           <h3>{title}</h3>
-          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+          <button type="button" className="Administrador-modal-card__close" onClick={onClose}>
             <i className="bi bi-x-lg" />
           </button>
         </header>
-        <div className="admin-modal-card__body">
+        <div className="Administrador-modal-card__body">
           <Row className="g-3">
             <Col md={6}>
               <Form.Group>
@@ -380,7 +380,7 @@ function AdminProjectEvaluatorModal({ title, formData, onChange, onClose, onSubm
             </Col>
           </Row>
         </div>
-        <footer className="admin-modal-card__footer">
+        <footer className="Administrador-modal-card__footer">
           <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>Cancelar</Button>
           <Button type="button" variant="primary" className="action-button" onClick={onSubmit}>{submitLabel}</Button>
         </footer>
@@ -389,7 +389,7 @@ function AdminProjectEvaluatorModal({ title, formData, onChange, onClose, onSubm
   )
 }
 
-function AdminProjectEvaluatorsScreen({ rows, editais, users, onCreateRecord, onUpdateRecord, onDeleteRecord, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdministradorProjectEvaluatorsScreen({ rows, editais, users, onCreateRecord, onUpdateRecord, onDeleteRecord, onBack, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingRecord, setEditingRecord] = useState(null)
@@ -448,23 +448,23 @@ function AdminProjectEvaluatorsScreen({ rows, editais, users, onCreateRecord, on
   }
 
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <AdminSectionHeader title={basicRegistrationTitleMap.avaliadoresProjetos?.title || 'Gerenciar avaliadores dos projetos'} subtitle={basicRegistrationTitleMap.avaliadoresProjetos?.subtitle || 'Defina quais avaliadores podem atuar em cada edital cadastrado.'} onBack={onBack} />
-        <section className="admin-management-card admin-users-crud">
-          <div className="admin-users-crud__topbar">
-            <div className="admin-users-search">
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader title={basicRegistrationTitleMap.avaliadoresProjetos?.title || 'Gerenciar avaliadores dos projetos'} subtitle={basicRegistrationTitleMap.avaliadoresProjetos?.subtitle || 'Defina quais avaliadores podem atuar em cada edital cadastrado.'} onBack={onBack} />
+        <section className="Administrador-management-card Administrador-users-crud">
+          <div className="Administrador-users-crud__topbar">
+            <div className="Administrador-users-search">
               <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Insira uma palavra para pesquisar" />
               <button type="button" aria-label="Pesquisar"><i className="bi bi-search" /></button>
             </div>
-            <Button type="button" className="admin-users-add-button" onClick={openCreateModal}>
+            <Button type="button" className="Administrador-users-add-button" onClick={openCreateModal}>
               <i className="bi bi-plus-square" />
               <span>Adicionar vínculo</span>
             </Button>
           </div>
-          <div className="admin-users-table-wrap">
-            <table className="admin-table admin-users-table admin-table--cards">
+          <div className="Administrador-users-table-wrap">
+            <table className="Administrador-table Administrador-users-table Administrador-table--cards">
               <thead>
                 <tr><th>ID</th><th>Edital</th><th>Avaliador</th><th>Situação</th><th>Ações</th></tr>
               </thead>
@@ -476,9 +476,9 @@ function AdminProjectEvaluatorsScreen({ rows, editais, users, onCreateRecord, on
                     <td data-label="Avaliador">{row.avaliadorNome}</td>
                     <td data-label="Situação">{row.situacao ? 'Ativo' : 'Inativo'}</td>
                     <td data-label="Ações">
-                      <div className="admin-users-actions">
-                        <button type="button" className="admin-inline-action" onClick={() => openEditModal(row)}>Editar</button>
-                        <button type="button" className="admin-inline-action admin-inline-action--danger" onClick={() => setConfirmState({ type: 'delete', payload: row })}>Excluir</button>
+                      <div className="Administrador-users-actions">
+                        <button type="button" className="Administrador-inline-action" onClick={() => openEditModal(row)}>Editar</button>
+                        <button type="button" className="Administrador-inline-action Administrador-inline-action--danger" onClick={() => setConfirmState({ type: 'delete', payload: row })}>Excluir</button>
                       </div>
                     </td>
                   </tr>
@@ -486,16 +486,16 @@ function AdminProjectEvaluatorsScreen({ rows, editais, users, onCreateRecord, on
               </tbody>
             </table>
           </div>
-          <div className="admin-users-crud__footer">
-            <div className="admin-users-pagination">
+          <div className="Administrador-users-crud__footer">
+            <div className="Administrador-users-pagination">
               <button type="button" disabled>Anterior</button>
               <button type="button" className="is-active">1</button>
               <button type="button" disabled>Próximo</button>
             </div>
             <span>Mostrando de 1 até {filteredRows.length} de {rows.length} registros</span>
-            <div className="admin-users-per-page">
+            <div className="Administrador-users-per-page">
               <strong>Exibir</strong>
-              <div className="admin-users-per-page__value">50</div>
+              <div className="Administrador-users-per-page__value">50</div>
               <strong>resultados por página</strong>
             </div>
           </div>
@@ -504,7 +504,7 @@ function AdminProjectEvaluatorsScreen({ rows, editais, users, onCreateRecord, on
       <AppFooter />
 
       {isFormOpen && (
-        <AdminProjectEvaluatorModal
+        <AdministradorProjectEvaluatorModal
           title={editingRecord ? 'Editar vínculo' : 'Adicionar vínculo'}
           formData={draftRecord}
           onChange={updateDraftField}
@@ -516,19 +516,19 @@ function AdminProjectEvaluatorsScreen({ rows, editais, users, onCreateRecord, on
         />
       )}
       {confirmState && (
-        <AdminConfirmModal
+        <AdministradorConfirmModal
           title={confirmState.type === 'delete' ? 'Confirmar exclusão do vínculo' : 'Confirmar modificação do vínculo'}
           message={confirmState.type === 'delete' ? 'Esse vínculo será removido da listagem, deseja prosseguir?' : 'Os dados a seguir serão salvos, deseja prosseguir?'}
           onCancel={() => setConfirmState(null)}
           onConfirm={handleConfirm}
         />
       )}
-      {successMessage && <AdminSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
+      {successMessage && <AdministradorSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
     </div>
   )
 }
 
-export function AdminBasicRegistrationsScreen({ portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar, users = initialAdminUsers }) {
+export function AdministradorBasicRegistrationsScreen({ portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar, users = initialAdministradorUsers }) {
   const [activeSubScreen, setActiveSubScreen] = useState(null)
   const [cnaes, setCnaes] = useState(initialCnaes)
   const [tiposInstituicao, setTiposInstituicao] = useState(initialTiposInstituicao)
@@ -556,29 +556,29 @@ export function AdminBasicRegistrationsScreen({ portalView, onSelectPortal, admi
     avaliadoresProjetos: { rows: avaliadoresProjetos, ...makeCrud(setAvaliadoresProjetos) },
   }
 
-  const navProps = { portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }
+  const navProps = { portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }
 
   if (activeSubScreen === 'editais') {
     const { rows, onCreate, onUpdate, onDelete } = crudMap.editais
-    return <AdminEditaisScreen rows={rows} onCreateRecord={onCreate} onUpdateRecord={onUpdate} onDeleteRecord={onDelete} onBack={() => setActiveSubScreen(null)} {...navProps} />
+    return <AdministradorEditaisScreen rows={rows} onCreateRecord={onCreate} onUpdateRecord={onUpdate} onDeleteRecord={onDelete} onBack={() => setActiveSubScreen(null)} {...navProps} />
   }
 
   if (activeSubScreen === 'avaliadoresProjetos') {
     const { rows, onCreate, onUpdate, onDelete } = crudMap.avaliadoresProjetos
-    return <AdminProjectEvaluatorsScreen rows={rows} editais={editais} users={users} onCreateRecord={onCreate} onUpdateRecord={onUpdate} onDeleteRecord={onDelete} onBack={() => setActiveSubScreen(null)} {...navProps} />
+    return <AdministradorProjectEvaluatorsScreen rows={rows} editais={editais} users={users} onCreateRecord={onCreate} onUpdateRecord={onUpdate} onDeleteRecord={onDelete} onBack={() => setActiveSubScreen(null)} {...navProps} />
   }
 
   if (activeSubScreen && basicRegistrationTitleMap[activeSubScreen]) {
     const { title, subtitle } = basicRegistrationTitleMap[activeSubScreen]
     const { rows, onCreate, onUpdate, onDelete } = crudMap[activeSubScreen]
-    return <AdminSimpleCrudScreen title={title} subtitle={subtitle} rows={rows} onCreateRecord={onCreate} onUpdateRecord={onUpdate} onDeleteRecord={onDelete} onBack={() => setActiveSubScreen(null)} {...navProps} />
+    return <AdministradorSimpleCrudScreen title={title} subtitle={subtitle} rows={rows} onCreateRecord={onCreate} onUpdateRecord={onUpdate} onDeleteRecord={onDelete} onBack={() => setActiveSubScreen(null)} {...navProps} />
   }
 
   return (
-    <div className="admin-page">
-      <AdminNavbar {...navProps} />
-      <main className="admin-main">
-        <AdminSectionHeader
+    <div className="Administrador-page">
+      <AdministradorNavbar {...navProps} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader
           title="Cadastros básicos"
           subtitle="Gerencie as tabelas de referência utilizadas em todo o sistema."
           onBack={() => onNavigate('dashboard')}
