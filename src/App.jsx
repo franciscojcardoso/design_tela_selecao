@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { Badge, Button, Card, Col, Container, Form, ProgressBar, Row } from 'react-bootstrap'
 import logoJangada from './assets/logo-jangada.svg'
 import logoEstadoCeara from './assets/logo-estado-ceara.svg'
-import { AdminBasicRegistrationsScreen as AdminBasicRegistrationsScreenModule } from './components/admin/AdminBasicRegistrationsScreen'
-import { AdminApplicantsTable } from './components/admin/AdminApplicantsTable'
+import { AdministradorBasicRegistrationsScreen as AdministradorBasicRegistrationsScreenModule } from './components/admin/AdminBasicRegistrationsScreen'
+import { AdministradorApplicantsTable } from './components/admin/AdminApplicantsTable'
+import LayoutOptionsDemo from './components/candidate/LayoutOptionsDemo'
 import './App.css'
 
 const selection = {
@@ -19,9 +20,9 @@ const institutionInfo = {
 }
 
 const dashboardStagesTop = [
-  { id: 'company-registration', title: 'Cadastro da empresa', icon: 'bi-buildings', description: 'Dados cadastrais, endereço e conta bancária da pessoa jurídica.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'company-registration' },
+  { id: 'company-registration', title: 'Cadastrar', icon: 'bi-buildings', description: 'Dados cadastrais, endereço e conta bancária do proponente.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'company-registration' },
   { id: 'legal-contact', title: 'Representante legal', icon: 'bi-person-vcard', description: 'Informações do representante legal e do contato comercial.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'legal-contact' },
-  { id: 'fiscal', title: 'Regularidade fiscal', icon: 'bi-shield-check', description: 'Certidões e comprovantes de regularidade fiscal da empresa.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'fiscal' },
+  { id: 'fiscal', title: 'Regularidade fiscal', icon: 'bi-shield-check', description: 'Certidões e comprovantes de regularidade fiscal do proponente.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'fiscal' },
   { id: 'attachments', title: 'Documentos obrigatorios', icon: 'bi-folder2-open', description: 'Anexos institucionais, comprovantes, declaracoes e modelos assinados.', statusColor: '#5C646B', startDate: '', endDate: '', navigateTo: 'attachments' },
 ]
 
@@ -60,15 +61,15 @@ const cnaeOptions = [
 const uploadChecklist = [
   { key: 'sponsorshipRequest', label: 'Oficio de solicitacao de patrocinio', info: 'Documento formal de solicitacao de patrocinio para o evento ou projeto, com assinatura eletronica GOV.BR.', reviewStatus: 'approved' },
   { key: 'nationalTax', label: 'Regularidade com Fazenda Nacional', info: 'Certidao conjunta expedida pela Receita Federal do Brasil e pela Procuradoria-Geral da Fazenda Nacional, comprovando regularidade fiscal federal.', reviewStatus: 'under-review' },
-  { key: 'stateTax', label: 'Regularidade com Fazenda Estadual', info: 'Certidao emitida pela Secretaria da Fazenda do Estado do domicilio ou sede da proponente.', reviewStatus: 'rejected' },
-  { key: 'municipalTax', label: 'Regularidade com Fazenda Municipal', info: 'Certidao de regularidade fiscal municipal do domicilio ou sede da empresa.', reviewStatus: 'not-sent' },
+  { key: 'stateTax', label: 'Regularidade com Fazenda Estadual', info: 'Certidao emitida pela Secretaria da Fazenda do Estado do domicilio ou sede do proponente.', reviewStatus: 'rejected' },
+  { key: 'municipalTax', label: 'Regularidade com Fazenda Municipal', info: 'Certidao de regularidade fiscal municipal do domicilio ou sede do proponente.', reviewStatus: 'not-sent' },
   { key: 'fgts', label: 'FGTS', info: 'Certificado de regularidade relativa ao Fundo de Garantia por Tempo de Servico.', reviewStatus: 'expired' },
   { key: 'cndt', label: 'CNDT', info: 'Certidao Negativa de Debitos Trabalhistas, usada para demonstrar regularidade em obrigacoes trabalhistas.', reviewStatus: 'approved' },
   { key: 'correctionalCertificate', label: 'Certidao negativa correcional', info: 'Consulta negativa de entes privados em bases como ePAD, CGU-PJ, CEIS, CNEP e CEPIM.', reviewStatus: 'under-review' },
   { key: 'tcuCertificate', label: 'Certidao negativa de licitantes inidoneos', info: 'Certidao emitida no ambito do TCU para comprovar ausencia de impedimentos relacionados a licitacoes.', reviewStatus: 'not-sent' },
-  { key: 'constitutiveAct', label: 'Ato constitutivo ou contrato social', info: 'Documento societario que comprova a constituicao formal da empresa e seus representantes.', reviewStatus: 'approved' },
+  { key: 'constitutiveAct', label: 'Ato constitutivo ou contrato social', info: 'Documento societario que comprova a constituicao formal do proponente e seus representantes.', reviewStatus: 'approved' },
   { key: 'legalRepresentativeDocument', label: 'Documento do representante legal', info: 'Documento de identificacao do representante legal, como RG, CPF ou CNH.', reviewStatus: 'rejected' },
-  { key: 'representativeAddress', label: 'Comprovante de endereco do representante', info: 'Comprovante atualizado de residencia do representante legal da empresa.', reviewStatus: 'expired' },
+  { key: 'representativeAddress', label: 'Comprovante de endereco do representante', info: 'Comprovante atualizado de residencia do representante legal do proponente.', reviewStatus: 'expired' },
 ]
 
 const documentReviewStatusMap = {
@@ -93,34 +94,34 @@ const initialApplicationData = {
   uploads: {},
 }
 
-const initialAdminUserForm = {
+const initialAdministradorUserForm = {
   fullName: '',
   email: '',
   emailConfirm: '',
   cpf: '',
   phone: '',
   phoneSecondary: '',
-  isAdmin: false,
+  isAdministrador: false,
   isEvaluator: true,
 }
 
-const initialAdminUsers = [
-  { id: 1, fullName: 'Maria Fernanda Alves', email: 'maria.alves@esp.ce.gov.br', emailConfirm: 'maria.alves@esp.ce.gov.br', cpf: '123.456.789-00', phone: '(85) 98888-1111', phoneSecondary: '(85) 3222-1111', isAdmin: true, isEvaluator: true, status: 'Convite enviado', assignedNotices: ['Edital 03/2026 - Implantacao e implementacao da rede saude'] },
-  { id: 2, fullName: 'Joao Pedro Lima', email: 'joao.lima@esp.ce.gov.br', emailConfirm: 'joao.lima@esp.ce.gov.br', cpf: '234.567.890-11', phone: '(85) 97777-2222', phoneSecondary: '', isAdmin: false, isEvaluator: true, status: 'Ativo', assignedNotices: ['Edital 03/2026 - Implantacao e implementacao da rede saude', 'Edital 04/2026 - Fortalecimento da atencao territorial'] },
-  { id: 3, fullName: 'Ana Carolina Sousa', email: 'ana.sousa@esp.ce.gov.br', emailConfirm: 'ana.sousa@esp.ce.gov.br', cpf: '345.678.901-22', phone: '(85) 96666-3333', phoneSecondary: '(85) 3111-0000', isAdmin: true, isEvaluator: false, status: 'Convite pendente', assignedNotices: [] },
+const initialAdministradorUsers = [
+  { id: 1, fullName: 'Maria Fernanda Alves', email: 'maria.alves@esp.ce.gov.br', emailConfirm: 'maria.alves@esp.ce.gov.br', cpf: '123.456.789-00', phone: '(85) 98888-1111', phoneSecondary: '(85) 3222-1111', isAdministrador: true, isEvaluator: true, status: 'Convite enviado', assignedNotices: ['Edital 03/2026 - Implantacao e implementacao da rede saude'] },
+  { id: 2, fullName: 'Joao Pedro Lima', email: 'joao.lima@esp.ce.gov.br', emailConfirm: 'joao.lima@esp.ce.gov.br', cpf: '234.567.890-11', phone: '(85) 97777-2222', phoneSecondary: '', isAdministrador: false, isEvaluator: true, status: 'Ativo', assignedNotices: ['Edital 03/2026 - Implantacao e implementacao da rede saude', 'Edital 04/2026 - Fortalecimento da atencao territorial'] },
+  { id: 3, fullName: 'Ana Carolina Sousa', email: 'ana.sousa@esp.ce.gov.br', emailConfirm: 'ana.sousa@esp.ce.gov.br', cpf: '345.678.901-22', phone: '(85) 96666-3333', phoneSecondary: '(85) 3111-0000', isAdministrador: true, isEvaluator: false, status: 'Convite pendente', assignedNotices: [] },
 ]
 
-function getAdminUserRoles(user) {
+function getAdministradorUserRoles(user) {
   return [
-    user.isAdmin ? 'Admin' : null,
+    user.isAdministrador ? 'Administrador' : null,
     user.isEvaluator ? 'Avaliador' : null,
   ].filter(Boolean).join(' / ')
 }
 
 const stageContent = {
-  'company-registration': { eyebrow: 'Etapa 1', title: 'Identificação da empresa', description: 'Dados institucionais da pessoa jurídica, endereço e conta bancária do proponente.' },
+  'company-registration': { eyebrow: 'Etapa 1', title: 'Cadastrar proponente', description: 'Dados institucionais, endereço e conta bancária do proponente.' },
   'legal-contact': { eyebrow: 'Etapa 2', title: 'Representante legal e contato comercial', description: 'Dados do representante legal e do contato comercial responsável pela proposta.' },
-  fiscal: { eyebrow: 'Etapa 3', title: 'Regularidade fiscal e trabalhista', description: 'Certidões fiscais e trabalhistas usadas para comprovar regularidade da empresa.' },
+  fiscal: { eyebrow: 'Etapa 3', title: 'Regularidade fiscal e trabalhista', description: 'Certidões fiscais e trabalhistas usadas para comprovar regularidade do proponente.' },
   attachments: { eyebrow: 'Etapa 4', title: 'Documentos institucionais e anexos', description: 'Uploads institucionais e comprovantes formais exigidos pelo edital.' },
   project: { eyebrow: 'Etapa 5', title: 'Projeto, plano de trabalho e mídia', description: 'Projeto, valores, contrapartida, plano de trabalho e plano de mídia.' },
   declarations: { eyebrow: 'Etapa 6', title: 'Declarações', description: 'Confirmações obrigatórias antes do envio final da inscrição.' },
@@ -130,7 +131,7 @@ const stageContent = {
 }
 
 const fieldLabels = {
-  companyType: 'Tipo de empresa',
+  companyType: 'Tipo de proponente',
   cnpj: 'CNPJ',
   companyName: 'Razao social',
   tradeName: 'Nome fantasia',
@@ -163,7 +164,7 @@ const fieldLabels = {
   noticeAgreement: 'Ciencia do edital',
 }
 
-const adminMenu = [
+const AdministradorMenu = [
   { label: 'Início', icon: 'bi-house', target: 'dashboard' },
   { label: 'Instituições', icon: 'bi-people-fill', target: 'institutions' },
   { label: 'Projetos', icon: 'bi-kanban', target: 'projects' },
@@ -255,7 +256,7 @@ const basicRegistrationCards = [
 const basicRegistrationTitleMap = {
   cnaes: { title: 'Gerenciar CNAE', subtitle: 'Cadastro dos códigos CNAE utilizados pelas instituições proponentes.' },
   tiposInstituicao: { title: 'Gerenciar tipos de instituição', subtitle: 'Tipos de entidade disponíveis para cadastro e seleção no sistema.' },
-  bancos: { title: 'Gerenciar bancos', subtitle: 'Instituições bancárias disponíveis para informação de conta da empresa.' },
+  bancos: { title: 'Gerenciar bancos', subtitle: 'Instituições bancárias disponíveis para informação de conta do proponente.' },
   setores: { title: 'Gerenciar setores', subtitle: 'Setores organizacionais disponíveis para vinculação nos editais.' },
   tiposDocumentos: { title: 'Gerenciar tipos de documentos', subtitle: 'Categorias de documentos exigidos nos processos seletivos.' },
   criteriosAvaliacao: { title: 'Gerenciar critérios de avaliação', subtitle: 'Critérios utilizados pelos avaliadores na análise dos projetos.' },
@@ -276,7 +277,7 @@ const evaluatorDocuments = [
   { id: 3, institution: 'Associação Soma', document: 'Documento do representante', avaliacao: 0, justificativa: 'Documento vencido' },
 ]
 
-const adminBaseApplicants = [
+const AdministradorBaseApplicants = [
   { id: 'esp-01', companyName: 'Instituto Vida', city: 'FORTALEZA', status: 'Concluido', documents: 8, progress: 5, resources: 2 },
   { id: 'esp-02', companyName: 'Clinica Horizonte', city: 'ARAPIRACA', status: 'Em analise', documents: 6, progress: 3, resources: 1 },
   { id: 'esp-03', companyName: 'Associacao Soma', city: 'PONTA GROSSA', status: 'Concluido', documents: 7, progress: 5, resources: 1 },
@@ -284,7 +285,7 @@ const adminBaseApplicants = [
   { id: 'esp-05', companyName: 'Projeto Sanar', city: 'FORTALEZA', status: 'Pendente', documents: 2, progress: 1, resources: 0 },
 ]
 
-const adminSchedule = [
+const AdministradorSchedule = [
   { date: '2026-03-18', title: 'Inicio das inscricoes' },
   { date: '2026-03-23', title: 'Abertura dos recursos' },
   { date: '2026-03-27', title: 'Resultado preliminar' },
@@ -293,17 +294,17 @@ const adminSchedule = [
   { date: '2026-04-15', title: 'Encerramento da fase documental' },
 ]
 
-const adminGraphSeries = [
+const AdministradorGraphSeries = [
   { label: 'Instituicoes', value: 6, color: 'var(--color-success)' },
   { label: 'Projetos', value: 4, color: 'var(--color-info)' },
   { label: 'Documentos', value: 5, color: 'var(--color-primary)' },
   { label: 'Recursos', value: 2, color: 'var(--color-info)' },
 ]
 
-const adminAuditRows = [
-  { id: 1, location: 'public.pacientes', recordId: 215, action: 'Cadastro', datetime: '2025-08-07 09:02:11', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Cadastro de instituição ID 215 – inclusao de novo registro na tabela public.pacientes.' },
-  { id: 2, location: 'public.pacientes', recordId: 215, action: 'Atualizacao', datetime: '2025-08-07 09:07:34', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Atualizacao de instituição ID 215 – ajuste de dados cadastrais na tabela public.instituicoes.' },
-  { id: 3, location: 'public.profissionais', recordId: 312, action: 'Desativacao', datetime: '2025-08-07 10:15:27', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Desativacao de profissional ID 312 – alteracao de status para inativo.' },
+const AdministradorAuditRows = [
+  { id: 1, location: 'public.pacientes', recordId: 215, action: 'Cadastro', datetime: '2025-08-07 09:02:11', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Cadastro de instituição ID 215 - inclusao de novo registro na tabela public.pacientes.' },
+  { id: 2, location: 'public.pacientes', recordId: 215, action: 'Atualizacao', datetime: '2025-08-07 09:07:34', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Atualizacao de instituição ID 215 - ajuste de dados cadastrais na tabela public.instituicoes.' },
+  { id: 3, location: 'public.profissionais', recordId: 312, action: 'Desativacao', datetime: '2025-08-07 10:15:27', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Desativacao de profissional ID 312 - alteração de status para inativo.' },
   { id: 4, location: 'public.usuarios', recordId: 315, action: 'Consulta', datetime: '2025-08-07 10:18:09', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Consulta de usuario ID 315 na tabela public.usuarios.' },
   { id: 5, location: 'public.login', recordId: 250, action: 'Login', datetime: '2025-08-07 08:58:41', user: 'joao.silva', userName: 'Joao da Silva', ip: '192.168.1.10', detail: 'Login realizado com sucesso no sistema administrativo.' },
 ]
@@ -381,7 +382,7 @@ function isStageValid(stage, applicationData, preferences) {
   })
 }
 
-function buildAdminContext(applicationData, progressItems, completedSteps, auditTrail) {
+function buildAdministradorContext(applicationData, progressItems, completedSteps, auditTrail) {
   const hasCurrentRegistration = Boolean(
     applicationData.companyName ||
     applicationData.cnpj ||
@@ -402,7 +403,7 @@ function buildAdminContext(applicationData, progressItems, completedSteps, audit
       }
     : null
 
-  const applicants = currentApplicant ? [...adminBaseApplicants, currentApplicant] : adminBaseApplicants
+  const applicants = currentApplicant ? [...AdministradorBaseApplicants, currentApplicant] : AdministradorBaseApplicants
   const applicantsWithStatus = applicants.map((applicant) => {
     const hasPending = applicant.status !== 'Concluido' || applicant.documents < 5 || applicant.progress < 4
     const currentStageLabel = applicant.progress >= 5
@@ -413,7 +414,7 @@ function buildAdminContext(applicationData, progressItems, completedSteps, audit
           ? 'Regularidade fiscal'
           : applicant.progress >= 2
             ? 'Representante legal'
-            : 'Cadastro da empresa'
+            : 'Cadastrar'
 
     return {
       ...applicant,
@@ -520,7 +521,7 @@ function buildAdminContext(applicationData, progressItems, completedSteps, audit
           ? 'Etapa ativa, recebendo atualizacoes do formulario.'
           : 'Etapa aguardando liberacao ou preenchimento.',
     })),
-    auditRows: adminAuditRows,
+    auditRows: AdministradorAuditRows,
   }
 }
 
@@ -528,39 +529,12 @@ function PortalSelector({ portalView, onSelectPortal }) {
   return (
     <div className="portal-selector" role="tablist" aria-label="Alternar entre visões">
       <button type="button" className={`portal-selector__button${portalView === 'candidate' ? ' is-active' : ''}`} onClick={() => onSelectPortal('candidate')}>Instituicao</button>
-      <button type="button" className={`portal-selector__button${portalView === 'admin' ? ' is-active' : ''}`} onClick={() => onSelectPortal('admin')}>
-        Admin
+      <button type="button" className={`portal-selector__button${portalView === 'Administrador' ? ' is-active' : ''}`} onClick={() => onSelectPortal('Administrador')}>
+        Administrador
       </button>
       <button type="button" className={`portal-selector__button${portalView === 'evaluator' ? ' is-active' : ''}`} onClick={() => onSelectPortal('evaluator')}>
         Avaliador
       </button>
-    </div>
-  )
-}
-
-function PreviewViewport({ previewDevice, onSelectDevice, compactMode, children }) {
-  const deviceButtons = [
-    { id: 'current', label: 'Atual' },
-    { id: 'device-1', label: 'Dispositivo 1' },
-    { id: 'device-2', label: 'Dispositivo 2' },
-    { id: 'device-3', label: 'Dispositivo 3' },
-  ]
-
-  return (
-    <div className={`preview-shell preview-shell--${previewDevice}${compactMode ? ' is-compact' : ''}`}>
-      <div className="preview-shell__toolbar">
-        <label className="preview-shell__field">
-          <span>Visualização</span>
-          <select value={previewDevice} onChange={(event) => onSelectDevice(event.target.value)} className="preview-shell__select">
-            {deviceButtons.map((device) => (
-              <option key={device.id} value={device.id}>
-                {device.label}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-      <div className="preview-shell__frame">{children}</div>
     </div>
   )
 }
@@ -572,8 +546,8 @@ function ResponsiveSidebar({
   onSelectPortal,
   screen,
   onNavigateCandidate,
-  adminScreen,
-  onNavigateAdmin,
+  AdministradorScreen,
+  onNavigateAdministrador,
   evaluatorScreen,
   onNavigateEvaluator,
   onGoToSettings,
@@ -588,8 +562,8 @@ function ResponsiveSidebar({
     { key: 'settings', label: 'Minhas preferencias', action: () => onGoToSettings?.(), active: screen === 'settings' },
   ]
 
-  const sidebarItems = portalView === 'admin'
-    ? adminMenu.map((item) => ({ key: item.target, label: item.label, action: () => onNavigateAdmin?.(item.target), active: adminScreen === item.target }))
+  const sidebarItems = portalView === 'Administrador'
+    ? AdministradorMenu.map((item) => ({ key: item.target, label: item.label, action: () => onNavigateAdministrador?.(item.target), active: AdministradorScreen === item.target }))
     : portalView === 'evaluator'
       ? [{ key: 'eval-dashboard', label: 'Projetos para avaliacao', action: () => onNavigateEvaluator?.('eval-dashboard'), active: evaluatorScreen === 'eval-dashboard' }]
       : candidateItems
@@ -696,7 +670,7 @@ function PainelNavbar({ onExit, onGoToSettings, portalView, onSelectPortal, onOp
   )
 }
 
-function AdminNavbar({ portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdministradorNavbar({ portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [showDropdown, setShowDropdown] = useState(false)
 
   return (
@@ -707,14 +681,14 @@ function AdminNavbar({ portalView, onSelectPortal, adminScreen, onNavigate, onEx
             <i className="bi bi-list" />
           </button>
           <AppBrand />
-          <div className="mb-0 navbar-titulo">Painel do admin</div>
+          <div className="mb-0 navbar-titulo">Painel do Administrador</div>
         </div>
         <div className="d-flex align-items-center gap-2 navbar-painel__menu">
-          {adminMenu.map((item) => (
+          {AdministradorMenu.map((item) => (
             <button
               key={item.label}
               type="button"
-              className={`navbar-menu-item${adminScreen === item.target ? ' is-active' : ''}`}
+              className={`navbar-menu-item${AdministradorScreen === item.target ? ' is-active' : ''}`}
               onClick={() => onNavigate(item.target)}
             >
               {item.icon && <i className={`bi ${item.icon}`} />}
@@ -734,7 +708,7 @@ function AdminNavbar({ portalView, onSelectPortal, adminScreen, onNavigate, onEx
               <div className="navbar-avatar">
                 <i className="bi bi-person-gear" />
               </div>
-              <span>Admin</span>
+              <span>Administrador</span>
               <i className="bi bi-chevron-down navbar-user__chevron" />
             </button>
             {showDropdown && (
@@ -879,8 +853,8 @@ function DashboardCard({ title, icon, description, startDate, endDate, onCardCli
 
 function TableSearchBar({ value, onChange, placeholder, actionLabel, onAction, searchLabel = 'Pesquisar' }) {
   return (
-    <div className="admin-users-crud__topbar">
-      <div className="admin-users-search">
+    <div className="Administrador-users-crud__topbar">
+      <div className="Administrador-users-search">
         <input
           type="search"
           value={value}
@@ -892,7 +866,7 @@ function TableSearchBar({ value, onChange, placeholder, actionLabel, onAction, s
         </button>
       </div>
       {actionLabel && onAction && (
-        <Button type="button" className="admin-users-add-button" onClick={onAction}>
+        <Button type="button" className="Administrador-users-add-button" onClick={onAction}>
           <span>{actionLabel}</span>
         </Button>
       )}
@@ -901,6 +875,34 @@ function TableSearchBar({ value, onChange, placeholder, actionLabel, onAction, s
 }
 
 function DashboardScreen({ onNavigate, onExit, portalView, onSelectPortal, applicationData, progressItems, completedSteps, activeStep, onOpenSidebar }) {
+  const candidateStages = [
+    {
+      ...dashboardStagesTop.find((stage) => stage.id === 'company-registration'),
+      title: 'Cadastro da Instituição',
+      description: 'Dados cadastrais, endereço e conta bancaria da pessoa jurídica.',
+    },
+    {
+      ...dashboardStagesTop.find((stage) => stage.id === 'legal-contact'),
+      title: 'Representante Legal',
+      description: 'Informações do representante legal e do contato comercial.',
+    },
+    {
+      ...dashboardStagesTop.find((stage) => stage.id === 'attachments'),
+      title: 'Documentos',
+      description: 'Anexos institucionais, comprovantes e modelos assinados.',
+    },
+  ]
+
+  const certameStages = [
+    {
+      ...dashboardStagesBottom.find((stage) => stage.id === 'project'),
+      title: 'Plano de Trabalho',
+      description: 'Projeto, plano de trabalho, plano de mídia e valores.',
+      startDate: '',
+      endDate: '',
+    },
+  ]
+
   return (
     <div className="painel-page">
       <PainelNavbar onExit={onExit} onGoToSettings={() => onNavigate('settings')} portalView={portalView} onSelectPortal={onSelectPortal} onOpenSidebar={onOpenSidebar} />
@@ -908,27 +910,41 @@ function DashboardScreen({ onNavigate, onExit, portalView, onSelectPortal, appli
         <div className="dashboard-shell">
           <div className="dashboard-hero">
             <div>
-              <h1>Inscrição para pessoa jurídica</h1>
-              <p>Preencha as informações dos cards. O card de cadastro da empresa abre os dados já preenchidos para consulta e ajuste conforme a LGPD.</p>
+              <h1>Área exclusiva do proponente</h1>
+              <p>Preencha as informações dos cards. O plano de trabalho fica separado para destacar o que pertence ao certame.</p>
             </div>
           </div>
 
           <Row className="g-4 align-items-start">
             <Col xl={9}>
-              <div className="dashboard-cards-grid dashboard-cards-grid--top">
-                {dashboardStagesTop.map((stage) => (
-                  <div key={stage.id} className="card-col">
-                    <DashboardCard {...stage} onCardClick={() => onNavigate(stage.navigateTo)} />
-                  </div>
-                ))}
-              </div>
-              <div className="dashboard-cards-grid dashboard-cards-grid--bottom">
-                {dashboardStagesBottom.filter((s) => !s.id.startsWith('//')).map((stage) => (
-                  <div key={stage.id} className="card-col">
-                    <DashboardCard {...stage} onCardClick={() => onNavigate(stage.navigateTo)} />
-                  </div>
-                ))}
-              </div>
+              <section className="dashboard-stage-section">
+                <div className="dashboard-stage-section__header">
+                  <span className="dashboard-stage-section__eyebrow">Área do Candidato</span>
+                  <h2>Dados cadastrais e documentos</h2>
+                  <p>Concentre aqui o cadastro da instituição, os responsáveis e os documentos exigidos para participação.</p>
+                </div>
+                <div className="dashboard-cards-grid dashboard-cards-grid--top dashboard-cards-grid--candidate">
+                  {candidateStages.map((stage) => (
+                    <div key={stage.id} className="card-col">
+                      <DashboardCard {...stage} onCardClick={() => onNavigate(stage.navigateTo)} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+              <section className="dashboard-stage-section dashboard-stage-section--certame">
+                <div className="dashboard-stage-section__header">
+                  <span className="dashboard-stage-section__eyebrow">Área do Certame</span>
+                  <h2>Plano de trabalho</h2>
+                  <p>Esta área reúne o conteúdo da proposta vinculado ao edital, separado do cadastro institucional.</p>
+                </div>
+                <div className="dashboard-cards-grid dashboard-cards-grid--bottom dashboard-cards-grid--certame">
+                  {certameStages.map((stage) => (
+                    <div key={stage.id} className="card-col">
+                      <DashboardCard {...stage} onCardClick={() => onNavigate(stage.navigateTo)} />
+                    </div>
+                  ))}
+                </div>
+              </section>
             </Col>
             <Col xl={3}>
               <div className="sidebar-column">
@@ -943,22 +959,22 @@ function DashboardScreen({ onNavigate, onExit, portalView, onSelectPortal, appli
   )
 }
 
-function AdminKpiCard({ title, value, icon, detail, onClick, disabled = false }) {
+function AdministradorKpiCard({ title, value, icon, detail, onClick, disabled = false }) {
   return (
-    <button type="button" className={`admin-kpi-card${disabled ? ' is-disabled' : ' is-clickable'}`} onClick={onClick} disabled={disabled}>
-      <div className="admin-kpi-card__icon">
+    <button type="button" className={`Administrador-kpi-card${disabled ? ' is-disabled' : ' is-clickable'}`} onClick={onClick} disabled={disabled}>
+      <div className="Administrador-kpi-card__icon">
         <i className={`bi ${icon}`} />
       </div>
-      <div className="admin-kpi-card__content">
-        <span className="admin-kpi-card__title">{title}</span>
-        <strong className="admin-kpi-card__value">{value}</strong>
-        <small className="admin-kpi-card__detail">{detail}</small>
+      <div className="Administrador-kpi-card__content">
+        <span className="Administrador-kpi-card__title">{title}</span>
+        <strong className="Administrador-kpi-card__value">{value}</strong>
+        <small className="Administrador-kpi-card__detail">{detail}</small>
       </div>
     </button>
   )
 }
 
-function AdminCalendarCard() {
+function AdministradorCalendarCard() {
   const [activeTab, setActiveTab] = useState('calendar')
   const [currentMonth, setCurrentMonth] = useState(new Date('2026-04-01T00:00:00'))
   const monthLabel = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(currentMonth)
@@ -976,19 +992,19 @@ function AdminCalendarCard() {
     const cells = []
 
     for (let index = 0; index < firstDay; index += 1) {
-      cells.push(<div key={`empty-${index}`} className="admin-calendar__cell admin-calendar__cell--empty" />)
+      cells.push(<div key={`empty-${index}`} className="Administrador-calendar__cell Administrador-calendar__cell--empty" />)
     }
 
     for (let day = 1; day <= daysInMonth; day += 1) {
       const isoDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-      const events = adminSchedule.filter((event) => event.date === isoDate)
+      const events = AdministradorSchedule.filter((event) => event.date === isoDate)
       const isToday = isoDate === '2026-04-01'
 
       cells.push(
-        <div key={isoDate} className={`admin-calendar__cell${events.length ? ' has-event' : ''}${isToday ? ' is-today' : ''}`}>
-          <span className="admin-calendar__day-number">{day}</span>
+        <div key={isoDate} className={`Administrador-calendar__cell${events.length ? ' has-event' : ''}${isToday ? ' is-today' : ''}`}>
+          <span className="Administrador-calendar__day-number">{day}</span>
           {events.slice(0, 2).map((event) => (
-            <span key={event.title} className="admin-calendar__event">{event.title}</span>
+            <span key={event.title} className="Administrador-calendar__event">{event.title}</span>
           ))}
         </div>,
       )
@@ -998,39 +1014,39 @@ function AdminCalendarCard() {
   }
 
   return (
-    <section className="admin-panel-card admin-panel-card--calendar">
-      <header className="admin-panel-card__header">
-        <div className="admin-panel-card__title">
+    <section className="Administrador-panel-card Administrador-panel-card--calendar">
+      <header className="Administrador-panel-card__header">
+        <div className="Administrador-panel-card__title">
           <i className="bi bi-calendar3" />
           <span>Cronograma</span>
         </div>
-        <div className="admin-tabs">
-          <button type="button" className={`admin-tabs__button${activeTab === 'calendar' ? ' is-active' : ''}`} onClick={() => setActiveTab('calendar')}>
+        <div className="Administrador-tabs">
+          <button type="button" className={`Administrador-tabs__button${activeTab === 'calendar' ? ' is-active' : ''}`} onClick={() => setActiveTab('calendar')}>
             Calendario
           </button>
-          <button type="button" className={`admin-tabs__button${activeTab === 'graph' ? ' is-active' : ''}`} onClick={() => setActiveTab('graph')}>
+          <button type="button" className={`Administrador-tabs__button${activeTab === 'graph' ? ' is-active' : ''}`} onClick={() => setActiveTab('graph')}>
             Grafico
           </button>
         </div>
       </header>
 
-      <div className="admin-schedule-progress">
-        <div className="admin-schedule-progress__meta">
+      <div className="Administrador-schedule-progress">
+        <div className="Administrador-schedule-progress__meta">
           <span><strong>Inicio:</strong> 18/03/2026</span>
           <span>Progresso do cronograma</span>
           <span><strong>Fim:</strong> 15/04/2026</span>
         </div>
-        <div className="admin-schedule-progress__bar">
-          <div className="admin-schedule-progress__fill" style={{ width: `${progressPercent}%` }} />
-          <span className="admin-schedule-progress__value">{progressPercent}%</span>
+        <div className="Administrador-schedule-progress__bar">
+          <div className="Administrador-schedule-progress__fill" style={{ width: `${progressPercent}%` }} />
+          <span className="Administrador-schedule-progress__value">{progressPercent}%</span>
         </div>
       </div>
 
       {activeTab === 'calendar' ? (
-        <div className="admin-calendar">
-          <div className="admin-calendar__toolbar">
+        <div className="Administrador-calendar">
+          <div className="Administrador-calendar__toolbar">
             <h3>EDITAL 03/2026 - IMPLANTACAO E IMPLEMENTACAO DA REDE SAUDE</h3>
-            <div className="admin-calendar__month-nav">
+            <div className="Administrador-calendar__month-nav">
               <button type="button" onClick={() => setCurrentMonth((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1))}>
                 <i className="bi bi-chevron-left" />
               </button>
@@ -1039,35 +1055,35 @@ function AdminCalendarCard() {
                 <i className="bi bi-chevron-right" />
               </button>
             </div>
-            <div className="admin-calendar__legend">
-              <span><i className="bi bi-circle-fill admin-dot admin-dot--success" /> Concluidas</span>
-              <span><i className="bi bi-circle-fill admin-dot admin-dot--warning" /> Hoje</span>
-              <span><i className="bi bi-circle-fill admin-dot admin-dot--info" /> Futuras</span>
+            <div className="Administrador-calendar__legend">
+              <span><i className="bi bi-circle-fill Administrador-dot Administrador-dot--success" /> Concluidas</span>
+              <span><i className="bi bi-circle-fill Administrador-dot Administrador-dot--warning" /> Hoje</span>
+              <span><i className="bi bi-circle-fill Administrador-dot Administrador-dot--info" /> Futuras</span>
             </div>
           </div>
-          <div className="admin-calendar__weekdays">
+          <div className="Administrador-calendar__weekdays">
             {['Domingo', 'Segunda', 'Terca', 'Quarta', 'Quinta', 'Sexta', 'Sabado'].map((day) => (
-              <div key={day} className="admin-calendar__weekday">{day}</div>
+              <div key={day} className="Administrador-calendar__weekday">{day}</div>
             ))}
           </div>
-          <div className="admin-calendar__grid">
+          <div className="Administrador-calendar__grid">
             {renderCalendarCells()}
           </div>
         </div>
       ) : (
-        <div className="admin-chart">
-          <div className="admin-chart__header">
+        <div className="Administrador-chart">
+          <div className="Administrador-chart__header">
             <div>
               <h3>Evolucao dos registros</h3>
               <p>Leitura consolidada das informacoes que chegam do formulario do usuario.</p>
             </div>
           </div>
-          <div className="admin-chart__bars">
-            {adminGraphSeries.map((item) => (
-              <div key={item.label} className="admin-chart__row">
+          <div className="Administrador-chart__bars">
+            {AdministradorGraphSeries.map((item) => (
+              <div key={item.label} className="Administrador-chart__row">
                 <span>{item.label}</span>
-                <div className="admin-chart__track">
-                  <div className="admin-chart__bar" style={{ width: `${Math.min(item.value * 16, 100)}%`, background: item.color }} />
+                <div className="Administrador-chart__track">
+                  <div className="Administrador-chart__bar" style={{ width: `${Math.min(item.value * 16, 100)}%`, background: item.color }} />
                 </div>
                 <strong>{item.value}</strong>
               </div>
@@ -1079,33 +1095,33 @@ function AdminCalendarCard() {
   )
 }
 
-function AdminInsightsCard({ adminContext }) {
+function AdministradorInsightsCard({ AdministradorContext }) {
   const [searchTerm, setSearchTerm] = useState('')
-  const filteredProjects = adminContext.projectsRows.filter((project) =>
+  const filteredProjects = AdministradorContext.projectsRows.filter((project) =>
     [project.institution, project.email, project.phone, project.notice, project.amount, project.status]
       .some((value) => String(value || '').toLowerCase().includes(searchTerm.trim().toLowerCase())),
   )
 
   return (
-    <section className="admin-panel-card admin-panel-card--side">
-      <header className="admin-panel-card__header">
-        <div className="admin-panel-card__title">
+    <section className="Administrador-panel-card Administrador-panel-card--side">
+      <header className="Administrador-panel-card__header">
+        <div className="Administrador-panel-card__title">
           <i className="bi bi-kanban" />
           <span>Projetos em analise</span>
         </div>
-        <span className="admin-table-card__badge">{adminContext.projectsRows.length} projetos</span>
+        <span className="Administrador-table-card__badge">{AdministradorContext.projectsRows.length} projetos</span>
       </header>
 
-      <div className="admin-insights admin-insights--single">
-        <article className="admin-table-card">
+      <div className="Administrador-insights Administrador-insights--single">
+        <article className="Administrador-table-card">
           <TableSearchBar
             value={searchTerm}
             onChange={setSearchTerm}
             placeholder="Pesquisar por instituicao, e-mail, telefone ou status"
             searchLabel="Pesquisar projetos em analise"
           />
-          <div className="admin-users-table-wrap">
-          <table className="admin-table admin-table--cards">
+          <div className="Administrador-users-table-wrap">
+          <table className="Administrador-table Administrador-table--cards">
             <thead>
               <tr>
                 <th>Instituicao</th>
@@ -1132,11 +1148,11 @@ function AdminInsightsCard({ adminContext }) {
   )
 }
 
-function AdminSectionHeader({ title, subtitle, onBack }) {
+function AdministradorSectionHeader({ title, subtitle, onBack }) {
   return (
-    <div className="admin-detail-header">
+    <div className="Administrador-detail-header">
       <div>
-        <button type="button" className="admin-back-link" onClick={onBack}>
+        <button type="button" className="Administrador-back-link" onClick={onBack}>
           <i className="bi bi-arrow-left" />
           <span>Voltar ao painel</span>
         </button>
@@ -1147,7 +1163,7 @@ function AdminSectionHeader({ title, subtitle, onBack }) {
   )
 }
 
-function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdministradorResourcesScreen({ rows, onBack, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const filteredRows = rows.filter((row) =>
     [row.companyName, row.city, row.volume, row.status]
@@ -1155,12 +1171,12 @@ function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminS
   )
 
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <AdminSectionHeader title="Gerenciar recursos" subtitle="Lista consolidada dos recursos vinculados aos inscritos e prontos para tratamento administrativo." onBack={onBack} />
-        <section className="admin-management-card admin-users-crud">
-          <div className="admin-management-card__topline">
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader title="Gerenciar recursos" subtitle="Lista consolidada dos recursos vinculados aos inscritos e prontos para tratamento administrativo." onBack={onBack} />
+        <section className="Administrador-management-card Administrador-users-crud">
+          <div className="Administrador-management-card__topline">
             <strong>{filteredRows.length} recurso(s)</strong>
           </div>
           <TableSearchBar
@@ -1169,8 +1185,8 @@ function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminS
             placeholder="Pesquisar por inscrito, cidade, volume ou status"
             searchLabel="Pesquisar recursos"
           />
-          <div className="admin-users-table-wrap">
-          <table className="admin-table admin-table--cards">
+          <div className="Administrador-users-table-wrap">
+          <table className="Administrador-table Administrador-table--cards">
             <thead>
               <tr>
                 <th>Inscrito</th>
@@ -1188,7 +1204,7 @@ function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminS
                   <td data-label="Volume">{row.volume}</td>
                   <td data-label="Status">{row.status}</td>
                   <td data-label="Acoes">
-                    <button type="button" className="admin-inline-action">Abrir recurso</button>
+                    <button type="button" className="Administrador-inline-action">Abrir recurso</button>
                   </td>
                 </tr>
               ))}
@@ -1202,7 +1218,7 @@ function AdminResourcesScreen({ rows, onBack, portalView, onSelectPortal, adminS
   )
 }
 
-function AdminProjectsScreen({ rows, onBack, evaluatorUsers, projectEvaluatorAssignments, onAssignEvaluator, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdministradorProjectsScreen({ rows, onBack, evaluatorUsers, projectEvaluatorAssignments, onAssignEvaluator, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedProject, setSelectedProject] = useState(null)
   const [selectedEvaluatorId, setSelectedEvaluatorId] = useState('')
@@ -1231,12 +1247,12 @@ function AdminProjectsScreen({ rows, onBack, evaluatorUsers, projectEvaluatorAss
   }
 
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <AdminSectionHeader title="Projetos" subtitle="Lista dos projetos vinculados as instituicoes cadastradas, com edital, valor e situacao atual." onBack={onBack} />
-        <section className="admin-management-card admin-users-crud">
-          <div className="admin-management-card__topline">
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader title="Projetos" subtitle="Lista dos projetos vinculados as instituicoes cadastradas, com edital, valor e situacao atual." onBack={onBack} />
+        <section className="Administrador-management-card Administrador-users-crud">
+          <div className="Administrador-management-card__topline">
             <strong>{filteredRows.length} projeto(s)</strong>
           </div>
           <TableSearchBar
@@ -1245,8 +1261,8 @@ function AdminProjectsScreen({ rows, onBack, evaluatorUsers, projectEvaluatorAss
             placeholder="Pesquisar por instituicao, edital, projeto ou status"
             searchLabel="Pesquisar projetos"
           />
-          <div className="admin-users-table-wrap">
-          <table className="admin-table admin-table--cards">
+          <div className="Administrador-users-table-wrap">
+          <table className="Administrador-table Administrador-table--cards">
             <thead>
               <tr>
                 <th>Instituicao</th>
@@ -1266,7 +1282,7 @@ function AdminProjectsScreen({ rows, onBack, evaluatorUsers, projectEvaluatorAss
                   <td data-label="Valor">{row.amount}</td>
                   <td data-label="Status">{row.status}</td>
                   <td data-label="Acoes">
-                    <button type="button" className="admin-inline-action" onClick={() => openAssignEvaluatorModal(row)}>Atribuir avaliador</button>
+                    <button type="button" className="Administrador-inline-action" onClick={() => openAssignEvaluatorModal(row)}>Atribuir avaliador</button>
                   </td>
                 </tr>
               ))}
@@ -1278,7 +1294,7 @@ function AdminProjectsScreen({ rows, onBack, evaluatorUsers, projectEvaluatorAss
       <AppFooter />
 
       {selectedProject && (
-        <AdminAssignEvaluatorModal
+        <AdministradorAssignEvaluatorModal
           project={selectedProject}
           evaluatorOptions={getEligibleEvaluators(selectedProject)}
           selectedEvaluatorId={selectedEvaluatorId}
@@ -1288,12 +1304,12 @@ function AdminProjectsScreen({ rows, onBack, evaluatorUsers, projectEvaluatorAss
         />
       )}
 
-      {successMessage && <AdminSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
+      {successMessage && <AdministradorSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
     </div>
   )
 }
 
-function AdminAuditsScreen({ rows, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdministradorAuditsScreen({ rows, onBack, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const selectedAudit = rows[0]
   const [searchTerm, setSearchTerm] = useState('')
   const filteredRows = rows.filter((row) =>
@@ -1301,18 +1317,18 @@ function AdminAuditsScreen({ rows, onBack, portalView, onSelectPortal, adminScre
       .some((value) => String(value || '').toLowerCase().includes(searchTerm.trim().toLowerCase())),
   )
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <AdminSectionHeader title="Auditoria" subtitle="Acompanhe e registre as acoes realizadas no sistema para garantir integridade, rastreabilidade e seguranca dos dados." onBack={onBack} />
-        <section className="admin-management-card admin-audit-card">
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader title="Auditoria" subtitle="Acompanhe e registre as acoes realizadas no sistema para garantir integridade, rastreabilidade e seguranca dos dados." onBack={onBack} />
+        <section className="Administrador-management-card Administrador-audit-card">
 
-          <div className="admin-audit-block">
+          <div className="Administrador-audit-block">
             <h3>Registro de usuário</h3>
             <Form.Control value={selectedAudit.user} readOnly />
           </div>
 
-          <div className="admin-audit-block">
+          <div className="Administrador-audit-block">
             <h3>Acoes</h3>
             <TableSearchBar
               value={searchTerm}
@@ -1320,8 +1336,8 @@ function AdminAuditsScreen({ rows, onBack, portalView, onSelectPortal, adminScre
               placeholder="Pesquisar por localizacao, acao, data ou registro"
               searchLabel="Pesquisar auditoria"
             />
-            <div className="admin-users-table-wrap">
-            <table className="admin-table admin-table--cards">
+            <div className="Administrador-users-table-wrap">
+            <table className="Administrador-table Administrador-table--cards">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -1340,7 +1356,7 @@ function AdminAuditsScreen({ rows, onBack, portalView, onSelectPortal, adminScre
                     <td data-label="ID Registro">{row.recordId}</td>
                     <td data-label="Acao">{row.action}</td>
                     <td data-label="Data/Hora">{row.datetime}</td>
-                    <td data-label="Detalhes"><button type="button" className="admin-eye-button"><i className="bi bi-eye-fill" /></button></td>
+                    <td data-label="Detalhes"><button type="button" className="Administrador-eye-button"><i className="bi bi-eye-fill" /></button></td>
                   </tr>
                 ))}
               </tbody>
@@ -1348,10 +1364,10 @@ function AdminAuditsScreen({ rows, onBack, portalView, onSelectPortal, adminScre
             </div>
           </div>
 
-          <div className="admin-audit-detail-grid">
-            <section className="admin-audit-detail-card">
+          <div className="Administrador-audit-detail-grid">
+            <section className="Administrador-audit-detail-card">
               <h3>Detalhes das acoes de auditoria</h3>
-              <div className="admin-audit-detail-lines">
+              <div className="Administrador-audit-detail-lines">
                 <div><strong>Nome do usuario:</strong> {selectedAudit.userName}</div>
                 <div><strong>Login do usuario:</strong> {selectedAudit.user}</div>
                 <div><strong>Ações realizadas:</strong> {rows.map((row) => row.action).join(', ')}</div>
@@ -1360,9 +1376,9 @@ function AdminAuditsScreen({ rows, onBack, portalView, onSelectPortal, adminScre
               </div>
             </section>
 
-            <section className="admin-audit-detail-card">
+            <section className="Administrador-audit-detail-card">
               <h3>Detalhes da acao registrada</h3>
-              <div className="admin-audit-detail-lines">
+              <div className="Administrador-audit-detail-lines">
                 <div><strong>Tipo de ação:</strong> {selectedAudit.action}</div>
                 <div><strong>ID da auditoria:</strong> {selectedAudit.recordId}</div>
                 <div><strong>Data e hora da ação:</strong> {selectedAudit.datetime}</div>
@@ -1381,9 +1397,9 @@ function AdminAuditsScreen({ rows, onBack, portalView, onSelectPortal, adminScre
   )
 }
 
-function AdminChatWidget({ adminContext }) {
+function AdministradorChatWidget({ AdministradorContext }) {
   const [isOpen, setIsOpen] = useState(false)
-  const attendanceGroups = adminContext?.attendanceGroups || [
+  const attendanceGroups = AdministradorContext?.attendanceGroups || [
     {
       label: 'Em andamento',
       items: [
@@ -1398,20 +1414,20 @@ function AdminChatWidget({ adminContext }) {
 
   return (
     <>
-      <button type="button" className="admin-chat-toggle" onClick={() => setIsOpen((current) => !current)} aria-label="Abrir assistente">
+      <button type="button" className="Administrador-chat-toggle" onClick={() => setIsOpen((current) => !current)} aria-label="Abrir assistente">
         <i className="bi bi-chat-dots" />
       </button>
 
       {isOpen && (
-        <section className="admin-chat-window">
-          <header className="admin-chat-window__header">
+        <section className="Administrador-chat-window">
+          <header className="Administrador-chat-window__header">
             <span>SeleBot</span>
             <button type="button" onClick={() => setIsOpen(false)}>
               <i className="bi bi-x-lg" />
             </button>
           </header>
-          <div className="admin-chat-window__body">
-            <div className="admin-chat-window__avatar">
+          <div className="Administrador-chat-window__body">
+            <div className="Administrador-chat-window__avatar">
               <i className="bi bi-robot" />
             </div>
             <p>Ola! Estes sao os atendimentos em aberto no momento.</p>
@@ -1423,7 +1439,7 @@ function AdminChatWidget({ adminContext }) {
                 .map((item) => <li key={item.title}>{item.title}</li>)}
             </ul>
           </div>
-          <footer className="admin-chat-window__footer">
+          <footer className="Administrador-chat-window__footer">
             <input type="text" placeholder="Digite sua mensagem" />
             <button type="button">Enviar</button>
           </footer>
@@ -1433,21 +1449,21 @@ function AdminChatWidget({ adminContext }) {
   )
 }
 
-function AdminDashboardScreen({ portalView, onSelectPortal, adminContext, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdministradorDashboardScreen({ portalView, onSelectPortal, AdministradorContext, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const kpis = [
-    { title: 'Instituições', value: adminContext.totals.inscritos, icon: 'bi-people-fill', detail: 'Instituições localizadas no contexto atual.', target: 'institutions' },
-    { title: 'Projetos', value: adminContext.projectsRows.length, icon: 'bi-kanban', detail: 'Projetos vinculados aos editais ativos.', target: 'projects' },
-    { title: 'Recursos', value: adminContext.totals.recursos, icon: 'bi-file-earmark-text', detail: 'Demandas em revisão ou acompanhamento.', target: 'resources' },
-    { title: 'Auditorias', value: adminContext.auditRows.length, icon: 'bi-clipboard-check', detail: 'Histórico rastreável de operações do sistema.', target: 'audits' },
+    { title: 'Instituições', value: AdministradorContext.totals.inscritos, icon: 'bi-people-fill', detail: 'Instituições localizadas no contexto atual.', target: 'institutions' },
+    { title: 'Projetos', value: AdministradorContext.projectsRows.length, icon: 'bi-kanban', detail: 'Projetos vinculados aos editais ativos.', target: 'projects' },
+    { title: 'Recursos', value: AdministradorContext.totals.recursos, icon: 'bi-file-earmark-text', detail: 'Demandas em revisão ou acompanhamento.', target: 'resources' },
+    { title: 'Auditorias', value: AdministradorContext.auditRows.length, icon: 'bi-clipboard-check', detail: 'Histórico rastreável de operações do sistema.', target: 'audits' },
   ]
 
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <section className="admin-kpi-grid">
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <section className="Administrador-kpi-grid">
           {kpis.map((kpi) => (
-            <AdminKpiCard
+            <AdministradorKpiCard
               key={kpi.title}
               {...kpi}
               onClick={kpi.target ? () => onNavigate(kpi.target) : undefined}
@@ -1455,10 +1471,10 @@ function AdminDashboardScreen({ portalView, onSelectPortal, adminContext, adminS
           ))}
         </section>
 
-        <section className="admin-content-grid">
-          {/* Calendário suprimido — melhoria futura */}
-          {/* <AdminCalendarCard /> */}
-          <AdminInsightsCard adminContext={adminContext} />
+        <section className="Administrador-content-grid">
+          {/* Calendário suprimido - melhoria futura */}
+          {/* <AdministradorCalendarCard /> */}
+          <AdministradorInsightsCard AdministradorContext={AdministradorContext} />
         </section>
       </main>
       <AppFooter />
@@ -1503,7 +1519,7 @@ function SidebarStatus({ applicationData, progressItems, completedSteps, activeS
             <div className="summary-list">
               {summaryItems.map((item) => <div key={item.label} className="summary-list__item"><span>{item.label}</span><strong className={item.tone}>{item.value}</strong></div>)}
             </div>
-          ) : <p className="summary-empty">O resumo será preenchido conforme a empresa informar os dados principais do cadastro.</p>}
+          ) : <p className="summary-empty">O resumo será preenchido conforme o proponente informar os dados principais do cadastro.</p>}
         </div>
         <div className="sidebar-progress">
           <div className="sidebar-progress__header"><h4>Progresso das etapas</h4></div>
@@ -1567,19 +1583,19 @@ function StageFooterActions({ onBack, onSave, saveDisabled, backLabel = 'Cancela
 
 function CompanyRegistrationForm({ applicationData, updateField, onBack, onSave, saveDisabled, saveLabel = 'Salvar' }) {
   return (
-    <FormSection title="Identificação da empresa" subtitle="Campos básicos pedidos no edital para cadastro da pessoa jurídica.">
+    <FormSection title="Cadastrar proponente">
       <div className="company-form-group">
         <div className="company-form-group__title">Dados cadastrais</div>
         <Row className="g-3">
-          <Col md={6}><Form.Group><Form.Label>Tipo de empresa *</Form.Label><Form.Select value={applicationData.companyType} onChange={updateField('companyType')}><option value="" disabled>Selecionar</option><option>LTDA</option><option>SLU</option><option>S/A</option><option>EIRELI</option><option>OSCIP</option><option>Outro</option></Form.Select></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>Tipo de proponente *</Form.Label><Form.Select value={applicationData.companyType} onChange={updateField('companyType')}><option value="" disabled>Selecionar</option><option>LTDA</option><option>SLU</option><option>S/A</option><option>EIRELI</option><option>OSCIP</option><option>Outro</option></Form.Select></Form.Group></Col>
           <Col md={6}><Form.Group><Form.Label>CNPJ *</Form.Label><Form.Control placeholder="00.000.000/0001-00" value={applicationData.cnpj} onChange={updateField('cnpj')} /></Form.Group></Col>
-          <Col xs={12}><Form.Group><Form.Label>Razão social *</Form.Label><Form.Control placeholder="Nome completo da empresa" value={applicationData.companyName} onChange={updateField('companyName')} /></Form.Group></Col>
+          <Col xs={12}><Form.Group><Form.Label>Razão social *</Form.Label><Form.Control placeholder="Nome completo do proponente" value={applicationData.companyName} onChange={updateField('companyName')} /></Form.Group></Col>
           <Col xs={12}><Form.Group><Form.Label>Nome fantasia</Form.Label><Form.Control placeholder="Nome de uso comercial" value={applicationData.tradeName} onChange={updateField('tradeName')} /></Form.Group></Col>
-          <Col md={6}><Form.Group><Form.Label>E-mail institucional *</Form.Label><Form.Control type="email" placeholder="email@empresa.com.br" value={applicationData.email} onChange={updateField('email')} /></Form.Group></Col>
+          <Col md={6}><Form.Group><Form.Label>E-mail institucional *</Form.Label><Form.Control type="email" placeholder="email@proponente.org.br" value={applicationData.email} onChange={updateField('email')} /></Form.Group></Col>
           <Col md={6}><Form.Group><Form.Label>Confirmação de e-mail *</Form.Label><Form.Control type="email" placeholder="Repita o e-mail" value={applicationData.emailConfirm} onChange={updateField('emailConfirm')} /></Form.Group></Col>
           <Col md={6}><Form.Group><Form.Label>Telefone principal *</Form.Label><Form.Control placeholder="(DDD) 0 0000-0000" value={applicationData.phone} onChange={updateField('phone')} /></Form.Group></Col>
           <Col md={6}><Form.Group><Form.Label>Telefone secundário</Form.Label><Form.Control placeholder="(DDD) 0 0000-0000" value={applicationData.phoneSecondary} onChange={updateField('phoneSecondary')} /></Form.Group></Col>
-          <Col lg={4}><Form.Group><Form.Label>Website</Form.Label><Form.Control placeholder="https://www.empresa.com.br" value={applicationData.website} onChange={updateField('website')} /></Form.Group></Col>
+          <Col lg={4}><Form.Group><Form.Label>Website</Form.Label><Form.Control placeholder="https://www.proponente.org.br" value={applicationData.website} onChange={updateField('website')} /></Form.Group></Col>
           <Col lg={4}><Form.Group><Form.Label>Data de criação</Form.Label><Form.Control type="date" value={applicationData.foundationDate} onChange={updateField('foundationDate')} /></Form.Group></Col>
           <Col lg={4}><Form.Group><Form.Label>Capital declarado</Form.Label><Form.Control placeholder="R$ 0,00" value={applicationData.shareCapital} onChange={updateField('shareCapital')} /></Form.Group></Col>
           <Col xs={12}><Form.Group><Form.Label>CNAE principal *</Form.Label><Form.Select value={applicationData.primaryCnae} onChange={updateField('primaryCnae')}><option value="" disabled>Selecionar CNAE principal</option>{cnaeOptions.map((option) => <option key={option}>{option}</option>)}</Form.Select></Form.Group></Col>
@@ -1645,7 +1661,7 @@ function LegalContactForm({ applicationData, updateField, onBack, onSave, saveDi
         </Row>
       </div>
 
-      <div className="info-banner mt-4"><i className="bi bi-info-circle" /><span>Esta etapa concentra apenas os dados dos responsáveis da empresa. O restante do cadastro continua nas outras opções da página inicial.</span></div>
+      <div className="info-banner mt-4"><i className="bi bi-info-circle" /><span>Esta etapa concentra apenas os dados dos responsáveis do proponente. O restante do cadastro continua nas outras opções da área do proponente.</span></div>
       <StageFooterActions onBack={onBack} onSave={onSave} saveDisabled={saveDisabled} />
     </FormSection>
   )
@@ -1675,10 +1691,10 @@ function FiscalForm({ applicationData, setUploadStatus, onBack, onSave, saveDisa
 
 function AttachmentsForm({ applicationData, setUploadStatus, onBack, onSave, saveDisabled }) {
   const attachmentUploads = uploadChecklist.slice(8)
-  const declaracaoItem = { key: 'declaracaoAssinada', label: 'Declarações assinadas', info: 'Arquivo PDF contendo as declarações obrigatórias assinadas pelo representante legal da empresa.', reviewStatus: 'under-review' }
+  const declaracaoItem = { key: 'declaracaoAssinada', label: 'Declarações assinadas', info: 'Arquivo PDF contendo as declarações obrigatórias assinadas pelo representante legal do proponente.', reviewStatus: 'under-review' }
 
   return (
-    <FormSection title="Documentos institucionais e anexos" subtitle="Uploads complementares, modelos assinados e comprovantes da empresa.">
+    <FormSection title="Documentos institucionais e anexos" subtitle="Uploads complementares, modelos assinados e comprovantes do proponente.">
       <div className="company-form-group">
         <div className="company-form-group__title">Documentos complementares</div>
         <div className="upload-grid">
@@ -1915,13 +1931,13 @@ function ProjectForm({ applicationData, updateField, setUploadStatus, onBack, on
 
 function DeclarationsForm({ applicationData, setDeclarationValue, onBack, onSave, saveDisabled }) {
   const companyName = applicationData.companyName || '[RAZÃO SOCIAL]'
-  const cnpj = applicationData.cnpj || '[●]'
+  const cnpj = applicationData.cnpj || '[?]'
   const representativeName = applicationData.legalRepresentative || '[NOME]'
-  const representativeCpf = applicationData.legalRepresentativeCpf || '[●]'
+  const representativeCpf = applicationData.legalRepresentativeCpf || '[?]'
   const declarationItems = []
 
   if (applicationData.declarations.socialRegularity) {
-    declarationItems.push('A empresa atende aos requisitos de regularidade trabalhista e social previstos no edital;')
+    declarationItems.push('O proponente atende aos requisitos de regularidade trabalhista e social previstos no edital;')
   }
 
   if (applicationData.declarations.articleSeven) {
@@ -1939,7 +1955,7 @@ function DeclarationsForm({ applicationData, setDeclarationValue, onBack, onSave
       <div className="company-form-group">
         <div className="company-form-group__title">Confirmações obrigatórias</div>
         <div className="declaration-list">
-          <Form.Check type="checkbox" id="social-regularity" checked={applicationData.declarations.socialRegularity} onChange={(event) => setDeclarationValue('socialRegularity', event.target.checked)} label="Declaro que a empresa atende aos requisitos de regularidade trabalhista e social previstos no edital." />
+          <Form.Check type="checkbox" id="social-regularity" checked={applicationData.declarations.socialRegularity} onChange={(event) => setDeclarationValue('socialRegularity', event.target.checked)} label="Declaro que o proponente atende aos requisitos de regularidade trabalhista e social previstos no edital." />
           <Form.Check type="checkbox" id="art-7" checked={applicationData.declarations.articleSeven} onChange={(event) => setDeclarationValue('articleSeven', event.target.checked)} label="Declaro cumprimento do inciso XXXIII do art. 7º da Constituição Federal." />
           <Form.Check type="checkbox" id="notice-agreement" checked={applicationData.declarations.noticeAgreement} onChange={(event) => setDeclarationValue('noticeAgreement', event.target.checked)} label="Declaro que li o edital, os anexos e concordo com as condições da seleção." />
         </div>
@@ -1954,9 +1970,9 @@ function DeclarationsForm({ applicationData, setDeclarationValue, onBack, onSave
               DECLARAÇÃO DE CUMPRIMENTO DO INCISO XXXIII DO ART. 7º DA CONSTITUIÇÃO FEDERAL
             </p>
             <p>
-              A empresa <strong>{companyName}</strong>, inscrita no CNPJ no <strong>{cnpj}</strong>, por
+              O proponente <strong>{companyName}</strong>, inscrita no CNPJ no <strong>{cnpj}</strong>, por
               intermedio de seu representante legal, Sr.(a) <strong>{representativeName}</strong>,
-              portador(a) da Carteira de Identidade no <strong>[●]</strong> e do CPF no{' '}
+              portador(a) da Carteira de Identidade no <strong>[?]</strong> e do CPF no{' '}
               <strong>{representativeCpf}</strong>, DECLARA, para fins de participacao no presente
               processo seletivo, que:
             </p>
@@ -1969,7 +1985,7 @@ function DeclarationsForm({ applicationData, setDeclarationValue, onBack, onSave
 
             <p>
               Declara, ainda, estar ciente de que a falsidade da presente declaração sujeitará
-              a empresa às sanções previstas em lei, inclusive quanto à inabilitação no processo
+              o proponente às sanções previstas em lei, inclusive quanto à inabilitação no processo
               seletivo e demais penalidades cabíveis.
             </p>
 
@@ -1978,7 +1994,7 @@ function DeclarationsForm({ applicationData, setDeclarationValue, onBack, onSave
         ) : (
           <p className="summary-empty">
             Marque as declarações obrigatórias para montar automaticamente o texto final com os
-            dados da empresa e do representante legal.
+            dados do proponente e do representante legal.
           </p>
         )}
       </div>
@@ -2038,39 +2054,39 @@ function SettingsForm({ preferences, setPreferences, onBack, onSave, saveDisable
 
 export default App
 
-function AdminReportsScreen({ adminContext, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdministradorReportsScreen({ AdministradorContext, onBack, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerms, setSearchTerms] = useState({})
   const reportSections = [
     {
       title: 'Projetos em análise',
       icon: 'bi-kanban',
-      rows: adminContext.projectsRows,
+      rows: AdministradorContext.projectsRows,
       headers: ['Instituição', 'E-mail', 'Telefone', 'Edital', 'Valor', 'Status'],
       cells: (row) => [row.institution, row.email, row.phone, row.notice.split(' - ')[0], row.amount, row.status],
     },
     {
       title: 'Recursos e demandas',
       icon: 'bi-file-earmark-text',
-      rows: adminContext.resourcesRows,
+      rows: AdministradorContext.resourcesRows,
       headers: ['Inscrito', 'Cidade', 'Volume', 'Status'],
       cells: (row) => [row.companyName, row.city, row.volume, row.status],
     },
   ]
 
   const summaryKpis = [
-    { label: 'Total de instituições', value: adminContext.totals.inscritos },
-    { label: 'Total de projetos', value: adminContext.projectsRows.length },
-    { label: 'Total de recursos', value: adminContext.totals.recursos },
-    { label: 'Documentos recebidos', value: adminContext.totals.documentos },
-    { label: 'Etapas concluídas', value: adminContext.totals.concluidos },
-    { label: 'Pendências', value: adminContext.totals.pendencias },
+    { label: 'Total de instituições', value: AdministradorContext.totals.inscritos },
+    { label: 'Total de projetos', value: AdministradorContext.projectsRows.length },
+    { label: 'Total de recursos', value: AdministradorContext.totals.recursos },
+    { label: 'Documentos recebidos', value: AdministradorContext.totals.documentos },
+    { label: 'Etapas concluídas', value: AdministradorContext.totals.concluidos },
+    { label: 'Pendências', value: AdministradorContext.totals.pendencias },
   ]
 
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <AdminSectionHeader title="Relatórios" subtitle="Visão consolidada dos dados do processo seletivo para análise e acompanhamento." onBack={onBack} />
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader title="Relatórios" subtitle="Visão consolidada dos dados do processo seletivo para análise e acompanhamento." onBack={onBack} />
 
         <div className="reports-summary-grid">
           {summaryKpis.map((kpi) => (
@@ -2082,8 +2098,8 @@ function AdminReportsScreen({ adminContext, onBack, portalView, onSelectPortal, 
         </div>
 
         {reportSections.map((section) => (
-          <section key={section.title} className="admin-management-card" style={{ marginBottom: '1rem' }}>
-            <div className="admin-management-card__topline">
+          <section key={section.title} className="Administrador-management-card" style={{ marginBottom: '1rem' }}>
+            <div className="Administrador-management-card__topline">
               <strong><i className={`bi ${section.icon} me-2`} />{section.title}</strong>
               <span>{section.rows.filter((row) =>
                 section.cells(row).some((cell) => String(cell || '').toLowerCase().includes((searchTerms[section.title] || '').trim().toLowerCase())),
@@ -2095,8 +2111,8 @@ function AdminReportsScreen({ adminContext, onBack, portalView, onSelectPortal, 
               placeholder={`Pesquisar em ${section.title.toLowerCase()}`}
               searchLabel={`Pesquisar em ${section.title}`}
             />
-            <div className="admin-users-table-wrap">
-            <table className="admin-table admin-table--cards">
+            <div className="Administrador-users-table-wrap">
+            <table className="Administrador-table Administrador-table--cards">
               <thead>
                 <tr>{section.headers.map((h) => <th key={h}>{h}</th>)}</tr>
               </thead>
@@ -2119,17 +2135,17 @@ function AdminReportsScreen({ adminContext, onBack, portalView, onSelectPortal, 
   )
 }
 
-function AdminUserRecordModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar' }) {
+function AdministradorUserRecordModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar' }) {
   return (
-    <div className="admin-modal-backdrop">
-      <section className="admin-modal-card admin-modal-card--form">
-        <header className="admin-modal-card__header">
+    <div className="Administrador-modal-backdrop">
+      <section className="Administrador-modal-card Administrador-modal-card--form">
+        <header className="Administrador-modal-card__header">
           <h3>{title}</h3>
-          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+          <button type="button" className="Administrador-modal-card__close" onClick={onClose}>
             <i className="bi bi-x-lg" />
           </button>
         </header>
-        <div className="admin-modal-card__body">
+        <div className="Administrador-modal-card__body">
           <Row className="g-3">
             <Col xs={12}>
               <Form.Group>
@@ -2158,14 +2174,14 @@ function AdminUserRecordModal({ title, formData, onChange, onClose, onSubmit, su
             <Col md={6}>
               <Form.Group>
                 <Form.Label>Perfis de acesso *</Form.Label>
-                <div className="admin-user-form__checks">
+                <div className="Administrador-user-form__checks">
                   <Form.Check
                     type="checkbox"
-                    id="modal-admin-role"
+                    id="modal-Administrador-role"
                     label="Administrador"
-                    checked={formData.isAdmin}
-                    onChange={onChange('isAdmin')}
-                    className="admin-user-form__check"
+                    checked={formData.isAdministrador}
+                    onChange={onChange('isAdministrador')}
+                    className="Administrador-user-form__check"
                   />
                   <Form.Check
                     type="checkbox"
@@ -2173,7 +2189,7 @@ function AdminUserRecordModal({ title, formData, onChange, onClose, onSubmit, su
                     label="Avaliador"
                     checked={formData.isEvaluator}
                     onChange={onChange('isEvaluator')}
-                    className="admin-user-form__check"
+                    className="Administrador-user-form__check"
                   />
                 </div>
               </Form.Group>
@@ -2191,9 +2207,9 @@ function AdminUserRecordModal({ title, formData, onChange, onClose, onSubmit, su
               </Form.Group>
             </Col>
           </Row>
-          <p className="admin-user-form__helper">A senha inicial será enviada por e-mail para a pessoa cadastrada.</p>
+          <p className="Administrador-user-form__helper">A senha inicial será enviada por e-mail para a pessoa cadastrada.</p>
         </div>
-        <footer className="admin-modal-card__footer">
+        <footer className="Administrador-modal-card__footer">
           <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>Cancelar</Button>
           <Button type="button" variant="primary" className="action-button" onClick={onSubmit}>{
             submitLabel
@@ -2204,23 +2220,23 @@ function AdminUserRecordModal({ title, formData, onChange, onClose, onSubmit, su
   )
 }
 
-function AdminConfirmModal({ title, message, onCancel, onConfirm }) {
+function AdministradorConfirmModal({ title, message, onCancel, onConfirm }) {
   return (
-    <div className="admin-modal-backdrop">
-      <section className="admin-modal-card admin-modal-card--confirm">
-        <header className="admin-modal-card__header">
-          <div className="admin-modal-card__headline">
+    <div className="Administrador-modal-backdrop">
+      <section className="Administrador-modal-card Administrador-modal-card--confirm">
+        <header className="Administrador-modal-card__header">
+          <div className="Administrador-modal-card__headline">
             <i className="bi bi-exclamation-triangle-fill" />
             <h3>{title}</h3>
           </div>
-          <button type="button" className="admin-modal-card__close" onClick={onCancel}>
+          <button type="button" className="Administrador-modal-card__close" onClick={onCancel}>
             <i className="bi bi-x-lg" />
           </button>
         </header>
-        <div className="admin-modal-card__body">
+        <div className="Administrador-modal-card__body">
           <p>{message}</p>
         </div>
-        <footer className="admin-modal-card__footer">
+        <footer className="Administrador-modal-card__footer">
           <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onCancel}>Cancelar</Button>
           <Button type="button" variant="primary" className="action-button" onClick={onConfirm}>Confirmar</Button>
         </footer>
@@ -2229,20 +2245,20 @@ function AdminConfirmModal({ title, message, onCancel, onConfirm }) {
   )
 }
 
-function AdminSuccessModal({ message, onClose }) {
+function AdministradorSuccessModal({ message, onClose }) {
   return (
-    <div className="admin-modal-backdrop">
-      <section className="admin-modal-card admin-modal-card--success">
-        <header className="admin-modal-card__header">
-          <div className="admin-modal-card__headline admin-modal-card__headline--success">
+    <div className="Administrador-modal-backdrop">
+      <section className="Administrador-modal-card Administrador-modal-card--success">
+        <header className="Administrador-modal-card__header">
+          <div className="Administrador-modal-card__headline Administrador-modal-card__headline--success">
             <i className="bi bi-check-circle" />
             <h3>Sucesso</h3>
           </div>
-          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+          <button type="button" className="Administrador-modal-card__close" onClick={onClose}>
             <i className="bi bi-x-lg" />
           </button>
         </header>
-        <div className="admin-modal-card__body">
+        <div className="Administrador-modal-card__body">
           <p>{message}</p>
         </div>
       </section>
@@ -2250,17 +2266,17 @@ function AdminSuccessModal({ message, onClose }) {
   )
 }
 
-function AdminAssignNoticeModal({ user, selectedNotice, onChange, onClose, onSubmit }) {
+function AdministradorAssignNoticeModal({ user, selectedNotice, onChange, onClose, onSubmit }) {
   return (
-    <div className="admin-modal-backdrop">
-      <section className="admin-modal-card admin-modal-card--form">
-        <header className="admin-modal-card__header">
+    <div className="Administrador-modal-backdrop">
+      <section className="Administrador-modal-card Administrador-modal-card--form">
+        <header className="Administrador-modal-card__header">
           <h3>Atribuir edital</h3>
-          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+          <button type="button" className="Administrador-modal-card__close" onClick={onClose}>
             <i className="bi bi-x-lg" />
           </button>
         </header>
-        <div className="admin-modal-card__body">
+        <div className="Administrador-modal-card__body">
           <Row className="g-3">
             <Col xs={12}>
               <Form.Group>
@@ -2279,7 +2295,7 @@ function AdminAssignNoticeModal({ user, selectedNotice, onChange, onClose, onSub
             </Col>
           </Row>
         </div>
-        <footer className="admin-modal-card__footer">
+        <footer className="Administrador-modal-card__footer">
           <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>Cancelar</Button>
           <Button type="button" variant="primary" className="action-button" onClick={onSubmit}>Salvar</Button>
         </footer>
@@ -2288,17 +2304,17 @@ function AdminAssignNoticeModal({ user, selectedNotice, onChange, onClose, onSub
   )
 }
 
-function AdminAssignEvaluatorModal({ project, evaluatorOptions, selectedEvaluatorId, onChange, onClose, onSubmit }) {
+function AdministradorAssignEvaluatorModal({ project, evaluatorOptions, selectedEvaluatorId, onChange, onClose, onSubmit }) {
   return (
-    <div className="admin-modal-backdrop">
-      <section className="admin-modal-card admin-modal-card--form">
-        <header className="admin-modal-card__header">
+    <div className="Administrador-modal-backdrop">
+      <section className="Administrador-modal-card Administrador-modal-card--form">
+        <header className="Administrador-modal-card__header">
           <h3>Atribuir avaliador</h3>
-          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+          <button type="button" className="Administrador-modal-card__close" onClick={onClose}>
             <i className="bi bi-x-lg" />
           </button>
         </header>
-        <div className="admin-modal-card__body">
+        <div className="Administrador-modal-card__body">
           <Row className="g-3">
             <Col xs={12}>
               <Form.Group>
@@ -2323,7 +2339,7 @@ function AdminAssignEvaluatorModal({ project, evaluatorOptions, selectedEvaluato
             </Col>
           </Row>
         </div>
-        <footer className="admin-modal-card__footer">
+        <footer className="Administrador-modal-card__footer">
           <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>Cancelar</Button>
           <Button type="button" variant="primary" className="action-button" onClick={onSubmit}>Salvar</Button>
         </footer>
@@ -2332,11 +2348,11 @@ function AdminAssignEvaluatorModal({ project, evaluatorOptions, selectedEvaluato
   )
 }
 
-function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUser, onAssignNotice, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdministradorUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUser, onAssignNotice, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingUser, setEditingUser] = useState(null)
-  const [draftUser, setDraftUser] = useState(initialAdminUserForm)
+  const [draftUser, setDraftUser] = useState(initialAdministradorUserForm)
   const [assignNoticeUser, setAssignNoticeUser] = useState(null)
   const [selectedNotice, setSelectedNotice] = useState('')
   const [confirmState, setConfirmState] = useState(null)
@@ -2352,7 +2368,7 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
       row.email,
       row.cpf,
       row.phone,
-      getAdminUserRoles(row),
+      getAdministradorUserRoles(row),
       row.status,
     ].some((value) => String(value || '').toLowerCase().includes(term))
   })
@@ -2367,7 +2383,7 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
 
   const openCreateModal = () => {
     setEditingUser(null)
-    setDraftUser(initialAdminUserForm)
+    setDraftUser(initialAdministradorUserForm)
     setIsFormOpen(true)
   }
 
@@ -2380,7 +2396,7 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
       cpf: user.cpf,
       phone: user.phone,
       phoneSecondary: user.phoneSecondary || '',
-      isAdmin: user.isAdmin,
+      isAdministrador: user.isAdministrador,
       isEvaluator: user.isEvaluator,
     })
     setIsFormOpen(true)
@@ -2394,7 +2410,7 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
       || draftUser.email.trim() !== draftUser.emailConfirm.trim()
       || !draftUser.phone.trim()
       || !draftUser.cpf.trim()
-      || (!draftUser.isAdmin && !draftUser.isEvaluator)
+      || (!draftUser.isAdministrador && !draftUser.isEvaluator)
     ) {
       return
     }
@@ -2426,7 +2442,7 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
     setConfirmState(null)
     setIsFormOpen(false)
     setEditingUser(null)
-    setDraftUser(initialAdminUserForm)
+    setDraftUser(initialAdministradorUserForm)
   }
 
   const handleAssignNotice = () => {
@@ -2438,14 +2454,14 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
   }
 
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <AdminSectionHeader title="Gerenciar usuários" subtitle="CRUD administrativo para cadastro, edição e exclusão de perfis de acesso do sistema." onBack={onBack} />
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader title="Gerenciar usuários" subtitle="CRUD administrativo para cadastro, edição e exclusão de perfis de acesso do sistema." onBack={onBack} />
 
-        <section className="admin-management-card admin-users-crud">
-          <div className="admin-users-crud__topbar">
-            <div className="admin-users-search">
+        <section className="Administrador-management-card Administrador-users-crud">
+          <div className="Administrador-users-crud__topbar">
+            <div className="Administrador-users-search">
               <input
                 type="text"
                 value={searchTerm}
@@ -2456,14 +2472,14 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
                 <i className="bi bi-search" />
               </button>
             </div>
-            <Button type="button" className="admin-users-add-button" onClick={openCreateModal}>
+            <Button type="button" className="Administrador-users-add-button" onClick={openCreateModal}>
               <i className="bi bi-plus-square" />
               <span>Adicionar registro</span>
             </Button>
           </div>
 
-          <div className="admin-users-table-wrap">
-            <table className="admin-table admin-users-table admin-table--cards">
+          <div className="Administrador-users-table-wrap">
+            <table className="Administrador-table Administrador-users-table Administrador-table--cards">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -2480,15 +2496,15 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
                     <td data-label="ID">{row.id}</td>
                     <td data-label="Nome">{row.fullName}</td>
                     <td data-label="E-mail">{row.email}</td>
-                    <td data-label="Perfis">{getAdminUserRoles(row)}</td>
+                    <td data-label="Perfis">{getAdministradorUserRoles(row)}</td>
                     <td data-label="Status">{row.status}</td>
                     <td data-label="Acoes">
-                      <div className="admin-users-actions">
-                        <button type="button" className="admin-inline-action" onClick={() => { setAssignNoticeUser(row); setSelectedNotice('') }}>Atribuir edital</button>
-                        <button type="button" className="admin-inline-action" onClick={() => openEditModal(row)}>Editar</button>
+                      <div className="Administrador-users-actions">
+                        <button type="button" className="Administrador-inline-action" onClick={() => { setAssignNoticeUser(row); setSelectedNotice('') }}>Atribuir edital</button>
+                        <button type="button" className="Administrador-inline-action" onClick={() => openEditModal(row)}>Editar</button>
                         <button
                           type="button"
-                          className="admin-inline-action admin-inline-action--danger"
+                          className="Administrador-inline-action Administrador-inline-action--danger"
                           onClick={() => setConfirmState({ type: 'delete', payload: row })}
                         >
                           Excluir
@@ -2501,16 +2517,16 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
             </table>
           </div>
 
-          <div className="admin-users-crud__footer">
-            <div className="admin-users-pagination">
+          <div className="Administrador-users-crud__footer">
+            <div className="Administrador-users-pagination">
               <button type="button" disabled>Anterior</button>
               <button type="button" className="is-active">1</button>
               <button type="button" disabled>Próximo</button>
             </div>
             <span>Mostrando de 1 até {filteredRows.length} de {rows.length} registros</span>
-            <div className="admin-users-per-page">
+            <div className="Administrador-users-per-page">
               <strong>Exibir</strong>
-              <div className="admin-users-per-page__value">50</div>
+              <div className="Administrador-users-per-page__value">50</div>
               <strong>resultados por página</strong>
             </div>
           </div>
@@ -2519,18 +2535,18 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
       <AppFooter />
 
       {isFormOpen && (
-        <AdminUserRecordModal
+        <AdministradorUserRecordModal
           title={editingUser ? 'Editar registro' : 'Adicionar registro'}
           formData={draftUser}
           onChange={updateDraftField}
-          onClose={() => { setIsFormOpen(false); setEditingUser(null); setDraftUser(initialAdminUserForm) }}
+          onClose={() => { setIsFormOpen(false); setEditingUser(null); setDraftUser(initialAdministradorUserForm) }}
           onSubmit={handlePersistRequest}
           submitLabel={editingUser ? 'Salvar alterações' : 'Salvar'}
         />
       )}
 
       {assignNoticeUser && (
-        <AdminAssignNoticeModal
+        <AdministradorAssignNoticeModal
           user={assignNoticeUser}
           selectedNotice={selectedNotice}
           onChange={setSelectedNotice}
@@ -2540,7 +2556,7 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
       )}
 
       {confirmState && (
-        <AdminConfirmModal
+        <AdministradorConfirmModal
           title={confirmState.type === 'delete' ? 'Confirmar exclusao do registro' : 'Confirmar modificacao do registro'}
           message={confirmState.type === 'delete' ? 'Esse usuario sera removido da listagem, deseja prosseguir?' : 'Os dados a seguir serao salvos, deseja prosseguir?'}
           onCancel={() => setConfirmState(null)}
@@ -2548,26 +2564,26 @@ function AdminUsersScreen({ rows, onBack, onCreateUser, onUpdateUser, onDeleteUs
         />
       )}
 
-      {successMessage && <AdminSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
+      {successMessage && <AdministradorSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
     </div>
   )
 }
 
-// ─── Cadastros Básicos ────────────────────────────────────────────────────────
+// --- Cadastros Básicos --------------------------------------------------------
 
 const initialSimpleRecordForm = { descricao: '', situacao: true }
 
-function AdminSimpleRecordModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar' }) {
+function AdministradorSimpleRecordModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar' }) {
   return (
-    <div className="admin-modal-backdrop">
-      <section className="admin-modal-card admin-modal-card--form">
-        <header className="admin-modal-card__header">
+    <div className="Administrador-modal-backdrop">
+      <section className="Administrador-modal-card Administrador-modal-card--form">
+        <header className="Administrador-modal-card__header">
           <h3>{title}</h3>
-          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+          <button type="button" className="Administrador-modal-card__close" onClick={onClose}>
             <i className="bi bi-x-lg" />
           </button>
         </header>
-        <div className="admin-modal-card__body">
+        <div className="Administrador-modal-card__body">
           <Row className="g-3">
             <Col xs={12}>
               <Form.Group>
@@ -2586,7 +2602,7 @@ function AdminSimpleRecordModal({ title, formData, onChange, onClose, onSubmit, 
             </Col>
           </Row>
         </div>
-        <footer className="admin-modal-card__footer">
+        <footer className="Administrador-modal-card__footer">
           <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>Cancelar</Button>
           <Button type="button" variant="primary" className="action-button" onClick={onSubmit}>{submitLabel}</Button>
         </footer>
@@ -2595,7 +2611,7 @@ function AdminSimpleRecordModal({ title, formData, onChange, onClose, onSubmit, 
   )
 }
 
-function AdminSimpleCrudScreen({ title, subtitle, rows, onCreateRecord, onUpdateRecord, onDeleteRecord, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdministradorSimpleCrudScreen({ title, subtitle, rows, onCreateRecord, onUpdateRecord, onDeleteRecord, onBack, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingRecord, setEditingRecord] = useState(null)
@@ -2655,27 +2671,27 @@ function AdminSimpleCrudScreen({ title, subtitle, rows, onCreateRecord, onUpdate
   }
 
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <AdminSectionHeader title={title} subtitle={subtitle} onBack={onBack} />
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader title={title} subtitle={subtitle} onBack={onBack} />
 
-        <section className="admin-management-card admin-users-crud">
-          <div className="admin-users-crud__topbar">
-            <div className="admin-users-search">
+        <section className="Administrador-management-card Administrador-users-crud">
+          <div className="Administrador-users-crud__topbar">
+            <div className="Administrador-users-search">
               <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Insira uma palavra para pesquisar" />
               <button type="button" aria-label="Pesquisar">
                 <i className="bi bi-search" />
               </button>
             </div>
-            <Button type="button" className="admin-users-add-button" onClick={openCreateModal}>
+            <Button type="button" className="Administrador-users-add-button" onClick={openCreateModal}>
               <i className="bi bi-plus-square" />
               <span>Adicionar registro</span>
             </Button>
           </div>
 
-          <div className="admin-users-table-wrap">
-            <table className="admin-table admin-users-table admin-table--cards">
+          <div className="Administrador-users-table-wrap">
+            <table className="Administrador-table Administrador-users-table Administrador-table--cards">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -2691,9 +2707,9 @@ function AdminSimpleCrudScreen({ title, subtitle, rows, onCreateRecord, onUpdate
                     <td data-label="Descrição">{row.descricao}</td>
                     <td data-label="Situação">{row.situacao ? 'Ativo' : 'Inativo'}</td>
                     <td data-label="Ações">
-                      <div className="admin-users-actions">
-                        <button type="button" className="admin-inline-action" onClick={() => openEditModal(row)}>Editar</button>
-                        <button type="button" className="admin-inline-action admin-inline-action--danger" onClick={() => setConfirmState({ type: 'delete', payload: row })}>Excluir</button>
+                      <div className="Administrador-users-actions">
+                        <button type="button" className="Administrador-inline-action" onClick={() => openEditModal(row)}>Editar</button>
+                        <button type="button" className="Administrador-inline-action Administrador-inline-action--danger" onClick={() => setConfirmState({ type: 'delete', payload: row })}>Excluir</button>
                       </div>
                     </td>
                   </tr>
@@ -2702,16 +2718,16 @@ function AdminSimpleCrudScreen({ title, subtitle, rows, onCreateRecord, onUpdate
             </table>
           </div>
 
-          <div className="admin-users-crud__footer">
-            <div className="admin-users-pagination">
+          <div className="Administrador-users-crud__footer">
+            <div className="Administrador-users-pagination">
               <button type="button" disabled>Anterior</button>
               <button type="button" className="is-active">1</button>
               <button type="button" disabled>Próximo</button>
             </div>
             <span>Mostrando de 1 até {filteredRows.length} de {rows.length} registros</span>
-            <div className="admin-users-per-page">
+            <div className="Administrador-users-per-page">
               <strong>Exibir</strong>
-              <div className="admin-users-per-page__value">50</div>
+              <div className="Administrador-users-per-page__value">50</div>
               <strong>resultados por página</strong>
             </div>
           </div>
@@ -2720,7 +2736,7 @@ function AdminSimpleCrudScreen({ title, subtitle, rows, onCreateRecord, onUpdate
       <AppFooter />
 
       {isFormOpen && (
-        <AdminSimpleRecordModal
+        <AdministradorSimpleRecordModal
           title={editingRecord ? 'Editar registro' : 'Adicionar registro'}
           formData={draftRecord}
           onChange={updateDraftField}
@@ -2731,30 +2747,30 @@ function AdminSimpleCrudScreen({ title, subtitle, rows, onCreateRecord, onUpdate
       )}
 
       {confirmState && (
-        <AdminConfirmModal
+        <AdministradorConfirmModal
           title={confirmState.type === 'delete' ? 'Confirmar exclusão do registro' : 'Confirmar modificação do registro'}
-          message={confirmState.type === 'delete' ? 'Esse registro será removido da listagem, deseja prosseguir?' : 'Os dados a seguir serão salvos, deseja prosseguir?'}
+          message={confirmState.type === 'delete' ? 'Esse registro será removido da listagem, deseja prosseguir?' : 'Os dados a seguir seráo salvos, deseja prosseguir?'}
           onCancel={() => setConfirmState(null)}
           onConfirm={handleConfirm}
         />
       )}
 
-      {successMessage && <AdminSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
+      {successMessage && <AdministradorSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
     </div>
   )
 }
 
-function AdminEditalRecordModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar' }) {
+function AdministradorEditalRecordModal({ title, formData, onChange, onClose, onSubmit, submitLabel = 'Salvar' }) {
   return (
-    <div className="admin-modal-backdrop">
-      <section className="admin-modal-card admin-modal-card--form">
-        <header className="admin-modal-card__header">
+    <div className="Administrador-modal-backdrop">
+      <section className="Administrador-modal-card Administrador-modal-card--form">
+        <header className="Administrador-modal-card__header">
           <h3>{title}</h3>
-          <button type="button" className="admin-modal-card__close" onClick={onClose}>
+          <button type="button" className="Administrador-modal-card__close" onClick={onClose}>
             <i className="bi bi-x-lg" />
           </button>
         </header>
-        <div className="admin-modal-card__body">
+        <div className="Administrador-modal-card__body">
           <Row className="g-3">
             <Col xs={12}>
               <Form.Group>
@@ -2833,7 +2849,7 @@ function AdminEditalRecordModal({ title, formData, onChange, onClose, onSubmit, 
             </Col>
           </Row>
         </div>
-        <footer className="admin-modal-card__footer">
+        <footer className="Administrador-modal-card__footer">
           <Button type="button" variant="light" className="action-button action-button--secondary" onClick={onClose}>Cancelar</Button>
           <Button type="button" variant="primary" className="action-button" onClick={onSubmit}>{submitLabel}</Button>
         </footer>
@@ -2842,7 +2858,7 @@ function AdminEditalRecordModal({ title, formData, onChange, onClose, onSubmit, 
   )
 }
 
-function AdminEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteRecord, onBack, portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdministradorEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteRecord, onBack, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingRecord, setEditingRecord] = useState(null)
@@ -2916,27 +2932,27 @@ function AdminEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteReco
   }
 
   return (
-    <div className="admin-page">
-      <AdminNavbar portalView={portalView} onSelectPortal={onSelectPortal} adminScreen={adminScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <AdminSectionHeader title="Gerenciar editais" subtitle="Cadastro e gerenciamento dos editais de chamamento público." onBack={onBack} />
+    <div className="Administrador-page">
+      <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader title="Gerenciar editais" subtitle="Cadastro e gerenciamento dos editais de chamamento público." onBack={onBack} />
 
-        <section className="admin-management-card admin-users-crud">
-          <div className="admin-users-crud__topbar">
-            <div className="admin-users-search">
+        <section className="Administrador-management-card Administrador-users-crud">
+          <div className="Administrador-users-crud__topbar">
+            <div className="Administrador-users-search">
               <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Insira uma palavra para pesquisar" />
               <button type="button" aria-label="Pesquisar">
                 <i className="bi bi-search" />
               </button>
             </div>
-            <Button type="button" className="admin-users-add-button" onClick={openCreateModal}>
+            <Button type="button" className="Administrador-users-add-button" onClick={openCreateModal}>
               <i className="bi bi-plus-square" />
               <span>Adicionar registro</span>
             </Button>
           </div>
 
-          <div className="admin-users-table-wrap">
-            <table className="admin-table admin-users-table admin-table--cards">
+          <div className="Administrador-users-table-wrap">
+            <table className="Administrador-table Administrador-users-table Administrador-table--cards">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -2958,9 +2974,9 @@ function AdminEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteReco
                     <td data-label="Resultado final">{row.data_resultado_final}</td>
                     <td data-label="Situação">{row.situacao ? 'Ativo' : 'Inativo'}</td>
                     <td data-label="Ações">
-                      <div className="admin-users-actions">
-                        <button type="button" className="admin-inline-action" onClick={() => openEditModal(row)}>Editar</button>
-                        <button type="button" className="admin-inline-action admin-inline-action--danger" onClick={() => setConfirmState({ type: 'delete', payload: row })}>Excluir</button>
+                      <div className="Administrador-users-actions">
+                        <button type="button" className="Administrador-inline-action" onClick={() => openEditModal(row)}>Editar</button>
+                        <button type="button" className="Administrador-inline-action Administrador-inline-action--danger" onClick={() => setConfirmState({ type: 'delete', payload: row })}>Excluir</button>
                       </div>
                     </td>
                   </tr>
@@ -2969,16 +2985,16 @@ function AdminEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteReco
             </table>
           </div>
 
-          <div className="admin-users-crud__footer">
-            <div className="admin-users-pagination">
+          <div className="Administrador-users-crud__footer">
+            <div className="Administrador-users-pagination">
               <button type="button" disabled>Anterior</button>
               <button type="button" className="is-active">1</button>
               <button type="button" disabled>Próximo</button>
             </div>
             <span>Mostrando de 1 até {filteredRows.length} de {rows.length} registros</span>
-            <div className="admin-users-per-page">
+            <div className="Administrador-users-per-page">
               <strong>Exibir</strong>
-              <div className="admin-users-per-page__value">50</div>
+              <div className="Administrador-users-per-page__value">50</div>
               <strong>resultados por página</strong>
             </div>
           </div>
@@ -2987,7 +3003,7 @@ function AdminEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteReco
       <AppFooter />
 
       {isFormOpen && (
-        <AdminEditalRecordModal
+        <AdministradorEditalRecordModal
           title={editingRecord ? 'Editar edital' : 'Adicionar edital'}
           formData={draftRecord}
           onChange={updateDraftField}
@@ -2998,20 +3014,20 @@ function AdminEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteReco
       )}
 
       {confirmState && (
-        <AdminConfirmModal
+        <AdministradorConfirmModal
           title={confirmState.type === 'delete' ? 'Confirmar exclusão do registro' : 'Confirmar modificação do registro'}
-          message={confirmState.type === 'delete' ? 'Esse registro será removido da listagem, deseja prosseguir?' : 'Os dados a seguir serão salvos, deseja prosseguir?'}
+          message={confirmState.type === 'delete' ? 'Esse registro será removido da listagem, deseja prosseguir?' : 'Os dados a seguir seráo salvos, deseja prosseguir?'}
           onCancel={() => setConfirmState(null)}
           onConfirm={handleConfirm}
         />
       )}
 
-      {successMessage && <AdminSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
+      {successMessage && <AdministradorSuccessModal message={successMessage} onClose={() => setSuccessMessage('')} />}
     </div>
   )
 }
 
-function AdminBasicRegistrationsScreen({ portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }) {
+function AdministradorBasicRegistrationsScreen({ portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [activeSubScreen, setActiveSubScreen] = useState(null)
   const [cnaes, setCnaes] = useState(initialCnaes)
   const [tiposInstituicao, setTiposInstituicao] = useState(initialTiposInstituicao)
@@ -3037,12 +3053,12 @@ function AdminBasicRegistrationsScreen({ portalView, onSelectPortal, adminScreen
     editais: { rows: editais, ...makeCrud(setEditais) },
   }
 
-  const navProps = { portalView, onSelectPortal, adminScreen, onNavigate, onExit, onOpenSidebar }
+  const navProps = { portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }
 
   if (activeSubScreen === 'editais') {
     const { rows, onCreate, onUpdate, onDelete } = crudMap.editais
     return (
-      <AdminEditaisScreen
+      <AdministradorEditaisScreen
         rows={rows}
         onCreateRecord={onCreate}
         onUpdateRecord={onUpdate}
@@ -3057,7 +3073,7 @@ function AdminBasicRegistrationsScreen({ portalView, onSelectPortal, adminScreen
     const { title, subtitle } = basicRegistrationTitleMap[activeSubScreen]
     const { rows, onCreate, onUpdate, onDelete } = crudMap[activeSubScreen]
     return (
-      <AdminSimpleCrudScreen
+      <AdministradorSimpleCrudScreen
         title={title}
         subtitle={subtitle}
         rows={rows}
@@ -3071,10 +3087,10 @@ function AdminBasicRegistrationsScreen({ portalView, onSelectPortal, adminScreen
   }
 
   return (
-    <div className="admin-page">
-      <AdminNavbar {...navProps} />
-      <main className="admin-main">
-        <AdminSectionHeader
+    <div className="Administrador-page">
+      <AdministradorNavbar {...navProps} />
+      <main className="Administrador-main">
+        <AdministradorSectionHeader
           title="Cadastros básicos"
           subtitle="Gerencie as tabelas de referência utilizadas em todo o sistema."
           onBack={() => onNavigate('dashboard')}
@@ -3117,10 +3133,10 @@ function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelectPortal,
   })
 
   return (
-    <div className="admin-page">
+    <div className="Administrador-page">
       <EvaluatorNavbar portalView={portalView} onSelectPortal={onSelectPortal} evaluatorScreen={evaluatorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
-      <main className="admin-main">
-        <div className="admin-detail-header">
+      <main className="Administrador-main">
+        <div className="Administrador-detail-header">
           <div>
             <h2>Painel do avaliador</h2>
             <p>Leitura e avaliacao dos projetos atribuidos ao seu perfil.</p>
@@ -3142,9 +3158,9 @@ function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelectPortal,
           </div>
         </div>
 
-        <section className="admin-management-card admin-users-crud">
-          <div className="admin-users-crud__topbar">
-            <div className="admin-users-search">
+        <section className="Administrador-management-card Administrador-users-crud">
+          <div className="Administrador-users-crud__topbar">
+            <div className="Administrador-users-search">
               <input
                 type="search"
                 value={searchTerm}
@@ -3157,8 +3173,8 @@ function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelectPortal,
             </div>
           </div>
 
-          <div className="admin-users-table-wrap">
-            <table className="admin-table admin-users-table admin-table--cards">
+          <div className="Administrador-users-table-wrap">
+            <table className="Administrador-table Administrador-users-table Administrador-table--cards">
               <thead>
                 <tr>
                   <th>Instituicao</th>
@@ -3171,17 +3187,17 @@ function EvaluatorDashboardScreen({ evaluatorScreen, portalView, onSelectPortal,
               </thead>
               <tbody>
                 {filteredProjects.map((project) => (
-                  <tr key={project.id} className={selectedProjectId === project.id ? 'admin-table__row--highlight' : ''}>
+                  <tr key={project.id} className={selectedProjectId === project.id ? 'Administrador-table__row--highlight' : ''}>
                     <td data-label="Instituicao">{project.institution}</td>
                     <td data-label="Projeto">
-                      <button type="button" className="admin-table-link" onClick={() => onSelectProject?.(project.id)}>
+                      <button type="button" className="Administrador-table-link" onClick={() => onSelectProject?.(project.id)}>
                         {project.project}
                       </button>
                     </td>
                     <td data-label="Edital">{project.notice}</td>
                     <td data-label="Valor solicitado">{project.amount}</td>
                     <td data-label="Status"><Badge className={`status-chip status-chip--${statusBadge(project.status)}`}>{project.status}</Badge></td>
-                    <td data-label="Acao"><button type="button" className="admin-inline-action">Avaliar</button></td>
+                    <td data-label="Acao"><button type="button" className="Administrador-inline-action">Avaliar</button></td>
                   </tr>
                 ))}
               </tbody>
@@ -3316,12 +3332,12 @@ function AuthScreen({ onLogin, onStartRegistration, onSkipToDashboard, authData,
       <main className="candidate-content auth-screen__content">
         <Container>
           <Row className="g-4 align-items-stretch justify-content-center">
-            <Col lg={5}>
+            <Col lg={5} className="order-2 order-lg-2">
               <Card className="form-section-card auth-card">
                 <Card.Body className="auth-card__body">
                   <p className="eyebrow">Acesso ao sistema</p>
                   <h1>Entrar</h1>
-                  <p>Faca login para continuar.</p>
+                  <p>Faça login para continuar.</p>
                   <Form className="auth-form">
                     <Form.Group>
                       <Form.Label>CNPJ</Form.Label>
@@ -3338,22 +3354,22 @@ function AuthScreen({ onLogin, onStartRegistration, onSkipToDashboard, authData,
                 </Card.Body>
               </Card>
             </Col>
-            <Col lg={5}>
+            <Col lg={5} className="order-1 order-lg-1">
               <Card className="form-section-card auth-side-card">
                 <Card.Body className="auth-card__body">
                   <p className="eyebrow">Primeiro acesso</p>
-                  <h2>Cadastre sua empresa</h2>
-                  <p>O cadastro da empresa e o primeiro passo. Apos a conclusao, voce sera direcionado ao painel principal.</p>
+                  <h1>Cadastrar</h1>
+                  <p>O cadastro do proponente é o primeiro passo. Após a conclusão, você será direcionado ao painel principal.</p>
                   <div className="auth-side-card__cta">
                     <div className="auth-side-card__icon">
                       <i className="bi bi-buildings" />
                     </div>
                     <Button type="button" variant="light" className="action-button action-button--secondary auth-side-card__button" onClick={onStartRegistration}>
-                      Iniciar cadastro
+                      Cadastrar
                     </Button>
                   </div>
                   <button type="button" className="auth-side-card__skip" onClick={onSkipToDashboard}>
-                    Pular e ir para a tela do usuario
+                    Pular e ir para a área do proponente
                   </button>
                 </Card.Body>
               </Card>
@@ -3370,15 +3386,15 @@ function AuthScreen({ onLogin, onStartRegistration, onSkipToDashboard, authData,
 function App() {
   const [screen, setScreen] = useState('auth')
   const [portalView, setPortalView] = useState('candidate')
-  const [adminScreen, setAdminScreen] = useState('dashboard')
+  const [AdministradorScreen, setAdministradorScreen] = useState('dashboard')
   const [evaluatorScreen, setEvaluatorScreen] = useState('eval-dashboard')
-  const [previewDevice, setPreviewDevice] = useState('current')
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [showLayoutDemo, setShowLayoutDemo] = useState(false)
   const [selectedEvaluatorProjectId, setSelectedEvaluatorProjectId] = useState(evaluatorProjects[0]?.id || null)
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false)
   const [authData, setAuthData] = useState({ email: '', password: '' })
   const [applicationData, setApplicationData] = useState(initialApplicationData)
-  const [adminUsers, setAdminUsers] = useState(initialAdminUsers)
+  const [AdministradorUsers, setAdministradorUsers] = useState(initialAdministradorUsers)
   const [projectEvaluatorAssignments, setProjectEvaluatorAssignments] = useState({})
   const [auditTrail, setAuditTrail] = useState([
     { title: 'Painel administrativo carregado', time: '01/04/2026 08:00', detail: 'Visao inicial pronta para acompanhamento.' },
@@ -3388,13 +3404,33 @@ function App() {
     visionMode: 'default',
   })
 
+  // Efeitos de inicialização
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', preferences.themeMode)
     document.documentElement.setAttribute('data-vision', preferences.visionMode)
   }, [preferences])
 
+  // Verificar URL params ao montar e atalho Ctrl+Shift+L
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('mode') === 'layout-demo') {
+      setShowLayoutDemo(true)
+    }
+  }, []) // Executar apenas uma vez
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && event.shiftKey && event.key === 'L') {
+        event.preventDefault()
+        setShowLayoutDemo((prev) => !prev)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
   const sectionRules = [
-    { title: 'Cadastro da empresa', fields: ['companyType', 'cnpj', 'companyName', 'email', 'phone', 'street', 'zipCode', 'city', 'state'] },
+    { title: 'Cadastrar', fields: ['companyType', 'cnpj', 'companyName', 'email', 'phone', 'street', 'zipCode', 'city', 'state'] },
     { title: 'Representante legal', fields: ['legalRepresentative', 'legalRepresentativeCpf', 'legalRepresentativeRole', 'commercialContact', 'commercialContactCpf', 'commercialContactPhone'] },
     { title: 'Regularidade fiscal', fields: ['sponsorshipRequest', 'nationalTax', 'stateTax', 'municipalTax', 'fgts', 'cndt', 'correctionalCertificate', 'tcuCertificate'], source: 'uploads' },
     { title: 'Documentos obrigatórios', fields: ['constitutiveAct', 'legalRepresentativeDocument', 'representativeAddress'], source: 'uploads' },
@@ -3417,13 +3453,11 @@ function App() {
   const completedSteps = progressItems.filter((item) => item.done).length
   const activeItem = progressItems.find((item) => item.current) || progressItems.find((item) => !item.done)
   const activeStep = activeItem?.title || 'Cadastro concluído'
-  const adminContext = buildAdminContext(applicationData, progressItems, completedSteps, auditTrail)
-  const compactMode = previewDevice !== 'current'
-
+  const AdministradorContext = buildAdministradorContext(applicationData, progressItems, completedSteps, auditTrail)
   const handleExit = () => {
     setIsSidebarOpen(false)
     setPortalView('candidate')
-    setAdminScreen('dashboard')
+    setAdministradorScreen('dashboard')
     setEvaluatorScreen('eval-dashboard')
     setSelectedEvaluatorProjectId(evaluatorProjects[0]?.id || null)
     setAuthData({ email: '', password: '' })
@@ -3436,20 +3470,20 @@ function App() {
     ].slice(0, 12))
   }
 
-  const createAdminUser = (userData) => {
-    const nextId = Math.max(0, ...adminUsers.map((user) => user.id)) + 1
-    setAdminUsers((current) => [...current, { ...userData, id: nextId, status: 'Convite enviado', assignedNotices: [] }])
-    registerAudit('Convite de usuario preparado', `${userData.fullName} (${getAdminUserRoles(userData)}) - ${userData.email}`)
+  const createAdministradorUser = (userData) => {
+    const nextId = Math.max(0, ...AdministradorUsers.map((user) => user.id)) + 1
+    setAdministradorUsers((current) => [...current, { ...userData, id: nextId, status: 'Convite enviado', assignedNotices: [] }])
+    registerAudit('Convite de usuario preparado', `${userData.fullName} (${getAdministradorUserRoles(userData)}) - ${userData.email}`)
   }
 
-  const updateAdminUser = (userData) => {
-    setAdminUsers((current) => current.map((user) => (user.id === userData.id ? { ...user, ...userData } : user)))
-    registerAudit('Usuario atualizado', `${userData.fullName} (${getAdminUserRoles(userData)})`)
+  const updateAdministradorUser = (userData) => {
+    setAdministradorUsers((current) => current.map((user) => (user.id === userData.id ? { ...user, ...userData } : user)))
+    registerAudit('Usuario atualizado', `${userData.fullName} (${getAdministradorUserRoles(userData)})`)
   }
 
-  const deleteAdminUser = (userId) => {
-    const targetUser = adminUsers.find((user) => user.id === userId)
-    setAdminUsers((current) => current.filter((user) => user.id !== userId))
+  const deleteAdministradorUser = (userId) => {
+    const targetUser = AdministradorUsers.find((user) => user.id === userId)
+    setAdministradorUsers((current) => current.filter((user) => user.id !== userId))
     if (targetUser) {
       registerAudit('Usuario removido', `${targetUser.fullName} - ${targetUser.email}`)
     }
@@ -3457,7 +3491,7 @@ function App() {
 
   const assignUserNotice = (userId, notice) => {
     let assignedUserName = ''
-    setAdminUsers((current) => current.map((user) => {
+    setAdministradorUsers((current) => current.map((user) => {
       if (user.id !== userId) return user
       assignedUserName = user.fullName
       return { ...user, assignedNotices: Array.from(new Set([...(user.assignedNotices || []), notice])) }
@@ -3468,16 +3502,16 @@ function App() {
   }
 
   const assignProjectEvaluator = (projectId, evaluatorId) => {
-    const project = adminContext.projectsRows.find((row) => row.id === projectId)
-    const evaluator = adminUsers.find((user) => user.id === evaluatorId)
+    const project = AdministradorContext.projectsRows.find((row) => row.id === projectId)
+    const evaluator = AdministradorUsers.find((user) => user.id === evaluatorId)
     setProjectEvaluatorAssignments((current) => ({ ...current, [projectId]: evaluatorId }))
     if (project && evaluator) {
       registerAudit('Avaliador atribuido ao projeto', `${evaluator.fullName} - ${project.project}`)
     }
   }
 
-  const renderWithPreview = (content) => (
-    <PreviewViewport previewDevice={previewDevice} onSelectDevice={setPreviewDevice} compactMode={compactMode}>
+  const renderAppShell = (content) => (
+    <>
       <ResponsiveSidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
@@ -3485,19 +3519,19 @@ function App() {
         onSelectPortal={setPortalView}
         screen={screen}
         onNavigateCandidate={setScreen}
-        adminScreen={adminScreen}
-        onNavigateAdmin={setAdminScreen}
+        AdministradorScreen={AdministradorScreen}
+        onNavigateAdministrador={setAdministradorScreen}
         evaluatorScreen={evaluatorScreen}
         onNavigateEvaluator={setEvaluatorScreen}
         onGoToSettings={() => setScreen('settings')}
         onExit={handleExit}
       />
       {content}
-    </PreviewViewport>
+    </>
   )
 
   if (screen === 'auth') {
-    return renderWithPreview(
+    return renderAppShell(
       <AuthScreen
         authData={authData}
         setAuthData={setAuthData}
@@ -3509,51 +3543,55 @@ function App() {
   }
 
   if (screen === 'logged-out') {
-    return renderWithPreview(<LoggedOutScreen portalView={portalView} onSelectPortal={setPortalView} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+    return renderAppShell(<LoggedOutScreen portalView={portalView} onSelectPortal={setPortalView} onOpenSidebar={() => setIsSidebarOpen(true)} />)
   }
 
   if (portalView === 'evaluator') {
-    return renderWithPreview(<EvaluatorDashboardScreen evaluatorScreen={evaluatorScreen} portalView={portalView} onSelectPortal={setPortalView} onNavigate={setEvaluatorScreen} onExit={handleExit} selectedProjectId={selectedEvaluatorProjectId} onSelectProject={setSelectedEvaluatorProjectId} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+    return renderAppShell(<EvaluatorDashboardScreen evaluatorScreen={evaluatorScreen} portalView={portalView} onSelectPortal={setPortalView} onNavigate={setEvaluatorScreen} onExit={handleExit} selectedProjectId={selectedEvaluatorProjectId} onSelectProject={setSelectedEvaluatorProjectId} onOpenSidebar={() => setIsSidebarOpen(true)} />)
   }
 
-  if (portalView === 'admin') {
-    if (adminScreen === 'institutions') {
-      return renderWithPreview(<AdminApplicantsTable title="Instituições" subtitle="Tabela principal com as instituições e acesso rápido para acompanhamento e gestão." rows={adminContext.applicants} onBack={() => setAdminScreen('dashboard')} onAudit={registerAudit} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+  if (portalView === 'Administrador') {
+    if (AdministradorScreen === 'institutions') {
+      return renderAppShell(<AdministradorApplicantsTable title="Instituições" subtitle="Tabela principal com as instituições e acesso rápido para acompanhamento e gestão." rows={AdministradorContext.applicants} onBack={() => setAdministradorScreen('dashboard')} onAudit={registerAudit} portalView={portalView} onSelectPortal={setPortalView} AdministradorScreen={AdministradorScreen} onNavigate={setAdministradorScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
-    if (adminScreen === 'projects') {
-      return renderWithPreview(<AdminProjectsScreen rows={adminContext.projectsRows} onBack={() => setAdminScreen('dashboard')} evaluatorUsers={adminUsers} projectEvaluatorAssignments={projectEvaluatorAssignments} onAssignEvaluator={assignProjectEvaluator} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+    if (AdministradorScreen === 'projects') {
+      return renderAppShell(<AdministradorProjectsScreen rows={AdministradorContext.projectsRows} onBack={() => setAdministradorScreen('dashboard')} evaluatorUsers={AdministradorUsers} projectEvaluatorAssignments={projectEvaluatorAssignments} onAssignEvaluator={assignProjectEvaluator} portalView={portalView} onSelectPortal={setPortalView} AdministradorScreen={AdministradorScreen} onNavigate={setAdministradorScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
-    if (adminScreen === 'resources') {
-      return renderWithPreview(<AdminResourcesScreen rows={adminContext.resourcesRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+    if (AdministradorScreen === 'resources') {
+      return renderAppShell(<AdministradorResourcesScreen rows={AdministradorContext.resourcesRows} onBack={() => setAdministradorScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} AdministradorScreen={AdministradorScreen} onNavigate={setAdministradorScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
-    if (adminScreen === 'audits') {
-      return renderWithPreview(<AdminAuditsScreen rows={adminContext.auditRows} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+    if (AdministradorScreen === 'audits') {
+      return renderAppShell(<AdministradorAuditsScreen rows={AdministradorContext.auditRows} onBack={() => setAdministradorScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} AdministradorScreen={AdministradorScreen} onNavigate={setAdministradorScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
-    if (adminScreen === 'reports') {
-      return renderWithPreview(<AdminReportsScreen adminContext={adminContext} onBack={() => setAdminScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+    if (AdministradorScreen === 'reports') {
+      return renderAppShell(<AdministradorReportsScreen AdministradorContext={AdministradorContext} onBack={() => setAdministradorScreen('dashboard')} portalView={portalView} onSelectPortal={setPortalView} AdministradorScreen={AdministradorScreen} onNavigate={setAdministradorScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
-    if (adminScreen === 'users') {
-      return renderWithPreview(<AdminUsersScreen rows={adminUsers} onBack={() => setAdminScreen('dashboard')} onCreateUser={createAdminUser} onUpdateUser={updateAdminUser} onDeleteUser={deleteAdminUser} onAssignNotice={assignUserNotice} portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+    if (AdministradorScreen === 'users') {
+      return renderAppShell(<AdministradorUsersScreen rows={AdministradorUsers} onBack={() => setAdministradorScreen('dashboard')} onCreateUser={createAdministradorUser} onUpdateUser={updateAdministradorUser} onDeleteUser={deleteAdministradorUser} onAssignNotice={assignUserNotice} portalView={portalView} onSelectPortal={setPortalView} AdministradorScreen={AdministradorScreen} onNavigate={setAdministradorScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }
 
-    if (adminScreen === 'basic-registrations') {
-      return renderWithPreview(<AdminBasicRegistrationsScreenModule portalView={portalView} onSelectPortal={setPortalView} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} users={adminUsers} />)
+    if (AdministradorScreen === 'basic-registrations') {
+      return renderAppShell(<AdministradorBasicRegistrationsScreenModule portalView={portalView} onSelectPortal={setPortalView} AdministradorScreen={AdministradorScreen} onNavigate={setAdministradorScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} users={AdministradorUsers} />)
     }
 
-    return renderWithPreview(<AdminDashboardScreen portalView={portalView} onSelectPortal={setPortalView} adminContext={adminContext} adminScreen={adminScreen} onNavigate={setAdminScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+    return renderAppShell(<AdministradorDashboardScreen portalView={portalView} onSelectPortal={setPortalView} AdministradorContext={AdministradorContext} AdministradorScreen={AdministradorScreen} onNavigate={setAdministradorScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
   }
 
   if (screen !== 'dashboard') {
     const isOnboarding = !hasCompletedOnboarding && screen === 'company-registration'
-    return renderWithPreview(<StageFormScreen currentStage={screen} applicationData={applicationData} setApplicationData={setApplicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} preferences={preferences} setPreferences={setPreferences} onBack={() => setScreen(isOnboarding ? 'auth' : 'dashboard')} onSaveStage={() => { if (isOnboarding) { setHasCompletedOnboarding(true) } setScreen('dashboard') }} onExit={handleExit} onGoToSettings={() => setScreen('settings')} portalView={portalView} onSelectPortal={setPortalView} registerAudit={registerAudit} isOnboarding={isOnboarding} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+    return renderAppShell(<StageFormScreen currentStage={screen} applicationData={applicationData} setApplicationData={setApplicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} preferences={preferences} setPreferences={setPreferences} onBack={() => setScreen(isOnboarding ? 'auth' : 'dashboard')} onSaveStage={() => { if (isOnboarding) { setHasCompletedOnboarding(true) } setScreen('dashboard') }} onExit={handleExit} onGoToSettings={() => setScreen('settings')} portalView={portalView} onSelectPortal={setPortalView} registerAudit={registerAudit} isOnboarding={isOnboarding} onOpenSidebar={() => setIsSidebarOpen(true)} />)
   }
 
-  return renderWithPreview(<DashboardScreen onNavigate={setScreen} onExit={handleExit} portalView={portalView} onSelectPortal={setPortalView} applicationData={applicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+  if (showLayoutDemo) {
+    return <LayoutOptionsDemo />
+  }
+
+  return renderAppShell(<DashboardScreen onNavigate={setScreen} onExit={handleExit} portalView={portalView} onSelectPortal={setPortalView} applicationData={applicationData} progressItems={progressItems} completedSteps={completedSteps} activeStep={activeStep} onOpenSidebar={() => setIsSidebarOpen(true)} onShowLayoutDemo={() => setShowLayoutDemo(true)} />)
 }
 
 
