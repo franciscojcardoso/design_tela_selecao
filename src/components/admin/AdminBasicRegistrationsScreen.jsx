@@ -20,6 +20,7 @@ import { DashboardCard } from '../shared/DashboardCard'
 import { AdministradorConfirmModal, AdministradorSuccessModal } from './AdminModals'
 import { AdministradorNavbar } from './AdminNavbar'
 import { AdministradorSectionHeader } from './AdminSectionHeader'
+import { AdminResultadosScreen, AdminResultadosScreenAlt } from './AdminResultadosScreen'
 
 // ─── Modal genérico para tabelas simples (id, descrição, situação) ─────────────
 
@@ -216,9 +217,82 @@ function AdministradorEditalRecordModal({ title, formData, onChange, onClose, on
   )
 }
 
+// ─── Dropdown "Gerenciar edital" ───────────────────────────────────────────────
+
+function DropdownItem({ icon, label, onClick, danger }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        display: 'flex', alignItems: 'center', gap: '0.6rem',
+        width: '100%', padding: '0.55rem 1rem', background: 'none',
+        border: 0, textAlign: 'left', cursor: 'pointer', fontSize: '0.875rem',
+        color: danger ? 'var(--color-danger)' : 'var(--color-text)',
+        whiteSpace: 'nowrap',
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-bg)' }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = 'none' }}
+    >
+      <i className={`bi ${icon}`} style={{ fontSize: '0.9rem', width: '1rem', textAlign: 'center' }} />
+      {label}
+    </button>
+  )
+}
+
+function GerenciarEditalDropdown({ row, onEditar, onExcluir, onResultados }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div style={{ position: 'relative', display: 'inline-block' }}>
+      <div style={{ display: 'flex', gap: 0 }}>
+        <Button
+          className="Administrador-users-add-button"
+          style={{ borderRadius: '0.35rem 0 0 0.35rem', borderRight: '1px solid rgba(255,255,255,0.25)', fontSize: '0.825rem', minWidth: 'auto', padding: '0.4rem 0.85rem' }}
+          onClick={() => setOpen((v) => !v)}
+        >
+          Gerenciar edital
+        </Button>
+        <Button
+          className="Administrador-users-add-button"
+          style={{ borderRadius: '0 0.35rem 0.35rem 0', minWidth: 'auto', padding: '0.4rem 0.6rem' }}
+          onClick={() => setOpen((v) => !v)}
+          aria-label="Opções do edital"
+        >
+          <i className="bi bi-chevron-down" style={{ fontSize: '0.75rem' }} />
+        </Button>
+      </div>
+      {open && (
+        <>
+          <div style={{ position: 'fixed', inset: 0, zIndex: 99 }} onClick={() => setOpen(false)} />
+          <div style={{
+            position: 'absolute', right: 0, top: 'calc(100% + 3px)',
+            background: 'var(--color-surface)', border: '1px solid var(--color-border)',
+            borderRadius: '0.5rem', boxShadow: '0 6px 18px rgba(0,0,0,0.12)',
+            zIndex: 100, minWidth: '14rem', overflow: 'hidden',
+          }}>
+            <DropdownItem icon="bi-calendar-event" label="Eventos do edital" onClick={() => setOpen(false)} />
+            <DropdownItem icon="bi-clipboard-data" label="Avaliar projetos" onClick={() => setOpen(false)} />
+            <DropdownItem icon="bi-people" label="Avaliadores" onClick={() => setOpen(false)} />
+            <DropdownItem icon="bi-bar-chart-steps" label="Resultados" onClick={() => { setOpen(false); onResultados(row) }} />
+            <div style={{ height: '1px', background: 'var(--color-border)', margin: '0.2rem 0' }} />
+            <DropdownItem icon="bi-pencil" label="Editar" onClick={() => { setOpen(false); onEditar(row) }} />
+            <DropdownItem icon="bi-trash" label="Excluir" danger onClick={() => { setOpen(false); onExcluir(row) }} />
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 // ─── Tela CRUD de Editais ─────────────────────────────────────────────────────
 
-function AdministradorEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDeleteRecord, onBack, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
+function fmtIso(iso) {
+  if (!iso) return '—'
+  const [y, m, d] = iso.split('-')
+  return `${d}/${m}/${y}`
+}
+
+function AdministradorEditaisScreen({ rows, setores, onCreateRecord, onUpdateRecord, onDeleteRecord, onBack, onResultados, portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingRecord, setEditingRecord] = useState(null)
@@ -226,10 +300,12 @@ function AdministradorEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDe
   const [confirmState, setConfirmState] = useState(null)
   const [successMessage, setSuccessMessage] = useState('')
 
+  const setorMap = new Map((setores || []).map((s) => [String(s.id), s.descricao]))
+
   const filteredRows = rows.filter((row) => {
     const term = searchTerm.trim().toLowerCase()
     if (!term) return true
-    return [String(row.id), row.descricao, row.situacao ? 'ativo' : 'inativo'].some((v) => String(v || '').toLowerCase().includes(term))
+    return [String(row.id), row.descricao, row.situacao ? 'em andamento' : 'encerrado'].some((v) => String(v || '').toLowerCase().includes(term))
   })
 
   const updateDraftField = (field) => (event) => {
@@ -262,11 +338,11 @@ function AdministradorEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDe
     <div className="Administrador-page">
       <AdministradorNavbar portalView={portalView} onSelectPortal={onSelectPortal} AdministradorScreen={AdministradorScreen} onNavigate={onNavigate} onExit={onExit} onOpenSidebar={onOpenSidebar} />
       <main className="Administrador-main">
-        <AdministradorSectionHeader title="Gerenciar editais" subtitle="Cadastro e gerenciamento dos editais de chamamento público." onBack={onBack} />
+        <AdministradorSectionHeader title="Gerenciar editais" subtitle="Editais de chamamento público, eventos e projetos a serem analisados." onBack={onBack} />
         <section className="Administrador-management-card Administrador-users-crud">
           <div className="Administrador-users-crud__topbar">
             <div className="Administrador-users-search">
-              <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Insira uma palavra para pesquisar" />
+              <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Pesquisar por título do Edital" />
               <button type="button" aria-label="Pesquisar"><i className="bi bi-search" /></button>
             </div>
             <Button type="button" className="Administrador-users-add-button" onClick={openCreateModal}>
@@ -277,22 +353,28 @@ function AdministradorEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDe
           <div className="Administrador-users-table-wrap">
             <table className="Administrador-table Administrador-users-table Administrador-table--cards">
               <thead>
-                <tr><th>ID</th><th>Descrição</th><th>Início inscrições</th><th>Final inscrições</th><th>Resultado final</th><th>Situação</th><th>Ações</th></tr>
+                <tr><th>Título</th><th>Setor</th><th>Período do edital</th><th>Status</th><th>Ações</th></tr>
               </thead>
               <tbody>
                 {filteredRows.map((row) => (
                   <tr key={row.id}>
-                    <td data-label="ID">{row.id}</td>
-                    <td data-label="Descrição">{row.descricao}</td>
-                    <td data-label="Início inscrições">{row.data_inicio_inscricoes}</td>
-                    <td data-label="Final inscrições">{row.data_final_inscricoes}</td>
-                    <td data-label="Resultado final">{row.data_resultado_final}</td>
-                    <td data-label="Situação">{row.situacao ? 'Ativo' : 'Inativo'}</td>
+                    <td data-label="Título">{row.descricao}</td>
+                    <td data-label="Setor">{setorMap.get(String(row.id_setor)) || `Setor ${row.id_setor}`}</td>
+                    <td data-label="Período do edital">
+                      {fmtIso(row.data_inicio_inscricoes)} a {fmtIso(row.data_final_inscricoes)}
+                    </td>
+                    <td data-label="Status">
+                      {row.situacao
+                        ? <span className="status-chip status-chip--success">Em andamento</span>
+                        : <span className="status-chip status-chip--neutral">Encerrado</span>}
+                    </td>
                     <td data-label="Ações">
-                      <div className="Administrador-users-actions">
-                        <button type="button" className="Administrador-inline-action" onClick={() => openEditModal(row)}>Editar</button>
-                        <button type="button" className="Administrador-inline-action Administrador-inline-action--danger" onClick={() => setConfirmState({ type: 'delete', payload: row })}>Excluir</button>
-                      </div>
+                      <GerenciarEditalDropdown
+                        row={row}
+                        onEditar={openEditModal}
+                        onExcluir={(r) => setConfirmState({ type: 'delete', payload: r })}
+                        onResultados={onResultados}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -308,8 +390,8 @@ function AdministradorEditaisScreen({ rows, onCreateRecord, onUpdateRecord, onDe
             <span>Mostrando de 1 até {filteredRows.length} de {rows.length} registros</span>
             <div className="Administrador-users-per-page">
               <strong>Exibir</strong>
-              <div className="Administrador-users-per-page__value">50</div>
-              <strong>resultados por página</strong>
+              <div className="Administrador-users-per-page__value">10</div>
+              <i className="bi bi-chevron-down" style={{ fontSize: '0.7rem' }} />
             </div>
           </div>
         </section>
@@ -530,6 +612,7 @@ function AdministradorProjectEvaluatorsScreen({ rows, editais, users, onCreateRe
 
 export function AdministradorBasicRegistrationsScreen({ portalView, onSelectPortal, AdministradorScreen, onNavigate, onExit, onOpenSidebar, users = initialAdministradorUsers }) {
   const [activeSubScreen, setActiveSubScreen] = useState(null)
+  const [selectedEdital, setSelectedEdital] = useState(null)
   const [cnaes, setCnaes] = useState(initialCnaes)
   const [tiposInstituicao, setTiposInstituicao] = useState(initialTiposInstituicao)
   const [bancos, setBancos] = useState(initialBancos)
@@ -560,7 +643,38 @@ export function AdministradorBasicRegistrationsScreen({ portalView, onSelectPort
 
   if (activeSubScreen === 'editais') {
     const { rows, onCreate, onUpdate, onDelete } = crudMap.editais
-    return <AdministradorEditaisScreen rows={rows} onCreateRecord={onCreate} onUpdateRecord={onUpdate} onDeleteRecord={onDelete} onBack={() => setActiveSubScreen(null)} {...navProps} />
+    return (
+      <AdministradorEditaisScreen
+        rows={rows}
+        setores={setores}
+        onCreateRecord={onCreate}
+        onUpdateRecord={onUpdate}
+        onDeleteRecord={onDelete}
+        onBack={() => setActiveSubScreen(null)}
+        onResultados={(edital) => { setSelectedEdital(edital); setActiveSubScreen('resultados') }}
+        {...navProps}
+      />
+    )
+  }
+
+  if (activeSubScreen === 'resultados') {
+    return (
+      <AdminResultadosScreen
+        edital={selectedEdital}
+        onBack={() => setActiveSubScreen('editais')}
+        {...navProps}
+      />
+    )
+  }
+
+  if (activeSubScreen === 'resultados-alt') {
+    return (
+      <AdminResultadosScreenAlt
+        edital={selectedEdital}
+        onBack={() => setActiveSubScreen('editais')}
+        {...navProps}
+      />
+    )
   }
 
   if (activeSubScreen === 'avaliadoresProjetos') {

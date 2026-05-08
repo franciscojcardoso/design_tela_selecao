@@ -4,6 +4,7 @@ import logoJangada from './assets/logo-jangada.svg'
 import logoEstadoCeara from './assets/logo-estado-ceara.svg'
 import { AdministradorBasicRegistrationsScreen as AdministradorBasicRegistrationsScreenModule } from './components/admin/AdminBasicRegistrationsScreen'
 import { AdministradorApplicantsTable } from './components/admin/AdminApplicantsTable'
+import { AdminEditaisTopScreen } from './components/admin/AdminEditaisTopScreen'
 import LayoutOptionsDemo from './components/candidate/LayoutOptionsDemo'
 import './App.css'
 
@@ -166,13 +167,11 @@ const fieldLabels = {
 
 const AdministradorMenu = [
   { label: 'Início', icon: 'bi-house', target: 'dashboard' },
+  { label: 'Editais', icon: 'bi-journal-text', target: 'editais' },
   { label: 'Instituições', icon: 'bi-people-fill', target: 'institutions' },
-  { label: 'Projetos', icon: 'bi-kanban', target: 'projects' },
   { label: 'Recursos', icon: 'bi-file-earmark-text', target: 'resources' },
-  { label: 'Auditorias', icon: 'bi-clipboard-check', target: 'audits' },
-  { label: 'Relatórios', icon: 'bi-bar-chart-line', target: 'reports' },
-  { label: 'Gerenciar usu\u00E1rios', icon: 'bi-person-gear', target: 'users' },
-  { label: 'Cadastros b\u00E1sicos', icon: 'bi-database', target: 'basic-registrations' },
+  { label: 'Cadastros básicos', icon: 'bi-database', target: 'basic-registrations' },
+  { label: 'Usuários', icon: 'bi-person-gear', target: 'users' },
 ]
 
 const initialCnaes = [
@@ -3551,6 +3550,10 @@ function App() {
   }
 
   if (portalView === 'Administrador') {
+    if (AdministradorScreen === 'editais') {
+      return renderAppShell(<AdminEditaisTopScreen portalView={portalView} onSelectPortal={setPortalView} AdministradorScreen={AdministradorScreen} onNavigate={setAdministradorScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
+    }
+
     if (AdministradorScreen === 'institutions') {
       return renderAppShell(<AdministradorApplicantsTable title="Instituições" subtitle="Tabela principal com as instituições e acesso rápido para acompanhamento e gestão." rows={AdministradorContext.applicants} onBack={() => setAdministradorScreen('dashboard')} onAudit={registerAudit} portalView={portalView} onSelectPortal={setPortalView} AdministradorScreen={AdministradorScreen} onNavigate={setAdministradorScreen} onExit={handleExit} onOpenSidebar={() => setIsSidebarOpen(true)} />)
     }

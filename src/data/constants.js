@@ -141,13 +141,11 @@ export const fieldLabels = {
 
 export const AdministradorMenu = [
   { label: 'Início', icon: 'bi-house', target: 'dashboard' },
+  { label: 'Editais', icon: 'bi-journal-text', target: 'editais' },
   { label: 'Instituições', icon: 'bi-people-fill', target: 'institutions' },
-  { label: 'Projetos', icon: 'bi-kanban', target: 'projects' },
   { label: 'Recursos', icon: 'bi-file-earmark-text', target: 'resources' },
-  { label: 'Auditorias', icon: 'bi-clipboard-check', target: 'audits' },
-  { label: 'Relatórios', icon: 'bi-bar-chart-line', target: 'reports' },
-  { label: 'Gerenciar usuários', icon: 'bi-person-gear', target: 'users' },
   { label: 'Cadastros básicos', icon: 'bi-database', target: 'basic-registrations' },
+  { label: 'Usuários', icon: 'bi-person-gear', target: 'users' },
 ]
 
 export const initialAdministradorUserForm = {
